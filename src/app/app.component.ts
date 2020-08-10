@@ -74,6 +74,8 @@ export class AppComponent {
             .then((uuid: any) => {
                 console.log("device id", uuid);
                 this.userData.setDevice(uuid);
+                this.userData.isDevice = true;
+                this.handlerNotifications();
             })
             .catch((error: any) => {
                 console.log(error);
@@ -106,9 +108,6 @@ export class AppComponent {
             //            this.zoomService.initialize("VNtFB87WSBW0yHl6rxHgTA", "air8HQbEbEEQZL5aZlNRwUMqPED2RH9zMx5B")
             //                .then((success: any) => console.log(success))
             //                .catch((error: any) => console.log(error));
-            if (!document.URL.startsWith('http')) {
-                this.handlerNotifications();
-            }
             this.events.subscribe('authenticated', (data:any) => {
                 this.getAlerts();
                 // user and time are the same arguments passed in `events.publish(user, time)`

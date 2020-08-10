@@ -14,6 +14,7 @@ export class UserDataService {
     useSecure: boolean = false;
     storageLoaded: boolean = false;
     deviceSet: boolean = false;
+    public isDevice: boolean = false;
     constructor(private secureStorageEcho: SecureStorageEcho, private events: Events, public storage2: Storage) {
         console.log("Building headers");
         this._headers = new HttpHeaders({

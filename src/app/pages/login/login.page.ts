@@ -91,7 +91,7 @@ export class LoginPage implements OnInit {
 
     }
     ionViewDidEnter() {
-        if (this.userData.storageLoaded){
+        if (this.userData.storageLoaded) {
             this.checkLogIn();
         }
     }
@@ -126,9 +126,7 @@ export class LoginPage implements OnInit {
         }
     }
     loginGoogle() {
-        if (document.URL.startsWith('http')) {
-            console.log("loginGoogle");
-        } else {
+        if (this.userData.isDevice) {
             this.googlePlus.login({
                 'webClientId': '379545099035-eef3pvfq2ipetc3vecoi72fum20ma4rt.apps.googleusercontent.com', // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
                 'offline': true // optional, but requires the webClientId - if set to true the plugin will also return a serverAuthCode, which can be used to grant offline access to a non-Google server
@@ -138,41 +136,47 @@ export class LoginPage implements OnInit {
                     this.verifyToken(res.accessToken, "google", null);
                 })
                 .catch(err => console.error(err));
+        } else {
+            console.log("loginGoogle");
         }
-
     }
     loginFacebook() {
-        if (document.URL.startsWith('http')) {
-            console.log("loginFacebook");
-        } else {
+        if (this.userData.isDevice) {
             this.fb.login(['public_profile', 'email'])
                 .then((res: FacebookLoginResponse) => {console.log('Logged into Facebook!', res); this.verifyToken(res.authResponse.accessToken, "facebook", null);})
                 .catch(e => console.log('Error logging into Facebook', e));
+        } else {
+            console.log("loginFacebook");
         }
     }
     loginApple() {
-        this.signInWithApple.signin({
-            requestedScopes: [
-                ASAuthorizationAppleIDRequest.ASAuthorizationScopeFullName,
-                ASAuthorizationAppleIDRequest.ASAuthorizationScopeEmail
-            ]
-        })
-            .then((succ: AppleSignInResponse) => {
-                // https://developer.apple.com/documentation/signinwithapplerestapi/verifying_a_user
-                alert('Send token to apple for verification: ' + succ.identityToken);
-                console.log(succ)
-                let userData = {
-                    firstName: succ.fullName.givenName,
-                    lastName: succ.fullName.familyName,
-                    name: succ.fullName.givenName + ' ' + succ.fullName.familyName,
-                    email: succ.email,
-                };
-                this.verifyToken(succ.identityToken, "apple", userData);
+        if (this.userData.isDevice) {
+            this.signInWithApple.signin({
+                requestedScopes: [
+                    ASAuthorizationAppleIDRequest.ASAuthorizationScopeFullName,
+                    ASAuthorizationAppleIDRequest.ASAuthorizationScopeEmail
+                ]
             })
-            .catch((error: AppleSignInErrorResponse) => {
-                alert(error.code + ' ' + error.localizedDescription);
-                console.error(error);
-            });
+                .then((succ: AppleSignInResponse) => {
+                    // https://developer.apple.com/documentation/signinwithapplerestapi/verifying_a_user
+                    alert('Send token to apple for verification: ' + succ.identityToken);
+                    console.log(succ)
+                    let userData = {
+                        firstName: succ.fullName.givenName,
+                        lastName: succ.fullName.familyName,
+                        name: succ.fullName.givenName + ' ' + succ.fullName.familyName,
+                        email: succ.email,
+                    };
+                    this.verifyToken(succ.identityToken, "apple", userData);
+                })
+                .catch((error: AppleSignInErrorResponse) => {
+                    alert(error.code + ' ' + error.localizedDescription);
+                    console.error(error);
+                });
+        } else {
+            console.log("loginApple");
+        }
+
     }
     verifyToken(token, platform, extra) {
         let container = {"token": token, "driver": platform, "extra": extra};

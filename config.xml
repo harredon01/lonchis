@@ -126,12 +126,6 @@
         <variable name="MIN_BACKGROUND_DURATION" value="30" />
     </plugin>
     <plugin name="onesignal-cordova-plugin" spec="^2.9.0" />
-    <plugin name="cordova-plugin-facebook4" spec="^6.4.0">
-        <variable name="APP_ID" value="340442469993643" />
-        <variable name="APP_NAME" value="Lonchis" />
-        <variable name="FACEBOOK_HYBRID_APP_EVENTS" value="false" />
-        <variable name="FACEBOOK_ANDROID_SDK_VERSION" value="5.13.0" />
-    </plugin>
     <plugin name="cordova-plugin-googleplus" spec="^8.4.0">
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.379545099035-8qh96k07jav7c0p05oqr5dupk8ka37l5" />
         <variable name="WEB_APPLICATION_CLIENT_ID" value="379545099035-eef3pvfq2ipetc3vecoi72fum20ma4rt.apps.googleusercontent.com" />
