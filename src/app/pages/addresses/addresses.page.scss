@@ -1,0 +1,30 @@
+.my-addresses {
+    &__list {
+        display: flex;
+        padding: 0;
+        flex-direction: column;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+
+        &-wrapper {
+            &:nth-child(odd) {
+                background-color: rgba($color: var(--ion-color-light-contrast), $alpha: .05);
+            }
+        }
+
+        &-content {
+            padding: 15px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--ion-color-light-shade);
+            margin: 0;
+
+            &.my-addresses__item--delete {
+                padding: 5px 0;
+                text-align: center;
+            }
+        }
+    }
+}

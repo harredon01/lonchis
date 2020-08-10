@@ -1,0 +1,44 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-title>{{ 'CART.TITLE' | translate }}</ion-title>
+        <ion-buttons class="cart__button cart__button--right" slot="primary">
+            <ion-button (click)="done()" strong>
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid>
+        <div class="checkout-prepare__items"> 
+            <p>{{ 'CART.DESCRIPTION' | translate }}</p>
+        </div>
+
+        <div class="checkout-prepare__items" *ngFor="let item of currentItems">
+            <div class="checkout__item"><strong>{{ 'CART_ITEM.NAME' | translate }}: </strong> {{item.name}}</div>
+            <div class="checkout__item"><strong>{{ 'CART_ITEM.QUANTITY' | translate }}: </strong> {{item.quantity}}</div>
+            <div class="checkout__item"><strong>{{ 'CART_ITEM.PRICE' | translate }}: </strong> {{item.price | currency }}</div>
+            <div class="checkout__item"><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{item.priceSumWithConditions | currency }}</div>
+            <div class="checkout__item"><div class="content-increment-product">
+                    <ion-button fill="outline" style="font-size:20px;" (click)="reduceCartItem(item)">-</ion-button>
+                    <label> {{item.quantity}}</label>
+                    <ion-button fill="outline" style="font-size:20px;" (click)="increaseCartItem(item)">+</ion-button>
+                </div> 
+            </div> 
+            <div class="checkout__item checkout__item--delete">
+                <span (click)="deleteItem(item)">
+                    Eliminar
+                </span>
+            </div>
+        </div>
+    </ion-grid>
+    <div class="checkout-prepare__items">
+        <p> <strong>Subtotal:</strong> {{subtotal | currency }}</p>
+        <!--p *ngIf="shipping>0" > <strong>Shipping:</strong> {{shipping | currency }}</p-->
+        <p><strong>Items:</strong> {{totalItems}}</p>
+        <ion-button class="btn-primary" (click)="clearCart()">Limpiar</ion-button>
+        <ion-button class="btn-secondary" (click)="checkout()">Pagar</ion-button>
+    </div>
+
+</ion-content>

@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>select-contacts</ion-title>
+        <ion-buttons class="cart__button cart__button--right" slot="primary">
+            <ion-button (click)="done()" strong>
+                <ion-icon class="close-button" name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-list class="doctor-list">
+        <ion-row class="bg-white" (click)="checkSelection(contact)" *ngFor="let contact of contacts2">
+                 <ion-col>
+                <ion-card>
+                    <label class="checkbox">
+                        <input type="checkbox" [(ngModel)]="contact.selected" value="{{contact.id}}">
+                    </label>
+                    <p>{{contact.firstName}} {{contact.lastName}}</p>
+                    <p>{{contact.cellphone}}</p>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-list>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="getContacts($event)">
+        <ion-infinite-scroll-content
+            loadingSpinner="bubbles">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+</ion-content>

@@ -1,0 +1,38 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>home</ion-title>
+        <ion-buttons slot="end" *ngIf="userData._user">
+            <ion-button size="small" icon-only clear (click)="openMenu()">
+                        <ion-icon name="notifications"></ion-icon>
+                <div id="counter-items">({{notifs}})</div>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="quick-link bg-white">
+        <div class="m15">
+            <h2 *ngIf="userData._user">Hola {{userData._user.firstName}}!</h2>
+            <h2 *ngIf="!userData._user">Hola!</h2>
+            <h3>Bienvenido a PetWorld.</h3>
+            <p>Tu lugar número uno para todo lo que tiene que ver con tu mascota. Te invitamos a que visites los negocios y sus productos y servicios. </p>
+            <br/>
+            <ion-button class="button merchant-categories__header-button right" style="padding:0" (click)="login()" size="small" *ngIf="!userData._user">
+                Entrar
+            </ion-button>
+
+        </div>
+        <div class="clear"></div>
+        <div class="mainCategories">
+            <div (click)="openItem(item)" *ngFor="let item of items" class="mainCategories__list w50 left">
+                <img src="assets/imgs/dentist-1.jpg" item-start>
+                <span class="mainCategories__list--text">
+                    <span>{{item.name}}</span>
+                    <small>{{item.description}}</small>
+                </span>
+            </div>
+        </div>
+    </div>
+
+</ion-content>

@@ -1,0 +1,24 @@
+.payments {
+    .input-wrapper {
+        display: block !important;
+        text-align: center;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        &-wrapper {
+            &:nth-child(odd) {
+                background-color: rgba($color: var(--ion-color-light-contrast), $alpha: .05);
+            }
+        }
+    }
+    
+    &__content {
+        margin: 0;
+        padding: 20px 10px;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid var(--ion-color-light-shade);
+    }
+}

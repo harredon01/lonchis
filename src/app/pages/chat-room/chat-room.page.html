@@ -1,0 +1,69 @@
+<!--
+  Generated template for the ChatRoomPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-toolbar>
+      <ion-buttons slot="start" *ngIf="backButton">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+    <ion-title>{{ 'SETTINGS.SUPPORT' | translate }}</ion-title>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content class="ion-padding">
+
+  <div class="message-wrap">
+<ion-infinite-scroll (ionInfinite)="doInfinite($event)" position="top" *ngIf="messagemore">
+            <ion-infinite-scroll-content loadingSpinner="bubbles"></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    <div *ngFor="let msg of messages">
+
+      <div class="sender" *ngIf="msg.from_id == friend.id && msg.to_id == userData._user.id ">
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2" text-left>
+              <img class="friend-img" [src]="friend.avatar" alt="">
+            </ion-col>
+            <ion-col size="10">
+              <p>{{msg.content}}</p>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+
+      <div class="me" *ngIf="msg.from_id == userData._user.id && msg.to_id == friend.id">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="10">
+              <p>{{msg.content}}</p>
+            </ion-col>
+            <ion-col size="2">
+              <img class="friend-img" [src]="avatar" alt="">
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </div>
+      
+  </div>
+
+</ion-content>
+
+<ion-footer no-border>
+  <ion-toolbar color="primary">
+    <ion-textarea (keyup.enter)="doSend()" [(ngModel)]="input" placeholder="{{ 'SUPPORT.MESSAGE' | translate }}" name="message" style="width:95%;float:left;background:white"></ion-textarea>
+    <ion-buttons slot="primary" style="width:9%;float:left">
+      <ion-button (click)="doSend()" icon-only >
+        <img src="assets/icon/send-button.svg" />
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-footer>

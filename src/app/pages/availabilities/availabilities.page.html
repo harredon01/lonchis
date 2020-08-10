@@ -1,0 +1,43 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'AVAILABILITIES.TITLE' | translate }}</ion-title>
+        <ion-buttons class="my-addresses__button my-addresses__button--right"  slot="primary">
+            <ion-button  icon-only (click)="createItem()">
+                         <ion-icon class="add-button" name="add"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div *ngIf="currentItems.length ==0">
+        <p >{{ 'AVAILABILITIES.NO_RESULTS' | translate }}</p>
+    </div>
+    
+    <ion-list>
+        <ion-item-sliding *ngFor="let item of currentItems">
+            <ion-item class="floating">
+                <h2>{{ 'AVAILABILITIES.RANGE' | translate }}: <span *ngIf="item.range == 'sunday'">{{ 'DAYS.SUNDAY' | translate }}</span>
+                    <span *ngIf="item.range == 'monday'">{{ 'DAYS.MONDAY' | translate }}</span>
+                    <span *ngIf="item.range == 'tuesday'">{{ 'DAYS.TUESDAY' | translate }}</span>
+                    <span *ngIf="item.range == 'wednesday'">{{ 'DAYS.WEDNESDAY' | translate }}</span>
+                    <span *ngIf="item.range == 'thursday'">{{ 'DAYS.THURSDAY' | translate }}</span>
+                    <span *ngIf="item.range == 'friday'">{{ 'DAYS.FRIDAY' | translate }}</span>
+                    <span *ngIf="item.range == 'saturday'">{{ 'DAYS.SATURDAY' | translate }}</span></h2>
+                <p>{{ 'AVAILABILITIES.FROM' | translate }}: {{item.from }}</p>
+                <p>{{ 'AVAILABILITIES.TO' | translate }}: {{item.to }}</p>
+            </ion-item>
+            <ion-item-options side="end">
+                <ion-item-option (click)="deleteAvailability(item)" color="danger" expandable>
+                    {{ 'INPUTS.DELETE' | translate }}
+                </ion-item-option>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+    <!--ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll-->
+</ion-content>

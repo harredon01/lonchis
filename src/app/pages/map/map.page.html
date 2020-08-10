@@ -1,0 +1,70 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-title>
+            {{ 'MAP.TITLE' | translate }}
+        </ion-title>
+        <ion-buttons class="map__button map__button--right"  slot="primary">
+            <ion-button (click)="cancel()" *ngIf="this.mapData.activeType =='Address' || this.mapData.activeType =='NewReport'">
+                <ion-icon class="close-button" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="map">
+    <div class="map__wrapper">
+        <p>{{ 'MAP.NO_MAP_DESC' |translate }}</p>
+        <div *ngIf="this.mapData.activeType =='Address'&&loadingComplete">
+            <p>{{ 'MAP.SHIPPING_ADDRESS_PIN' |translate }}</p>
+            <div *ngIf="this.mapData.merchantId">
+                <p *ngIf="!shippingAddressInCoverage">{{'MAP.SHIPPING_ADDRESS_NOT_IN_COVERAGE'| translate }}</p>
+                <div  *ngIf="shippingAddressInCoverage">
+                    <p>{{ 'MAP.SHIPPING_ADDRESS_IN_COVERAGE' |translate }}</p>
+                    <ion-button *ngIf="this.mapData.activeId !='-2'" class='save-address' (click)="completeAddressData()" strong>
+                        <span color="primary">
+                            {{ 'MAP.DONE_SHIPPING' | translate }}
+                        </span>
+                        <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+                    </ion-button>
+                    <ion-button *ngIf="this.mapData.activeId =='-2'" class='save-address' (click)="returnAddressData()" strong>
+                        <span color="primary">
+                            {{ 'MAP.DONE_SHIPPING' | translate }}
+                        </span>
+                        <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+            <div *ngIf="!this.mapData.merchantId">
+                <div *ngIf="this.mapData.activeId !='2'">
+                    <ion-button class='save-address' (click)="completeAddressData()" strong>
+                        <span color="primary">
+                            {{ 'MAP.DONE_SHIPPING' | translate }}
+                        </span>
+                        <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+                    </ion-button>
+                </div>
+                <div *ngIf="this.mapData.activeId =='2'">
+                    <ion-button class='save-address' (click)="returnAddressData()" strong>
+                        <span color="primary">
+                            {{ 'MAP.DONE_SHIPPING' | translate }}
+                        </span>
+                        <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="this.mapData.activeType =='Location'&&loadingComplete">
+            <p>{{ 'MAP.LOCATION_PIN' |translate }}</p>
+            <div>
+
+                <ion-button class='save-address' (click)="locationConfirmed()" strong>
+                    <span color="primary">
+                        {{ 'MAP.DONE_SHIPPING' | translate }}
+                    </span>
+                    <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+                </ion-button>
+            </div>
+        </div>
+    </div>
+    <div id="map_canvas" class="map-canvas"></div>
+</ion-content>

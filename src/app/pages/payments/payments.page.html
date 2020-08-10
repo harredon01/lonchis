@@ -1,0 +1,59 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'PAYMENTS.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="payments">
+    <div class="payments__wrapper">
+        <p *ngIf="currentItems.length ==0" class="pdesc">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
+        <div>
+            <div class="payments__item-wrapper" *ngFor="let item of currentItems">
+                 <div class="payments__item ion-no-padding" (click)="openItem(item)">
+                    <p class="payments__content">
+                    <ion-grid >
+                        <ion-row>
+                            <ion-col >
+                                <span class="text--bold text--block">
+                                    {{ 'PAYMENT.ID' | translate }}:
+                                </span>
+                                {{item.id}}
+                            </ion-col>
+                            <ion-col >
+                                <span class="text--bold text--block">
+                                    {{ 'PAYMENT.STATUS' | translate }}:
+                                </span>
+                                <span *ngIf="item.status == 'payment_in_bank'">{{ 'PAYMENT.PAYMENT_IN_BANK' | translate }}</span>
+                                <span *ngIf="item.status == 'pending'||item.status == 'payment_created'">{{ 'PAYMENT.PENDING' | translate }}</span> 
+                                <span *ngIf="item.status == 'denied'">{{ 'PAYMENT.DENIED2' | translate }}</span> 
+                                <span *ngIf="item.status == 'approved'">{{ 'PAYMENT.APPROVED2' | translate }}</span> 
+
+                            </ion-col>
+                            
+                        </ion-row>
+                        <ion-row>
+                            <ion-col >
+                                <span class="text--bold text--block">
+                                    {{ 'PAYMENT.TOTAL' | translate }}: 
+                                </span>
+                                {{item.total | currency }}
+                            </ion-col>
+                            <ion-col >
+                                <span class="text--bold text--block">
+                                    {{ 'PAYMENT.UPDATED_AT' | translate }}:
+                                </span>
+                                {{item.updated_at | date:'shortDate'}}
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
+</ion-content>

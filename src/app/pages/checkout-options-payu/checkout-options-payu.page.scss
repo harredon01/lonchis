@@ -1,0 +1,11 @@
+.checkout-prepare {
+    &--wrapper {
+        padding: 0 15px;
+        margin-bottom: 20px;
+        
+        ion-button {
+            float:right;
+            margin:15px;
+        }
+    }
+}

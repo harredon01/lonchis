@@ -1,0 +1,24 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'ITEM_DETAIL.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card >        
+        <ion-card-header class="product-header-information">            
+            <strong>{{ 'CART_ITEM.NAME' | translate }}: </strong> {{item.name}}
+        </ion-card-header>        
+        <ion-card-content>
+            <p><strong>{{ 'CART_ITEM.QUANTITY' | translate }}: </strong> {{item.quantity}}</p>
+            <p><strong>{{ 'CART_ITEM.PRICE' | translate }}: </strong> {{item.price | currency }}</p>
+            <p><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{item.priceSumWithConditions | currency }}</p>
+            <ion-button (click)="fulfillItem()">                
+                <h2>{{ 'ITEM_DETAIL.FULFILLED' | translate }}</h2>
+            </ion-button>    
+        </ion-card-content>    
+    </ion-card>    
+</ion-content>

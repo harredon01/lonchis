@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>mercado-pago-cash</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-card >        
+                <ion-card-header class="product-header-information">            
+                    <span>{{ 'CHECKOUT_PREPARE.COMPLETE' | translate }}</span>        
+                </ion-card-header>        
+                <ion-card-content>
+                    <div>
+                        <p>{{ response }}</p> 
+                        <p>{{ 'CHECKOUT_PREPARE.YOUR_TOTAL' | translate }}: {{payment.subtotal | currency }}</p>    
+                        <p>{{ 'PAYMENT.TRANSACTION_COST' | translate }}: {{payment.transaction_cost | currency }}</p>    
+                        <p>{{ 'PAYMENT.TOTAL' | translate }}: {{payment.total | currency }}</p>  
+                    </div> 
+                    <ion-button class="btn-secondary" (click)="done()">{{ 'PAYMENT_DETAIL.DONE' | translate }}</ion-button>
+                </ion-card-content>
+            </ion-card>
+</ion-content>

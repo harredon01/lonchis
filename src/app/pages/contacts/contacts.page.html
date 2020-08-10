@@ -1,0 +1,35 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Contacts</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-button shape="round" (click)="importContacts()">Import</ion-button>
+    <ion-list>
+        <ion-list-header>{{queryMod}}</ion-list-header>
+
+        <ion-item>
+            <ion-label>Filter</ion-label>
+            <ion-select placeholder="Select One" [(ngModel)]="queryMod" (ionChange)="selectQuery()">
+                <ion-select-option *ngFor="let item of queries" value="{{item}}">{{item}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+    </ion-list>
+    <ion-list class="doctor-list">
+        <ion-row class="bg-white" (click)="openItem(contact)" *ngFor="let contact of contacts">
+                 <ion-col>
+                <ion-card>
+                    <ion-item>
+                        <h2>{{contact.firstName}} {{contact.lastName}}</h2>
+                    </ion-item>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-list>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="getContacts($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

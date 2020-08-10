@@ -1,0 +1,222 @@
+.home-page {
+    ion-item{
+        --ion-background-color:#f2f2f2;
+    }
+    &:before {
+        width: 100%;
+        height: 100%;
+        background-image: url('/assets/background.png');
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: .035;
+        background-size: cover;
+    }
+    .list-header-md,
+    .list-header-ios {
+        margin-bottom: 0;
+    }
+    .notification-button{
+        float:right;
+        #counter-items { 
+            border-radius: 5em;
+            height: 15px;
+            border:1px solid #005C5E;
+            right:5px;
+            width: 15px;
+            text-align: center;
+            position: absolute;
+            background: white;
+            z-index: 2;
+            font-size: 11px;
+        }
+    }
+
+    .list-md,
+    .list-ios {
+        margin: 0;
+        background: transparent;
+    }
+
+    &__image {
+        width: 21%;
+        padding: 20px 0;
+        max-width: 200px;
+    }
+    &__button {
+        float:right;
+    }
+
+    .list-header {
+        background-color: transparent;
+        .item-inner {
+            font-weight: 900;
+            padding: 0 10px 0 0;
+            border-radius: 2px;
+            border-bottom: 3px solid;
+        }
+
+        &.products__title {
+            margin-bottom: 10px;
+            .item-inner {
+                border-color: #005C5E;
+                color: #005C5E;
+            }
+        }
+
+        &.delivery__title {
+            margin-bottom: 10px;
+            .item-inner {
+                border-color: #FF8E4F;
+                color: #FF8E4F;
+            }
+        }
+    }
+
+    &__products {
+        display: flex;
+        flex-flow: column;
+        width: 100%;
+    }
+
+    &__description {
+        display: none;
+    }
+
+    &__wrapper {
+        padding: 0 16px;
+        .greeting {
+            float:left;
+            text-align: center;
+            width: 67%;
+            margin-top:30px;
+        }
+    }
+
+    .list-header-md,
+    .list-header-ios {
+        font-weight: 800;
+    }
+
+    .item-md,
+    .item-ios {
+        padding: 0;
+    }
+
+
+    .list-md .item-block .item-inner,
+    .list-ios .item-block .item-inner {
+        border: 0 !important;
+        padding: 0;
+    }
+
+    .list-header-md,
+    .list-header-ios {
+        border-top: 0 !important;
+    }
+}
+
+.products {
+    &__item {
+        position: relative;
+        margin: 2px 0;
+        display: flex;
+        flex-flow: column;
+        min-height: 55px;
+
+        &:first-child {
+            margin-right: 10px;
+        }
+
+        ion-label, button {
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            padding: 0;
+            margin: 0;
+            white-space: normal;
+        }
+
+        button {
+            position: absolute;
+            top: 0;
+        }
+
+        .item-inner {
+            position: relative;
+            color: white;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        h2 {
+            font-weight: 900;
+            font-size: 25px;
+            width: 100%;
+            padding: 0 5px;
+            margin-top:0;
+            color:white;
+            letter-spacing: -1px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+    }
+
+    &__image {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0 !important;
+        height: 100%;
+        &:before {
+            content: '';
+            width: 100%;
+            height: 100%;
+            background-color: rgba(black, .4);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        img {
+            border-radius: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
+        }
+    }
+}
+
+.lunch {
+    &__item {
+        background-color: transparent !important;
+        .item {
+            background-color: transparent !important;
+            border-bottom: 1px solid rgba(#666, .1);
+        }
+        h2{
+            margin:11px 0;
+        }
+
+        button {
+            width: auto;
+            float:none !important;
+            min-width:88px;
+            height: 34px;
+        }
+    }
+
+    &__status {
+        display: block;
+        font-size: 14px;
+        width:120px;
+        float:none !important;
+        font-weight: 800;
+        border: 1px solid rgba(gray, .2);
+        color: gray;
+        padding: 10px;
+        border-radius: 5px;
+    }
+}

@@ -1,0 +1,36 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-title>{{ 'BUYER_SELECT.TITLE' | translate }}</ion-title>
+        <ion-buttons class="map__button map__button--right" slot="primary">
+            <ion-button (click)="cancel()">
+                    <ion-icon class="close-button" name="close"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="buyer-select">
+    <div class="buyer-select--wrapper">
+        <p class="buyer-select__description">{{ 'BUYER_SELECT.DESCRIPTION' | translate }}</p>
+        <p *ngIf="totalNecessary ==1 ">{{ 'BUYER_SELECT.TOTAL_NECESSARY_1' | translate }}</p>
+        <p *ngIf="totalNecessary > 1 ">{{ 'BUYER_SELECT.TOTAL_NECESSARY' | translate }}:{{totalNecessary}} </p>
+        <ion-list *ngIf="(totalNecessary > 0 && limitActive)||!limitActive">
+            <ion-item class="buyer-select__item">
+                <ion-input type="text" placeholder="email@email.com" [(ngModel)]="candidate"></ion-input>
+            </ion-item>
+        </ion-list>
+        <ion-button class="btn-primary" *ngIf="(totalNecessary > 0 && limitActive)||!limitActive" (click)="checkPayer()"
+           >Buscar</ion-button>
+        <p *ngIf="!candidateFound && submitted "><strong>{{ 'BUYER_SELECT.NO_RESULTS' | translate }} </strong></p>
+        <form [formGroup]="form">
+            <ion-list>
+                <ion-item *ngFor="let player of payers">
+                    <ion-label>{{player.email}}</ion-label>
+                    <ion-checkbox [formControlName]="player.user_id"></ion-checkbox>
+                </ion-item>
+            </ion-list>
+        </form>
+        <ion-button class="btn-secondary" (click)="done()">Continuar</ion-button>
+    </div>
+</ion-content>

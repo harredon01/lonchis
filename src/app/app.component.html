@@ -1,3 +1,33 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+    <ion-split-pane contentId="main-content">
+
+
+
+        <!-- the main content -->
+        <ion-router-outlet id="main-content"></ion-router-outlet>
+        <!--  our side menu  -->
+        <ion-menu side="end" contentId="main-content">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-title>Menu</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-list class="menu__toggle">
+                    <ion-menu-toggle auto-hide="false" *ngFor="let p of items" (click)="openNotification(p)">
+                        <div class="notif mb10">
+                            <div class="left w20">
+                            <img width="40" class="" src="https://s3.us-east-2.amazonaws.com/gohife/public/icons/{{p.type}}.svg" />
+                            </div>             
+                            <p class="right w80 mt0">
+                                {{p.subject}}
+                                <span class="menu__toggle tright">{{p.created_at | date}}</span>
+                            </p>
+                            <div class="clear"></div>             
+                        </div>
+                    </ion-menu-toggle>
+                </ion-list>
+            </ion-content>
+        </ion-menu>
+    </ion-split-pane>
 </ion-app>

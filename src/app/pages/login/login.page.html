@@ -1,0 +1,51 @@
+<ion-content class="login">
+    <div class="login__wrapper">
+        <ion-button class="back" (click)="goBack()">
+            <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-button>
+        <form (submit)="doLogin()">
+            <div class="login__messages">
+                <p class="login__title">{{ 'LOGIN.TITLE' | translate }}</p>
+                <p class="login__message">{{ 'LOGIN.MESSAGE' | translate }}</p>
+            </div>
+            <ion-list class="login__create">
+                <div class="login__image">
+                    <img src="assets/logo-home.svg" alt="">
+                </div>
+                <ion-item class="login__item ion-no-padding">
+                    <ion-label position="floating">{{ 'LOGIN.USERNAME' | translate }}</ion-label>
+                    <ion-input class="login__input" type="text" [(ngModel)]="account.username" name="username" required></ion-input>
+                </ion-item>
+                <ion-item class="login__item ion-no-padding">
+                    <ion-label position="floating">{{ 'LOGIN.PASSWORD' | translate }}</ion-label>
+                    <ion-input class="login__input" type="password" [(ngModel)]="account.password" name="password" required></ion-input>
+                </ion-item>
+                <ion-item class="login__item login--remember ion-no-padding">
+                    <ion-label>{{ 'INPUTS.REMEMBER' | translate }}</ion-label>
+                    <ion-checkbox [(ngModel)]="account.remember" name="remember"></ion-checkbox>
+                </ion-item>
+                <div class="login__enter ion-padding">
+                    <ion-button type="submit" class="button" expand="full">
+                        <span class="login__button">Ingresar</span>
+                    </ion-button>
+                </div>
+                <div class="login__forgot-account ion-padding">
+                    <a href="javascript:;" (click)="performForgotPass()">{{ 'LOGIN.FORGOT_PASS' | translate }}</a>
+                </div>
+                <p class="login__text">Or</p>
+                <div class="login__buttons" *ngIf="true">
+                    <div class="login__third login__third--facebook" (click)="loginFacebook()">
+                        <p class="btn-text"><b>Sign in with facebook</b></p>
+                    </div>
+                    <div class="login__third login__third--google" (click)="loginGoogle()">
+                        <p class="btn-text"><b>Sign in with Google</b></p>
+                    </div>
+                </div>
+                <div class="login__create-account">
+                    No tiene cuenta?  
+                    <span (click)="singup()" class="login__create-text">Crear cuenta</span>
+                </div>
+            </ion-list>
+        </form>
+    </div>
+</ion-content>

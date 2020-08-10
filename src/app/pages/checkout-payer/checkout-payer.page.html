@@ -1,0 +1,79 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'CHECKOUT_PAYER.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="checkout-shipping">
+    <div class="checkout-shipping--wrapper">
+        <ion-item *ngIf="!showAddressCard">
+            <p class="checkout-shipping__description">{{ 'CHECKOUT_PAYER.DESCRIPTION' | translate }}</p>
+        </ion-item>
+        <ion-list *ngIf="!showAddressCard">
+            <ion-item-sliding  class="checkout-shipping__item" *ngFor="let item of currentItems">
+                <ion-item (click)="savePayer(item)">
+                    <ion-label class="ion-text-wrap">
+                        <h2>{{item.name}}</h2>
+                        <p>{{item.address}}</p>
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+        </ion-list>
+        <ion-button class="btn-primary" *ngIf="!showAddressCard" (click)="createAddress()">Crear Dirección</ion-button>
+        <div class="clear"></div>
+        <ion-card *ngIf="showAddressCard">
+            <ion-card-header>
+                <p class="checkout-shipping__description"><b>{{ 'CHECKOUT_BUYER.SELECTED' | translate }}</b></p>
+                <ion-card-subtitle>{{selectedAddress.address}}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content  class="checkout-shipping__item checkout-shipping__info">
+                <p>{{selectedAddress.phone}}</p>
+                <p>{{selectedAddress.cityName}}</p>
+                <p>{{selectedAddress.regionName}}</p>
+                <p>{{selectedAddress.countryName}}</p>
+            </ion-card-content>
+        </ion-card>
+        <ion-button class="btn-primary" (click)="changeAddress()" *ngIf="showAddressCard">{{ 'INPUTS.CHANGE_ADDRESS' |
+                translate }}</ion-button>
+        <div class="clear"></div>
+        <ion-list *ngIf="showAddressCard">
+            <ion-item>
+                <p>{{ 'CHECKOUT_PAYER.DESCRIPTION2' | translate }}</p>
+            </ion-item>
+            <ion-item>
+                <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
+                <ion-checkbox [(ngModel)]="v" (click)="useUser()"></ion-checkbox>
+            </ion-item>
+        </ion-list>
+        <form (submit)="submitPayer()" [formGroup]="payerForm" *ngIf="showAddressCard">
+            <ion-list>
+                <ion-item>
+                    <ion-label position="floating">{{ 'USER.ID' | translate }}</ion-label>
+                    <ion-input type="text" formControlName="payer_id"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!payerForm.controls.payer_id.valid  && (payerForm.controls.payer_id.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="floating">{{ 'USER.NAME' | translate }}</ion-label>
+                    <ion-input type="text" formControlName="payer_name"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!payerForm.controls.payer_name.valid  && (payerForm.controls.payer_name.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.NAME_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="floating">{{ 'USER.EMAIL' | translate }}</ion-label>
+                    <ion-input type="text" formControlName="payer_email"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!payerForm.controls.payer_email.valid  && (payerForm.controls.payer_email.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-button class="btn-primary" expand="full" type="submit">{{ 'INPUTS.SUBMIT' | translate }}</ion-button>
+            </ion-list>
+        </form>
+    </div>
+</ion-content>

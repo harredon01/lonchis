@@ -1,0 +1,53 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-title>{{ 'AVAILABILITY_CREATE.TITLE' | translate }}</ion-title>
+        <ion-buttons class="my-addresses__button my-addresses__button--left" slot="secondary">
+            <ion-button (click)="cancel()">
+                <ion-icon class="close-button" name="md-close" showWhen="android,windows"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-buttons class="my-addresses__button my-addresses__button--right" slot="primary">
+            <ion-button (click)="done()" [disabled]="!isReadyToSave" strong>
+                <span class="done-button" color="primary"></span>
+                <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="my-addresses__wrapper">
+        <form [formGroup]="form" (ngSubmit)="done()">
+            <input type="hidden" formControlName="object_id" />
+            <input type="hidden" formControlName="type" />
+            <ion-list>
+                <ion-item>
+                    <ion-label position="floating">{{ 'AVAILABILITY_CREATE.RANGE' | translate }}</ion-label>
+                    <ion-select formControlName="range">
+                        <ion-select-option *ngFor="let item of days" [value]='item.value'>{{item.name}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!form.controls.from.valid  && (form.controls.from.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'AVAILABILITY_CREATE.RANGE_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="floating">{{ 'AVAILABILITY_CREATE.FROM' | translate }}</ion-label>
+                    <ion-datetime display-format="h:mm A" picker-format="h:mm A" formControlName="from"></ion-datetime>
+                </ion-item>
+                <ion-item *ngIf="!form.controls.from.valid  && (form.controls.from.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'AVAILABILITY_CREATE.FROM_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="floating">{{ 'AVAILABILITY_CREATE.TO' | translate }}</ion-label>
+                    <ion-datetime display-format="h:mm A" picker-format="h:mm A" formControlName="to"></ion-datetime>
+                </ion-item>
+                <ion-item *ngIf="!form.controls.to.valid  && (form.controls.to.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'AVAILABILITY_CREATE.TO_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item>
+                    <ion-button full type="submit">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
+                </ion-item>
+            </ion-list>
+        </form>
+    </div>
+</ion-content>

@@ -1,0 +1,89 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'NUTRICION.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content  class="deliveries">
+    <ion-card *ngIf="currentItems.length==0">
+        <ion-card-content style="padding:10" >
+            <br/>
+            <p>{{ 'NUTRICION.NO_RESULTS' | translate }}</p>
+            <a href="javascript:;" (click)="buyLunches()">{{ 'NUTRICION.PURCHASE' | translate }}</a>
+        </ion-card-content>
+    </ion-card>
+    <div class="deliveries__wrapper" *ngIf="currentItems.length>0">
+        <ion-card>
+            <ion-card-content style="padding:0" >
+                <br/>
+                <p>{{ 'NUTRICION.DESCRIPTION' | translate }}</p>
+                <br/>
+                <p><b>Total Pedidos {{currentItems.length}}</b></p>
+                <ion-grid>
+                    <ion-row>
+                        <ion-col>Ind.</ion-col>
+                        <ion-col>Progreso</ion-col>
+                        <ion-col>Ideal</ion-col>
+                        <ion-col>Te faltan</ion-col>
+                    </ion-row>
+                    <ion-row *ngFor="let item of totalLabels; let i = index">
+                        <ion-col>{{ totalLabels[i] }}</ion-col>
+                        <ion-col>{{totals[i].totals | number}}</ion-col>
+                        <ion-col>{{ideals[i].totals | number}}</ion-col>
+                        <ion-col>{{ideals[i].totals-totals[i].totals | number}}</ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-card-content>
+        </ion-card>
+        <ion-card>
+            <ion-card-content style="padding:0">
+                <canvas style="height: 150px" #barCanvas1></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show2">
+            <ion-card-content  style="padding:0">
+                <canvas #barCanvas2></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show3">
+            <ion-card-content style="padding:0">
+                <canvas #barCanvas3></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show4">
+            <ion-card-content style="padding:0">
+                <canvas #barCanvas4></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show5">
+            <ion-card-content style="padding:0">
+                <canvas #barCanvas5></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show6">
+            <ion-card-content style="padding:0">
+                <canvas #barCanvas6></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show7">
+            <ion-card-content style="padding:0">
+                <canvas #barCanvas7></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show8">
+            <ion-card-content style="padding:0">
+                <canvas #barCanvas8></canvas>
+            </ion-card-content>
+        </ion-card>
+        <ion-card *ngIf="show9">
+            <ion-card-content style="padding:0">
+                <canvas #barCanvas9></canvas>
+            </ion-card-content>
+        </ion-card>
+
+    </div>
+
+</ion-content>

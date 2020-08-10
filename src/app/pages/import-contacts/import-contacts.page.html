@@ -1,0 +1,25 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>import-contacts</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-button shape="round" (click)="addContacts()">Add Contacts</ion-button>
+    <ion-list class="doctor-list">
+        <ion-row class="bg-white" (click)="checkSelection(contact)" *ngFor="let contact of contacts2">
+                 <ion-col>
+                <ion-card>
+                    <label class="checkbox">
+                        <input type="checkbox" [(ngModel)]="contact.selected" value="{{contact.id}}">
+                    </label>
+                    <p>{{contact.firstName}} {{contact.lastName}}</p>
+                    <p>{{contact.cellphone}}</p>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ion-list>
+</ion-content>

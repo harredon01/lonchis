@@ -1,0 +1,54 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-buttons slot="start" *ngIf="!isSelect">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'ADDRESSES.TITLE' | translate }}</ion-title>
+        <ion-buttons class="my-addresses__button my-addresses__button--right" slot="primary">
+            <ion-button icon-only (click)="showPrompt()" *ngIf="!isSelect">
+                <ion-icon class="add-button" name="add"></ion-icon>
+            </ion-button>
+            <ion-button icon-only (click)="modalCtrl.dismiss" *ngIf="isSelect">
+                <ion-icon name="close-circle-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content class="my-addresses">
+    <div class="my-addresses__wrapper">
+        <p *ngIf="currentItems.length ==0">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
+        <div class="my-addresses__list">
+            <div class="my-addresses__item-wrapper" *ngFor="let item of currentItems">
+                <div class="my-addresses__item" (click)="editAddress(item)">
+                    <p class="my-addresses__item-content">
+                        <span class="text--bold text--block">
+                            Name:
+                        </span>
+                        <span>
+                            {{item.name}}
+                        </span>
+                        <span class="text--bold text--block">
+                            Address:
+                        </span>
+                        <span>
+                            {{item.address}} 
+                        </span>
+                    </p>
+                    <p class="my-addresses__item-content my-addresses__item--delete" *ngIf="!isSelect">
+                        <ion-button size="small" color="danger" (click)="deleteAddress(item)">
+                            {{ 'INPUTS.DELETE' | translate }}
+                        </ion-button>
+                    <ion-button size="small" color="primary" (click)="editAddress(item)">
+                            {{ 'INPUTS.EDIT' | translate }}
+                        </ion-button>
+                    </p>
+                    <p class="my-addresses__item-content my-addresses__item--delete" *ngIf="isSelect">
+                    <ion-button size="small" color="primary" (click)="editAddress(item)">
+                            {{ 'ADDRESSES.SELECT' | translate }}
+                        </ion-button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

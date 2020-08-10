@@ -1,0 +1,26 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>route-detail</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card *ngFor="let item of route.stops">
+
+        <ion-card-header>
+            <ion-card-title>Parada {{item.id}}</ion-card-title>
+            <ion-card-subtitle>{{item.address.address}}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+            {{item.region_name}}
+        </ion-card-content>
+        <ion-item href="#" class="activated" *ngFor="let delivery of item.deliveries">
+            <ion-label>Entrega {{delivery.id}}<br/>{{delivery.user.firstName}} {{delivery.user.lastName}}<br/>
+                <p *ngFor="let attr of delivery.details | keyvalue">
+                    <b>{{attr.key}}</b>: <b>{{attr.value}}</b>
+                </p>
+                <ion-button class="button" (click)="stopFailed(delivery.user.id)" expand="block">No entrego</ion-button>
+            </ion-label>
+        </ion-item>
+    </ion-card>
+</ion-content>

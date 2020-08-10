@@ -1,0 +1,37 @@
+#map_canvas {
+    height: 100%;
+}
+button.save-address {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    z-index: 1000;
+    width: 69px;
+    min-width: 58px;
+}
+
+.map {
+    &__wrapper {
+        padding: 0 15px;
+    }
+
+    &__button {
+        position: absolute;
+        &--left {
+            left: 0;
+        }
+        &--right {
+            right: 0;
+            width: 25px;
+        }
+        button {
+            height: auto;
+            width: 100%;
+            margin: 0;
+            ion-icon {
+                min-width: auto !important;
+                height: 30px;
+            }
+        }
+    }
+}

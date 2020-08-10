@@ -1,0 +1,98 @@
+<ion-header class="section__header">
+
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="tabs/home/checkout/prepare"></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'CHECKOUT_BANKS.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <ion-card-content>
+    <ion-item >
+        <p>{{ 'CHECKOUT_BANKS.DESCRIPTION' | translate }}</p>
+    </ion-item>
+    <ion-item >
+        <img src="http://www.payulatam.com/logos/logo.php?l=133&c=5c6e19348baf9" alt="PayU Latam" border="0" />
+    </ion-item>
+
+    <ion-item >
+        <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
+        <ion-checkbox [(ngModel)]="v" (click)="useUser()"></ion-checkbox>
+    </ion-item>
+            <form  (submit)="payBank()" [formGroup]="payerForm" >
+                <ion-list>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'CHECKOUT_BANKS.SELECT_BANK' | translate }}</ion-label>
+                        <ion-select formControlName="financial_institution_code">
+                            <ion-select-option *ngFor="let item of currentItems" [value]='item.value'>{{item.name}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item *ngIf="!payerForm.controls.financial_institution_code.valid  && (payerForm.controls.financial_institution_code.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'CHECKOUT_BANKS.BANK_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'CHECKOUT_BANKS.PAYER_TYPE' | translate }}</ion-label>
+                        <ion-select formControlName="user_type">
+                            <ion-select-option value="N">Persona natural</ion-select-option>
+                            <ion-select-option value="J">Persona Jurídica</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item *ngIf="!payerForm.controls.user_type.valid  && (payerForm.controls.user_type.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'CHECKOUT_BANKS.USER_TYPE_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'USER.DOC_TYPE' | translate }}</ion-label>
+                        <ion-select formControlName="doc_type">
+                            <ion-select-option value="CC">Cédula de ciudadanía</ion-select-option>
+                            <ion-select-option value="CE">Cédula de extranjería.</ion-select-option>
+                            <ion-select-option value="NIT">Número de Identificación Tributario</ion-select-option>
+                            <ion-select-option value="TI">Tarjeta de Identidad</ion-select-option>
+                            <ion-select-option value="PP">Pasaporte</ion-select-option>
+                            <ion-select-option value="IDC">Identificador único de cliente</ion-select-option>
+                            <ion-select-option value="CEL">línea del móvil</ion-select-option>
+                            <ion-select-option value="RC">Registro civil de nacimiento.</ion-select-option>
+                            <ion-select-option value="DE">Documento de identificación extranjero</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item *ngIf="!payerForm.controls.doc_type.valid  && (payerForm.controls.doc_type.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'USER.DOC_TYPE_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'USER.ID' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="payer_id"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!payerForm.controls.payer_id.valid  && (payerForm.controls.payer_id.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'ADDRESS_FIELDS.PHONE' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="payer_phone"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!payerForm.controls.payer_phone.valid  && (payerForm.controls.payer_phone.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'ADDRESS_FIELDS.PHONE_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'ADDRESS_FIELDS.NAME' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="payer_name"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!payerForm.controls.payer_name.valid  && (payerForm.controls.payer_name.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'ADDRESS_FIELDS.NAME_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'USER.EMAIL' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="payer_email"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!payerForm.controls.payer_email.valid  && (payerForm.controls.payer_email.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
+                    </ion-item>
+
+                </ion-list>
+                <ion-button class="btn-secondary right m10" type="submit" >{{ 'INPUTS.SUBMIT' | translate }}</ion-button>
+            </form>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

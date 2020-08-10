@@ -1,0 +1,181 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'MEDICAL.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="container reports-cont tac">
+        <ion-card *ngIf="!showProfile">
+
+            <p>{{ 'MEDICAL.DESCRIPTION' | translate }}</p>
+            <ion-item >
+                <ion-label>{{ 'INPUTS.PASSWORD' | translate }}</ion-label>
+                <ion-input [(ngModel)]="data.password" type="password"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-button expand="full" (click)="verify()">{{ 'INPUTS.CHECK' | translate}}</ion-button>
+            </ion-item>
+        </ion-card>
+        <ion-card *ngIf="showProfile&& !showForm">
+            <h2>{{ 'MEDICAL.DESCRIPTION2' | translate }}</h2>
+
+            <p>
+                <strong>{{ 'MEDICAL.GENDER' | translate }}:</strong> {{data.gender}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.DOB' | translate }}:</strong> {{data.birth}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.AGE' | translate }}:</strong> {{data.age}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.WEIGHT' | translate }}:</strong> {{data.weight}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.BLOOD' | translate }}:</strong> {{data.blood_type}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.ANTIGEN' | translate }}:</strong> {{data.antigen}}
+            </p>
+
+            <p>
+                <strong>{{ 'MEDICAL.SURGERY' | translate }}:</strong> {{data.surgical_history}}
+            </p>
+            <p *ngIf="data.gender == 'f'">
+                <strong>{{ 'MEDICAL.MATERNITY' | translate }}:</strong> {{data.obstetric_history}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.MEDICATIONS' | translate }}:</strong> {{data.medications}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.ALERGIES' | translate }}:</strong> {{data.alergies}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.IMMUNO' | translate }}:</strong> {{data.immunization_history}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.MEDICAL_ENCOUNTERS' | translate }}:</strong> {{data.medical_encounters}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.PRESCRIPTIONS' | translate }}:</strong> {{data.prescriptions}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.OTHER' | translate }}:</strong> {{data.other}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.EMERGENCY_CONTACT' | translate }}:</strong> {{data.emergency_name}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.RELATION' | translate }}:</strong> {{data.relationship}}
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.PHONE' | translate }}:</strong> <a href="tel:{{data.number}}">{{data.number}}</a>
+            </p>
+            <p>
+                <strong>{{ 'MEDICAL.INSURANCE' | translate }}:</strong> {{data.eps}}
+            </p>
+            <ion-item>
+                <ion-button expand="full" (click)="toggleForm()">{{ 'INPUTS.UPDATE' | translate}}</ion-button>
+            </ion-item>
+        </ion-card>    
+    </div>
+
+    <div class="form" *ngIf="showForm">
+
+        <div class="card medical-profile__form">
+            <div class="item item-text-wrap">
+                <h2 class="card__header-2">{{ 'MEDICAL.DESCRIPTION2' | translate }}</h2>
+                <div class="list list-inset">
+                    <ion-list>
+                        <ion-item >
+                            <ion-label>{{ 'MEDICAL.GENDER' | translate }}</ion-label>
+                            <ion-select [(ngModel)]="data.gender" >
+                                <ion-select-option *ngFor="let x of genders" value="{{x.value}}">{{x.name}}</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                        <ion-item >
+                            <ion-label>{{ 'MEDICAL.DOB' | translate }}</ion-label>
+                            <input type="tel" [(ngModel)]="data.birthDay" pattern="/^[0-9]+$/" minlength="2" maxlength="2" name="birthDay"
+                                   (keyup)="keytab($event,2)" placeholder="dd" required>
+                            <input type="tel" [(ngModel)]="data.birthMonth" pattern="/^[0-9]+$/" minlength="2" maxlength="2" name="birthMonth"
+                                   (keyup)="keytab($event,2)" placeholder="mm" required>
+                            <input type="tel" [(ngModel)]="data.birthYear" pattern="/^[0-9]+$/" minlength="4" maxlength="4" 
+                                   placeholder="yy" name="birthYear" required>
+                        </ion-item>
+                    </ion-list>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.WEIGHT' | translate }}</ion-label>
+                        <ion-input type="text" [(ngModel)]="data.weight"></ion-input>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'MEDICAL.BLOOD' | translate }}</ion-label>
+                        <ion-select [(ngModel)]="data.blood_type">
+                            <ion-select-option *ngFor="let blood of bloods" value="{{blood.value}}">{{blood.name}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'MEDICAL.ANTIGEN' | translate }}</ion-label>
+                        <ion-select [(ngModel)]="data.antigen">
+                            <ion-select-option *ngFor="let antigen of antigens" value="{{antigen.value}}">{{antigen.name}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.SURGERY' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.surgical_history"></ion-textarea>
+                    </ion-item>
+                    <ion-item  *ngIf="data.gender == 'f'">
+                        <ion-label>{{ 'MEDICAL.MATERNITY' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.obstetric_history"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.MEDICATIONS' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.medications"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.ALERGIES' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.alergies"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.IMMUNO' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.immunization_history"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.MEDICAL_ENCOUNTERS' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.medical_encounters"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.PRESCRIPTIONS' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.prescriptions"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.OTHER' | translate }}</ion-label>
+                        <ion-textarea [(ngModel)]="data.other"></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.EMERGENCY_CONTACT' | translate }}</ion-label>
+                        <ion-input type="text" [(ngModel)]="data.emergency_name"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.RELATION' | translate }}</ion-label>
+                        <ion-input type="text" [(ngModel)]="data.relationship"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.PHONE' | translate }}</ion-label>
+                        <ion-input type="text" [(ngModel)]="data.number"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>{{ 'MEDICAL.INSURANCE' | translate }}</ion-label>
+                        <ion-input type="text" [(ngModel)]="data.eps"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-button expand="full" (click)="update()">{{ 'INPUTS.SAVE' | translate}}</ion-button>
+                    </ion-item>
+                </div>
+            </div>
+        </div>
+    </div>
+</ion-content>

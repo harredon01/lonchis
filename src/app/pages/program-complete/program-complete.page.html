@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+        <ion-title>{{ 'DELIVERY_PROGRAM.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-card *ngIf="delivery.status=='pending'">
+        <ion-item>
+            <h2>{{ 'PROGRAM_COMPLETE.PENDING_TITLE' | translate }}</h2>
+        </ion-item>
+
+        <ion-card-content>
+            <p>{{ 'PROGRAM_COMPLETE.PENDING_DESCRIPTION' | translate }}  {{delivery.delivery_text}}</p>
+            <br/>
+            <ion-button (click)="returnHome()">Volver</ion-button>
+        </ion-card-content>
+    </ion-card> 
+    <ion-card *ngIf="delivery.status=='enqueue'">
+        <ion-item>
+            <h2>{{ 'PROGRAM_COMPLETE.ENQUEUE_TITLE' | translate }}</h2>
+        </ion-item>
+
+        <ion-card-content>
+            <p>{{ 'PROGRAM_COMPLETE.ENQUEUE_DESCRIPTION' | translate }} {{delivery.delivery_text}}</p>
+            <p>{{ 'PROGRAM_COMPLETE.ENQUEUE_REMINDER' | translate }}</p>
+            <p>{{ 'PROGRAM_COMPLETE.PROGRAM_ANOTHER' | translate }}</p>
+            <br/>
+            <ion-button (click)="returnHome()">Terminar</ion-button>
+            <ion-button (click)="programAnother()" *ngIf="delivery.pending_count>1">Recibir Otro</ion-button>
+        </ion-card-content>
+    </ion-card>  
+</ion-content>

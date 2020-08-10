@@ -1,0 +1,101 @@
+$white: var(--ion-color-primary-contrast);
+$google-blue: var(--ion-color-primary);
+$button-active-blue: var(--ion-color-primary-tint);
+
+.login {
+    &__wrapper {
+        height: 100%;
+        padding: 20px;
+
+        form {
+            height: 100%;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 25px;
+        font-weight: 700;
+    }
+    
+    &__messages {
+        padding: 40px 0 20px;
+        font-size: 18px;
+    }
+    &__image {
+        text-align: center;
+        img {
+            width:50%;
+        }
+    }
+
+    &__text,
+    &__forgot-account {
+        text-align: center;
+        margin: 0;
+    }
+
+    &__create-account {
+        margin: 20px;
+        text-align: center;
+    }
+
+    &__create-text {
+        text-transform: capitalize;
+        color: var(--ion-color-primary );
+    }
+
+    &__text,
+    &__create {
+        font-weight: 700;
+    }
+
+    &__buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &__button {
+        text-transform: capitalize;
+        font-weight: 700;
+    }
+
+    &__enter {
+        padding: 0;
+        margin-top: 20px;
+        text-transform: capitalize;
+        font-weight: 700;
+    }
+
+    &__third {
+        height: 42px;
+        background-color: $google-blue;
+        border-radius: 2px;
+        box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);
+        margin-bottom: 10px;
+        width: 100%;
+
+        &--google {
+            background-color: var(--ion-color-danger);
+        }
+      
+        &:first-child {
+          margin: 20px 0;
+        }
+
+        .btn-text {
+            margin: 11px 11px 0 0;
+            color: $white;
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            text-align: center;
+          }
+          &:hover {
+            box-shadow: 0 0 6px $google-blue;
+          }
+          &:active {
+            background: $button-active-blue;
+          }
+    }
+}

@@ -1,0 +1,31 @@
+.my-settings {
+    ion-item {
+        cursor:pointer;
+        background-color: transparent; 
+        padding: 0 16px;
+        ion-label {
+            cursor:pointer;
+            
+            h2 {
+                font-weight: 900;
+                float:left;
+                font-size: 1.5rem;
+            }
+            img {
+                margin-right: 10px;
+                margin-top: 3px;
+                float:left;
+                vertical-align: middle;
+                width: 20px;
+                height: 20px;
+                object-fit: cover;
+            }
+        }
+    }
+    .item-native {
+        background: transparent !important;
+    }
+    .item-inner {
+        border-bottom: 0 !important;
+    }
+}

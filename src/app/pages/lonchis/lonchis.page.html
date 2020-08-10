@@ -1,0 +1,83 @@
+<ion-content class="outer-content home-page">
+    <div class="home-page__wrapper">
+        <a (click)="goLogin()" class="right mt15" href="javascript:;" style="font-size: 18px;" *ngIf="!userData._user">{{ 'HOME.LOGIN' | translate }}</a>
+        <div class="notification-button" *ngIf="userData._user">
+            <div id="counter-items">{{notifs}}</div>
+            <ion-button (click)="menuOpen()" color="light"><ion-icon name="notifications-outline"></ion-icon></ion-button>
+        </div>
+        <div class="home-page__image left">
+            <img src="/assets/logo-home.svg" alt="">
+
+        </div>
+
+        <p class="greeting left" *ngIf="userData._user">{{ 'HOME.GREETING' | translate }},<br/> <strong>{{userData._user.firstName}}</strong></p>
+        <div style="clear:both"></div>
+        <div style="width:100%;text-align: center"><ion-button class="btn-primary" style="margin:15px auto;height: 39px;min-width: 88px" (click)="openCalc()">{{ 'HOME.CALCULADORA' | translate }}</ion-button></div>
+        <div style="width:100%;text-align: right" *ngIf="!userData._user"><ion-button class="btn-secondary" style="margin:15px auto;height: 39px;min-width: 88px" (click)="openConversion()">{{ 'HOME.NUEVOS' | translate }}</ion-button></div>
+        <div style="width:100%;text-align: right" *ngIf="userData._user && totalDeliveries < 4"><ion-button class="btn-secondary" style="margin:15px auto;height: 39px;min-width: 88px" (click)="openConversion()">{{ 'HOME.EXISTEN' | translate }}</ion-button></div>
+
+        <div style="clear:both"></div>
+        <ion-list class="home-page__items">
+            <ion-list-header class="delivery__title" style="padding:0">
+                {{ 'HOME.DELIVERIES_TITLE' | translate }}: <b>{{totalDeliveries}}</b>
+            </ion-list-header>
+            <ion-item-sliding class="lunch__item" *ngFor="let item of itemList" >
+                              <ion-item>
+                    <ion-label class="ion-text-wrap">
+                        <div class="right" *ngIf="item.deliveries.length<2">
+                            <br/>
+                            <span class="lunch__status" *ngIf="item.status=='enqueue' || item.status=='preparing'" (click)="selectDelivery(item.delivery)">{{ 'HOME.STATUS_ENQUEUE' | translate }}</span>                    
+                            <ion-button class="btn-primary" *ngIf="item.status=='pending' || item.status=='deposit'" (click)="selectDelivery(item.delivery)">{{ 'HOME.STATUS_PENDING' | translate }}</ion-button>
+                            <ion-button class="btn-secondary" *ngIf="item.status=='transit'" (click)="selectDelivery(item.delivery)">{{ 'HOME.STATUS_TRANSIT' | translate }}</ion-button>
+                            <ion-button class="btn-secondary" *ngIf="item.status=='completed'" (click)="selectDelivery(item.delivery)">{{ 'HOME.STATUS_COMPLETED' | translate }}</ion-button>
+                            <ion-button class="btn-primary" *ngIf="!item.status&&item.isPast" (click)="openMenuOption(item)">{{ 'HOME.VIEW_MEAL' | translate }}</ion-button>
+                            <ion-button class="btn-primary" *ngIf="!item.status&&!item.isPast" (click)="openMenuOption(item)">{{ 'HOME.STATUS_PENDING' | translate }}</ion-button>
+                        </div>
+                        <div class="right" *ngIf="item.deliveries.length>1">
+                            <br/>
+                            <div *ngFor="let del of item.deliveries">
+                                <p *ngIf="del.details.add">{{del.details.add.tipo_p}}</p>
+                                <span class="lunch__status" *ngIf="del.status=='enqueue' || item.status=='preparing'" (click)="selectDelivery(del)">{{ 'HOME.STATUS_ENQUEUE' | translate }}</span>
+                                <ion-button class="btn-primary" *ngIf="del.status=='pending' || item.status=='deposit'" (click)="selectDelivery(del)">{{ 'HOME.STATUS_PENDING' | translate }}</ion-button>
+                                <ion-button class="btn-secondary" *ngIf="del.status=='transit'" (click)="selectDelivery(del)">{{ 'HOME.STATUS_TRANSIT' | translate }}</ion-button>
+                                <ion-button class="btn-secondary" *ngIf="del.status=='completed'" (click)="selectDelivery(del)">{{ 'HOME.STATUS_COMPLETED' | translate }}</ion-button>
+                                <br/>
+                            </div>
+                        </div>
+                        <h2><b>{{item.fecha }}</b></h2>
+                        <p *ngFor="let meal of item.meals">
+                            <span *ngFor="let dishItem of meal.attributes.plato">{{dishItem.valor}}</span><br/>
+                        </p>
+                        <br/>
+                        <ion-button *ngIf="item.status=='enqueue'" (click)="programAnother(item.delivery)" class="btn-primary" >
+                            Recibir Otro
+                        </ion-button>
+
+
+                    </ion-label>
+                </ion-item>
+            </ion-item-sliding>
+        </ion-list>
+        <ion-list-header class="products__title" style="padding:0">
+            {{ 'HOME.PRODUCTS_TITLE' | translate }}
+        </ion-list-header>
+        <ion-list class="home-page__products">
+            <ion-item class="products__item" *ngIf="true" (click)="openNutricion()" style="margin-right:0">
+                <ion-avatar class="products__image" item-start>
+                    <img src="https://s3.us-east-2.amazonaws.com/gohife/public/product/plan-de-almuerzos.jpg" />
+                </ion-avatar>
+                <h2>{{ 'HOME.NUTRI_TITLE' | translate }}</h2>
+                <p></p>
+                <ion-note item-end ></ion-note>
+            </ion-item>
+            <ion-item class="products__item" *ngFor="let item of currentItems" (click)="openMerchant(item)">
+                      <ion-avatar class="products__image" item-start>
+                    <img [src]="item.icon" />
+                </ion-avatar>
+                <h2>{{item.name}}</h2>
+                <p>{{item.about}}</p>
+                <ion-note item-end *ngIf="item.note">{{item.note}}</ion-note>
+            </ion-item>
+        </ion-list>
+    </div>
+</ion-content>

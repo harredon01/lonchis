@@ -1,0 +1,188 @@
+.swiper-slide img {
+    object-fit: cover;
+}
+button.view {
+    position: relative;
+    &.btn-secondary {
+        background-color: transparent;
+        color: var(--ion-color-secondary-shade);
+        text-align: right;
+        float: right;
+        padding: 5px 15px;
+        height: auto;
+        width: auto;
+        min-width: auto;
+        border-radius: 2px;
+        border-bottom: 2px solid var(--ion-color-secondary-shade);
+        margin-top: 15px;
+    }
+}
+.product-header__information {
+    display: flex; 
+
+
+    span {
+        flex: 1;
+        font-weight: 800;
+    }
+
+    div {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+
+        button {
+            border: 1px solid var(--ion-color-light-shade);
+        }
+
+    }
+}
+.hide-text {
+    font-size: 16px;
+    line-height: 16px;
+    height: 80px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+.hide-text.merchant {
+    height: 130px;
+}
+.show {
+    overflow: visible;
+    height: auto !important;
+}
+.select-text {
+    min-width: 80px;
+}
+.datetime-text{
+    min-width: 160px;
+}
+
+
+
+
+.content-increment-product{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.product {
+    .card {
+        margin: 0;
+    }
+
+    .item-md,
+    .item-ios {
+        background-color: transparent;
+        position: relative;
+        padding: 0;
+    }
+
+    &__item {
+        width: 100%;
+        border-bottom: none;
+        position: relative;
+        margin:0;
+        button {
+            position: relative;
+            &.btn-secondary {
+                background-color: transparent;
+                color: var(--ion-color-secondary-shade);
+                text-align: right;
+                float: right;
+                padding: 5px 15px;
+                height: auto;
+                width: auto;
+                min-width: auto;
+                border-radius: 2px;
+                border-bottom: 2px solid var(--ion-color-secondary-shade);
+                margin-bottom: 15px;
+            }
+        }
+        /*&:nth-child(even) {
+            &:before {
+                background-image: url('../../assets/background.png');
+                width: 100%;
+                height: 100%;
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                opacity: .05;
+                background-size: cover;
+            }
+        }*/
+    }
+}
+
+.product-header {
+    margin-top: 0;
+    background-color: rgba(gray, .01);
+    &---main {
+        border-bottom: 1px solid rgba(gray, .05);
+        border-radius: 0;
+        margin: 0;
+        width: 100%;
+        .product-header__information {
+            background-color: var(--ion-color-primary-shade);
+            color: white;
+            margin-bottom: 0px;
+        }
+    }
+    &__content {
+        h3 {
+            font-weight: 800;
+            padding-bottom: 10px;
+        }
+
+        ion-label {
+            font-weight: 800;
+            color: var(--ion-color-dark) !important;
+            span {
+                font-weight: normal;
+                color: black;
+            }
+        }
+        button {
+            position: relative;
+            &.btn-secondary {
+                background-color: transparent;
+                color: var(--ion-color-secondary-shade);
+                text-align: right;
+                float: right;
+                padding: 5px 15px;
+                height: auto;
+                width: auto;
+                min-width: auto;
+                border-radius: 2px;
+                border-bottom: 2px solid var(--ion-color-secondary-shade);
+                margin-bottom: 15px;
+            }
+        }
+
+        ul {
+            padding: 0 0 0 15px;
+        }
+
+        ion-item {
+            padding: 0;
+        }
+    }
+    img {
+        object-fit: cover;
+        height:150px;
+    }
+}
+button.picker-opt{
+    min-width: 30px;
+}
+.exprice{
+    text-decoration: line-through;
+    color: var(--ion-color-danger);
+    font-size: 18px;
+}
+.price{
+    color: var(--ion-color-primary);
+    font-size: 24px;
+}

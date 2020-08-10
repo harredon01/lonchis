@@ -1,0 +1,41 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>contact-detail</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+        <ion-item>
+            <ion-avatar item-start>
+                <img [src]="">
+            </ion-avatar>
+            <h2>{{mainContact.firstName}} {{mainContact.lastName}}</h2>
+        </ion-item>
+        <ion-item>
+            <p>{{mainContact.email}}</p>
+        </ion-item>
+        <ion-item>
+            <p>{{mainContact.cellphone}}</p>
+        </ion-item>
+        <ion-item>
+            <ion-button clear class="btn success" (click)="chat()">Chat</ion-button>
+        </ion-item>
+
+
+        <ion-row class="about-row">
+            <ion-col size="5" center text-right>
+                Feedback
+                <ion-icon name="md-star" class="active"></ion-icon>
+                <ion-icon name="md-star" class="active"></ion-icon>
+                <ion-icon name="md-star" class="active"></ion-icon>
+                <ion-icon name="md-star" class="active"></ion-icon>
+                <ion-icon name="md-star"></ion-icon>
+                <span>&nbsp;&nbsp;({{mainContact.rating }})</span>
+            </ion-col>
+        </ion-row>
+    </ion-card>
+</ion-content>

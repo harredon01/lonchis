@@ -1,0 +1,51 @@
+<!--
+  Generated template for the ConversionPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-title>{{ 'CONVERSION.TITLE' | translate }}</ion-title>
+        <ion-buttons class="my-addresses__button my-addresses__button--right" slot="primary">
+            <ion-button (click)="done()" strong>
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div class="wrapper">
+        <p *ngIf="!userData._user">{{ 'CONVERSION.DESC' | translate }}</p>
+        <p *ngIf="userData._user">{{ 'CONVERSION.DESC2' | translate }}</p>
+        <p>{{ 'CONVERSION.CONTACT' | translate }} <a href="tel:+573103418432">+573103418432</a></p>
+        <p><b>{{ 'CONVERSION.PROMO' | translate }}</b></p>
+        <ion-list>
+            <ion-radio-group [(ngModel)]="variant" (ionChange)="selectVariant()">
+                <ion-item>
+                    <ion-label>{{ 'CONVERSION.DESECHABLE' | translate }}</ion-label>
+                    <ion-radio value="220"></ion-radio>
+                </ion-item>
+                <ion-item>
+                    <ion-label>{{ 'CONVERSION.RETORNABLE' | translate }}</ion-label>
+                    <ion-radio value="210"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
+        </ion-list>
+        <ion-item>
+            <ion-label>{{ 'CONVERSION.AMOUNT' | translate }}</ion-label>
+            <ion-select [(ngModel)]="amount" (ionChange)="selectAmount()">
+                <ion-select-option *ngFor="let item of options" [value]="item">{{item}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-label>{{ 'CONVERSION.TOTAL' | translate }}:{{subtotal|currency}}</ion-label>
+            <p>{{subtotal|currency}}</p>
+        </ion-item>
+        <ion-item>
+            <ion-label>{{ 'CONVERSION.UNIT_PRICE' | translate }}:{{unitPrice|currency}}</ion-label>
+            <p>{{ unitPrice | currency }} </p>
+        </ion-item>
+        <ion-button (click)="addCartItem()" class="right m10"> {{ 'CONVERSION.PAY' | translate }} </ion-button>
+    </div>
+</ion-content>

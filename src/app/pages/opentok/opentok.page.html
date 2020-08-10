@@ -1,0 +1,79 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
+        <ion-title>{{ 'CALL.TITLE' | translate }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div *ngIf="activeCall&&!ended" class="call">
+        <div id="publisher"></div>
+        <div id="subscriber"></div>
+        <ion-card *ngIf="!streamCreated">
+            <ion-item>
+                <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+                <ion-label>{{ recipient.name }}</ion-label>
+            </ion-item>
+        </ion-card>
+        <ion-button (click)="endCall()">{{ 'CALL.END' | translate }}</ion-button>
+        <ion-button (click)="viewNotes()">{{ 'CALL.BOOKING' | translate }}</ion-button>
+    </div>
+    <div *ngIf="!activeCall||ended">
+        <div id="content" >
+            <div style="text-align:center" *ngIf="!ended" class="waiting">
+                <ion-button (click)="startCall()">{{ 'CALL.START' | translate }}</ion-button>
+            </div>
+
+
+            <ion-card>
+                <ion-card-content>
+                    <ion-grid>
+                        <ion-row class="appot-detail" *ngIf="ended">
+                            <ion-col class="detail" size="10">
+                                <span>{{ 'CALL.ENDED' | translate }} </span>
+                            </ion-col>
+                        </ion-row>
+
+                        <ion-row class="appot-detail" *ngFor="let item of mainBooking.options | keyvalue">
+                                 <ion-col class="detail" size="10">
+                                     <span style="text-transform: capitalize">{{item.key}}: </span>
+                                <span style="text-transform: capitalize">{{item.value}}</span>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-card-content>
+            </ion-card>
+            <ion-card>
+                <ion-card-content>
+                    <ion-row class="appot-detail">
+                        <ion-col class="icon" size="2">
+                            <ion-icon name="md-clipboard" class="text-danger"></ion-icon>
+                        </ion-col>
+                        <ion-col class="detail" *ngIf="mainBooking.customer" size="10">
+                            <span>{{ 'BOOKING_DETAIL.BOOKED_BY' | translate }}</span>
+                            <span>{{mainBooking.customer.firstName}} {{mainBooking.customer.lastName}}</span>
+                        </ion-col>
+                    </ion-row>
+                    <ion-row class="appot-detail">
+                        <ion-col class="icon" size="2">
+                            <ion-icon name="md-clipboard" class="text-danger"></ion-icon>
+                        </ion-col>
+                        <ion-col class="detail" *ngIf="mainBooking.bookable" size="10">
+                            <span>{{ 'BOOKING_DETAIL.BOOKED_FOR' | translate }}</span>
+                            <span>{{mainBooking.bookable.name}}</span>
+                        </ion-col>
+                    </ion-row>
+                </ion-card-content>
+            </ion-card>
+            <div style="text-align:center" *ngIf="ended">
+                <ion-button (click)="done()">{{ 'CALL.DONE' | translate }}</ion-button>
+                <ion-button (click)="rate()">{{ 'CALL.RATE' | translate }}</ion-button>
+            </div>
+        </div> 
+
+    </div>
+
+
+</ion-content>
