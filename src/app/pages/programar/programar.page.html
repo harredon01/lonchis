@@ -70,7 +70,6 @@
                 <p><b>{{ 'DELIVERY_PROGRAM.ADDRESS' | translate }}: {{deliveryParams.address.address}}</b></p>
             </div>
             <ion-button class=" help btn-secondary submt" (click)="openChangeAddress()" style="margin-left:10px">{{ 'DELIVERY_PROGRAM.CHANGE_ADDRESS' | translate }}</ion-button>
-            <ion-button class=" help btn-secondary submt" (click)="openTutorials()" >{{ 'DELIVERY_PROGRAM.HELP' | translate }}</ion-button>
             <div style="clear:both"></div>
             <br/>
             <form  (submit)="updateDelivery()" [formGroup]="deliveryForm" >

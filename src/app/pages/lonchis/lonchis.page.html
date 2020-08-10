@@ -15,11 +15,14 @@
         <div style="width:100%;text-align: center"><ion-button class="btn-primary" style="margin:15px auto;height: 39px;min-width: 88px" (click)="openCalc()">{{ 'HOME.CALCULADORA' | translate }}</ion-button></div>
         <div style="width:100%;text-align: right" *ngIf="!userData._user"><ion-button class="btn-secondary" style="margin:15px auto;height: 39px;min-width: 88px" (click)="openConversion()">{{ 'HOME.NUEVOS' | translate }}</ion-button></div>
         <div style="width:100%;text-align: right" *ngIf="userData._user && totalDeliveries < 4"><ion-button class="btn-secondary" style="margin:15px auto;height: 39px;min-width: 88px" (click)="openConversion()">{{ 'HOME.EXISTEN' | translate }}</ion-button></div>
-
+        <div style="width:100%;text-align: left"><a href="javascript:;" (click)="openNutricion()">{{ 'HOME.DOCS1' | translate }}<br/>{{ 'HOME.DOCS2' | translate }}</a></div>
         <div style="clear:both"></div>
         <ion-list class="home-page__items">
-            <ion-list-header class="delivery__title" style="padding:0">
+            <ion-list-header class="delivery__title" style="padding:0" *ngIf="userData._user">
                 {{ 'HOME.DELIVERIES_TITLE' | translate }}: <b>{{totalDeliveries}}</b>
+            </ion-list-header>
+            <ion-list-header class="delivery__title" style="padding:0" *ngIf="!userData._user">
+                {{ 'HOME.DESCRIPTION' | translate }}
             </ion-list-header>
             <ion-item-sliding class="lunch__item" *ngFor="let item of itemList" >
                               <ion-item>

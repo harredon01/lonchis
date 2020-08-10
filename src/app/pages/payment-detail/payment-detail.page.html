@@ -16,6 +16,7 @@
             <span *ngIf="item.status == 'approved'">{{ 'PAYMENT.APPROVED2' | translate }}</span> 
         </ion-card-header>        
         <ion-card-content> 
+            <p *ngIf="item.status == 'payment_in_bank'">{{ 'PAYMENT.IN_BANK' | translate }}</p><br *ngIf="item.status == 'payment_in_bank'" />   
             <p><span>{{ 'PAYMENT.SUBTOTAL' | translate }}:</span> {{item.subtotal | currency }}</p>    
             <p><span>{{ 'PAYMENT.TRANSACTION_COST' | translate }}:</span> {{item.transaction_cost | currency }}</p>    
             <p><span>{{ 'PAYMENT.TOTAL' | translate }}:</span> {{item.total | currency }}</p>        
