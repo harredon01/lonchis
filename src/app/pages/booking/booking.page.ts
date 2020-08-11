@@ -18,13 +18,13 @@ import {BookingService} from '../../services/booking/booking.service';
 })
 export class BookingPage implements OnInit {
     availableDays: any[] = [];
-    availableDates: Date[] = [];
+    availableDates: any[] = [];
     selectedSpots: any[] = [];
     availabilities: any[] = [];
     months: any[] = [];
     newVisit: boolean = true;
     dateSelected: boolean = false;
-    virtualMeeting: string = 'physical'; 
+    virtualMeeting: string = 'physical';
     timeSelected: boolean = false;
     availabilitiesDate: any[] = [];
     weekday: any[] = [];
@@ -180,7 +180,7 @@ export class BookingPage implements OnInit {
             this.getAvailableDates(this.availabilities);
             this.getDates();
             console.log("in get items", this.bookingObj);
-            if(this.bookingObj){
+            if (this.bookingObj) {
                 this.selectDate(this.bookingObj.starts_at);
             }
             console.log("Get availableDays", this.availableDays);
@@ -255,10 +255,10 @@ export class BookingPage implements OnInit {
             this.api.handleError(err);
         });
     }
-    selectRadio(event){
+    selectRadio(event) {
         this.virtualMeeting = event.detail.value;
-        console.log("Virtual meeting radio ",event);
-        console.log("Virtual meeting radio ",this.virtualMeeting);
+        console.log("Virtual meeting radio ", event);
+        console.log("Virtual meeting radio ", this.virtualMeeting);
     }
     createBooking() {
         if (this.submitted) {
@@ -266,21 +266,21 @@ export class BookingPage implements OnInit {
         }
         this.submitted = true;
         this.showLoader();
-//        console.log("toLocaleString", this.startDate.toLocaleString());
-//        console.log("toString ", this.startDate.toString());
-//        console.log("toTimeString ", this.startDate.toTimeString());
-//        console.log("toLocaleDateString ", this.startDate.toLocaleDateString());
-//        console.log("toLocaleTimeString ", this.startDate.toLocaleTimeString());
-//        console.log("offset", this.startDate.getTimezoneOffset() * 60000);
+        //        console.log("toLocaleString", this.startDate.toLocaleString());
+        //        console.log("toString ", this.startDate.toString());
+        //        console.log("toTimeString ", this.startDate.toTimeString());
+        //        console.log("toLocaleDateString ", this.startDate.toLocaleDateString());
+        //        console.log("toLocaleTimeString ", this.startDate.toLocaleTimeString());
+        //        console.log("offset", this.startDate.getTimezoneOffset() * 60000);
         let startDate = new Date(this.startDate.getTime() - this.startDate.getTimezoneOffset() * 60000);
-//        console.log("start date",startDate);
+        //        console.log("start date",startDate);
         let strDate = startDate.toISOString();
-//        console.log("start date2",startDate.toISOString());
+        //        console.log("start date2",startDate.toISOString());
         let endDate = new Date(startDate.getTime() + parseInt(this.amount) * 3000 * 1000 /*4 hrs in ms*/);
         let ndDate = endDate.toISOString();
         let virtual = false;
-        console.log("Virtual meeting",this.virtualMeeting);
-        if (this.virtualMeeting=='virtual') {
+        console.log("Virtual meeting", this.virtualMeeting);
+        if (this.virtualMeeting == 'virtual') {
             virtual = true;
             this.atributesCont.virtual_provider = "zoom";
             this.atributesCont.virtual_meeting = true;
@@ -435,16 +435,18 @@ export class BookingPage implements OnInit {
         let monthcont = {month: month, days: [], title: this.booking.getMonthName(month)};
         for (let i = 0; i < 61; i++) {
             let day = myDate.getDay();
+            let container = {date: new Date(myDate.getTime()), status: "closed"};
             if (this.checkAvailableDays(this.weekday[day])) {
-                let container = new Date(myDate.getTime());
-                if (myDate.getMonth() != monthcont.month) {
-                    this.months.push(monthcont);
-                    let month = myDate.getMonth();
-                    monthcont = {month: month, days: [], title: this.booking.getMonthName(month)};
-                }
-                monthcont.days.push(container);
-                this.availableDates.push(container);
+                container.status = "active"
             }
+
+            if (myDate.getMonth() != monthcont.month) {
+                this.months.push(monthcont);
+                let month = myDate.getMonth();
+                monthcont = {month: month, days: [], title: this.booking.getMonthName(month)};
+            }
+            monthcont.days.push(container);
+            this.availableDates.push(container);
             myDate.setDate(myDate.getDate() + 1);
         }
         console.log("Get dates months", this.months);
@@ -458,37 +460,47 @@ export class BookingPage implements OnInit {
         this.timeSelected = true;
     }
 
-    selectDate(selectedDate: Date) {
-        console.log("select date", selectedDate);
-        this.showLoader();
-        this.dayName = this.weekday2[selectedDate.getDay()];
-        this.startDate = selectedDate;
-        this.startDateS = selectedDate.toISOString();
-        this.selectStart();
-        this.dateSelected = true;
-        let strDate = selectedDate.getFullYear() + "-" + (selectedDate.getMonth() + 1) + "-" + selectedDate.getDate();
-        let params = {
-            "from": strDate,
-            "query": "day",
-            "type": this.typeObj,
-            "object_id": this.objectId,
-        };
-        this.booking.getBookingsObject(params).subscribe((data: any) => {
-            console.log("getBookingsObject", data);
-            this.selectedSpots = data.data;
-            this.dismissLoader();
-        }, (err) => {
-            console.log("Error getBookingsObject");
-            this.api.handleError(err);
-        });
-        let day = selectedDate.getDay();
-        this.availabilitiesDate = [];
-        for (let item in this.availabilities) {
-            if (this.availabilities[item].range == this.weekday[day]) {
-                this.availabilitiesDate.push((this.availabilities[item]));
+    selectDate(item: any) {
+        if (item.status == 'active') {
+            let selectedDate = item.date;
+            console.log("select date", selectedDate);
+            this.showLoader();
+            this.dayName = this.weekday2[selectedDate.getDay()];
+            this.startDate = selectedDate;
+            this.startDateS = selectedDate.toISOString();
+            this.selectStart();
+            this.dateSelected = true;
+            let strDate = selectedDate.getFullYear() + "-" + (selectedDate.getMonth() + 1) + "-" + selectedDate.getDate();
+            let params = {
+                "from": strDate,
+                "query": "day",
+                "type": this.typeObj,
+                "object_id": this.objectId,
+            };
+            this.booking.getBookingsObject(params).subscribe((data: any) => {
+                console.log("getBookingsObject", data);
+                this.selectedSpots = data.data;
+                this.dismissLoader();
+            }, (err) => {
+                console.log("Error getBookingsObject");
+                this.api.handleError(err);
+            });
+            let day = selectedDate.getDay();
+            this.availabilitiesDate = [];
+            for (let item in this.availabilities) {
+                if (this.availabilities[item].range == this.weekday[day]) {
+                    this.availabilitiesDate.push((this.availabilities[item]));
+                }
             }
+            console.log("Availabilities", this.availabilitiesDate);
+        } else {
+            let toast = this.toastCtrl.create({
+                message: this.notAvailable,
+                duration: 3000,
+                position: 'top'
+            }).then(toast => toast.present());
         }
-        console.log("Availabilities", this.availabilitiesDate);
+
     }
     showLoader() {
         if (document.URL.startsWith('http')) {
