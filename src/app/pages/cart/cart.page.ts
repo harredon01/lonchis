@@ -272,7 +272,8 @@ export class CartPage implements OnInit {
             let hasShippable = false;
             for (let item in this.currentItems){
                 let container = this.currentItems[item];
-                if(container.attributes.is_shippable==1){
+                console.log("Attributes",container.attributes);
+                if(container.attributes.is_shippable==1 || container.attributes.shipping > 0){
                     hasShippable = true;
                 }
             }

@@ -529,6 +529,7 @@ export class MerchantProductsPage implements OnInit {
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
         this.params.setParams({"merchant_id": this.merchant});
+        console.log("After cart",data);
         if (data == "Shipping" || data == 'Prepare') {
             if (this.userData._user) {
                 if (data == "Shipping") {

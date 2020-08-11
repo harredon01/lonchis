@@ -121,7 +121,6 @@
     </plugin>
     <plugin name="cordova-plugin-contacts" spec="^3.0.1" />
     <plugin name="cordova-plugin-opentok" spec="^3.4.3" />
-    <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
     <plugin name="cordova-plugin-ionic" spec="^5.4.7">
         <variable name="APP_ID" value="9486ed43" />
         <variable name="CHANNEL_NAME" value="Master" />
