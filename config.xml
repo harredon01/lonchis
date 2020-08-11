@@ -5,8 +5,10 @@
     <author email="harredon01@gmail.com" href="https://lonchis.com.co/">Hoovert Arredondo</author>
     <content src="index.html" />
     <access origin="*" />
-    <allow-intent href="http://*/*" />
-    <allow-intent href="https://*/*" />
+    <allow-intent href="http://*.payulatam.com/*" />
+    <allow-intent href="https://*.pse.com.co/*" />
+    <allow-intent href="https://*.payulatam.com/*" />
+    <allow-intent href="http://*.pse.com.co/*" />
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />

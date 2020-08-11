@@ -159,8 +159,7 @@ export class LoginPage implements OnInit {
             })
                 .then((succ: AppleSignInResponse) => {
                     // https://developer.apple.com/documentation/signinwithapplerestapi/verifying_a_user
-                    alert('Send token to apple for verification: ' + succ.identityToken);
-                    console.log(succ)
+                    console.log(JSON.stringify(succ))
                     let userData = {
                         firstName: succ.fullName.givenName,
                         lastName: succ.fullName.familyName,

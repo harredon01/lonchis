@@ -13,7 +13,8 @@ import {Events} from './services/events/events.service';
 import {UserDataService} from './services/user-data/user-data.service';
 import {DynamicRouterService} from './services/dynamic-router/dynamic-router.service';
 import {UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
-import {Friend} from './models/friend'
+import {Friend} from './models/friend';
+declare var Mercadopago: any;
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html'
@@ -100,6 +101,7 @@ export class AppComponent {
     }
     initializeApp() {
         this.platform.ready().then(() => {
+            Mercadopago.setPublishableKey('TEST-558ee69b-8de3-4d2f-9466-2fedcb788d6d');
             this.userData.initSecureStorage();
             this.statusBar.styleDefault();
             this.splashScreen.hide();

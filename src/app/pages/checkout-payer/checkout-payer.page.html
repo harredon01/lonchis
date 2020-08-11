@@ -13,7 +13,7 @@
         <ion-item *ngIf="!showAddressCard">
             <p class="checkout-shipping__description">{{ 'CHECKOUT_PAYER.DESCRIPTION' | translate }}</p>
         </ion-item>
-        <ion-list *ngIf="!showAddressCard">
+        <ion-list *ngIf="!showAddressCard" class="pl10 pr10">
             <ion-item-sliding  class="checkout-shipping__item" *ngFor="let item of currentItems">
                 <ion-item (click)="savePayer(item)">
                     <ion-label class="ion-text-wrap">
