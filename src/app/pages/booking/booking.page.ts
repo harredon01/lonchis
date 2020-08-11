@@ -100,6 +100,10 @@ export class BookingPage implements OnInit {
     ngOnInit() {
         this.loadData();
     }
+    onError() {
+        console.log("IMG ERROR");
+        this.objectIcon = "/assets/avatar/Bentley.png";
+    }
     loadData() {
         let paramsArrived = this.params.getParams();
         this.typeObj = paramsArrived.type;

@@ -44,7 +44,11 @@ export class BookingDetailPage implements OnInit {
 
     ngOnInit() {
 
-    }   
+    } 
+    onError(item) {
+        console.log("IMG ERROR");
+        this.mainBooking.bookable.icon = "/assets/avatar/Bentley.png";
+    }  
     
     ionViewDidEnter() {
         let params = this.params.getParams();

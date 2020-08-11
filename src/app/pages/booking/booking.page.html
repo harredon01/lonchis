@@ -12,7 +12,7 @@
     <ion-card>
         <ion-item>
             <ion-avatar item-start>
-                <img [src]="objectIcon">
+                <ion-img [src]="objectIcon" (ionError)="onError()"></ion-img>
             </ion-avatar>
             <h2>{{objectName}}</h2>
         </ion-item>

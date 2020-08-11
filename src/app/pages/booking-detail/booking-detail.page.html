@@ -58,7 +58,7 @@
             <ion-grid *ngIf="mainBooking.bookable">
                 <ion-row class="appot-detail" >
                     <ion-col class="icon" size="2">
-                        <img [src]="mainBooking.bookable.icon" class="avatar" />
+                        <ion-img [src]="mainBooking.bookable.icon" class="avatar" (ionError)="onError(mainBooking)"></ion-img>
                     </ion-col>
                     <ion-col class="detail" size="10">
                         <ion-row class="appot-detail" >

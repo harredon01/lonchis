@@ -62,6 +62,10 @@ export class MerchantListingPage implements OnInit {
             setTimeout(function () {vm.dismissLoader(); console.log("Retrying closing")}, 2000);
         }
     }
+    onError(item) {
+        console.log("IMG ERROR");
+        item.icon = "/assets/avatar/Bentley.png";
+    }
     async filter() {
         let container;
         container = {

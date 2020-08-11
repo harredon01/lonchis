@@ -45,7 +45,7 @@
         <ion-card class="card-component" *ngFor="let item of merchants" >
                   <ion-item>
                 <ion-avatar class="card-component__avatar" item-start>
-                    <img [src]="item.icon">
+                    <ion-img [src]="item.icon" (ionError)="onError(item)"></ion-img>
                 </ion-avatar>
                 <h2>{{item.name}}</h2>                 
             </ion-item>
