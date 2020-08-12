@@ -147,7 +147,6 @@
         "FACEBOOK_HYBRID_APP_EVENTS": "false",
         "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
       },
-      "com.googlemaps.ios": {},
       "cordova-plugin-googlemaps": {
         "API_KEY_FOR_ANDROID": "AIzaSyDDwPkLjnHj9rZ7M1hk9Z7HMi-ENu47sm4",
         "API_KEY_FOR_IOS": "AIzaSyBx9ykkz-m1-E-viMdFUh_Q9g0FaEP-K5I",
