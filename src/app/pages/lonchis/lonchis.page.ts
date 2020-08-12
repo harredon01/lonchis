@@ -206,7 +206,9 @@ export class LonchisPage implements OnInit {
             console.log("Before get count deliveries");
             this.getCountDeliveries();
             console.log("Before get count deliveries", this.drouter.pages);
-            this.navCtrl.navigateForward(this.drouter.pages);
+            if(this.drouter.pages){
+                this.navCtrl.navigateForward(this.drouter.pages);
+            }
             this.drouter.pages = null;
             this.events.publish("authenticated", {});
             this.getDeliveries(false);

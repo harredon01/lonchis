@@ -17,15 +17,15 @@ import {ConversionPage} from '../conversion/conversion.page';
 })
 export class CalculadoraPage implements OnInit {
     
-    @ViewChild("barCanvas1") barCanvas1: ElementRef;
-    @ViewChild("barCanvas2") barCanvas2: ElementRef;
-    @ViewChild("barCanvas3") barCanvas3: ElementRef;
-    @ViewChild("barCanvas4") barCanvas4: ElementRef;
-    @ViewChild("barCanvas5") barCanvas5: ElementRef;
-    @ViewChild("barCanvas6") barCanvas6: ElementRef;
-    @ViewChild("barCanvas4") barCanvas7: ElementRef;
-    @ViewChild("barCanvas5") barCanvas8: ElementRef;
-    @ViewChild("barCanvas6") barCanvas9: ElementRef;
+    @ViewChild("barCanvas1", {static: true}) barCanvas1: ElementRef;
+    @ViewChild("barCanvas2", {static: true}) barCanvas2: ElementRef;
+    @ViewChild("barCanvas3", {static: true}) barCanvas3: ElementRef;
+    @ViewChild("barCanvas4", {static: true}) barCanvas4: ElementRef;
+    @ViewChild("barCanvas5", {static: true}) barCanvas5: ElementRef;
+    @ViewChild("barCanvas6", {static: true}) barCanvas6: ElementRef;
+    @ViewChild("barCanvas4", {static: true}) barCanvas7: ElementRef;
+    @ViewChild("barCanvas5", {static: true}) barCanvas8: ElementRef;
+    @ViewChild("barCanvas6", {static: true}) barCanvas9: ElementRef;
 
     private barChart: Chart;
     show1: boolean = true;
@@ -69,6 +69,7 @@ export class CalculadoraPage implements OnInit {
     }
 
   ngOnInit() {
+  console.log("ngOnInit");
   }
   /**
      * The view loaded, let's query our items for the list
@@ -77,7 +78,9 @@ export class CalculadoraPage implements OnInit {
        * The view loaded, let's query our items for the list
        */
     ionViewDidEnter() {
+    console.log("entering");
         if (this.userData._user){
+        console.log("getItems");
             this.getItems();
         } else {
             this.showLoader();
@@ -308,7 +311,17 @@ export class CalculadoraPage implements OnInit {
                     datapoints.push(0);
                 }
             }
-            this.buildChart(title, labels, datapoints, this["barCanvas" + counter]);
+            console.log("barCanvas" + counter);
+            console.log(this.barCanvas1);
+            console.log(this.barCanvas2);
+            console.log(this.barCanvas3);
+            console.log(this.barCanvas4);
+            console.log(this.barCanvas5);
+            
+            if(this["barCanvas" + counter]){
+                this.buildChart(title, labels, datapoints, this["barCanvas" + counter]);
+            }
+            
         }
         let sets = this.totalLabels.length;
         for (let i = 9; i > sets; i--) {

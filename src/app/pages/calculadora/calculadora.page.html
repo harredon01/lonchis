@@ -15,13 +15,13 @@
             <a href="javascript:;" (click)="buyLunches()">{{ 'NUTRICION.PURCHASE' | translate }}</a>
         </ion-card-content>
     </ion-card>
-    <div class="deliveries__wrapper" *ngIf="currentItems.length>0">
+    <div class="deliveries__wrapper" >
         <ion-card>
             <ion-card-content style="padding:0" >
                 <br/>
-                <p>{{ 'NUTRICION.DESCRIPTION' | translate }}</p>
+                <p class="pl10 pr10">{{ 'NUTRICION.DESCRIPTION' | translate }}</p>
                 <br/>
-                <p><b>Total Pedidos {{currentItems.length}}</b></p>
+                <p class="pl10 pr10"><b>Total Pedidos {{currentItems.length}}</b></p>
                 <ion-grid>
                     <ion-row>
                         <ion-col>Ind.</ion-col>
@@ -31,9 +31,9 @@
                     </ion-row>
                     <ion-row *ngFor="let item of totalLabels; let i = index">
                         <ion-col>{{ totalLabels[i] }}</ion-col>
-                        <ion-col>{{totals[i].totals | number}}</ion-col>
-                        <ion-col>{{ideals[i].totals | number}}</ion-col>
-                        <ion-col>{{ideals[i].totals-totals[i].totals | number}}</ion-col>
+                        <ion-col *ngIf="totals[i]">{{totals[i].totals | number}}</ion-col>
+                        <ion-col *ngIf="ideals[i]">{{ideals[i].totals | number}}</ion-col>
+                        <ion-col *ngIf="totals[i]">{{ideals[i].totals-totals[i].totals | number}}</ion-col>
                     </ion-row>
                 </ion-grid>
             </ion-card-content>
@@ -43,42 +43,42 @@
                 <canvas style="height: 150px" #barCanvas1></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show2">
+        <ion-card>
             <ion-card-content  style="padding:0">
                 <canvas #barCanvas2></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show3">
+        <ion-card >
             <ion-card-content style="padding:0">
                 <canvas #barCanvas3></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show4">
+        <ion-card >
             <ion-card-content style="padding:0">
                 <canvas #barCanvas4></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show5">
+        <ion-card >
             <ion-card-content style="padding:0">
                 <canvas #barCanvas5></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show6">
+        <ion-card >
             <ion-card-content style="padding:0">
                 <canvas #barCanvas6></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show7">
+        <ion-card >
             <ion-card-content style="padding:0">
                 <canvas #barCanvas7></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show8">
+        <ion-card >
             <ion-card-content style="padding:0">
                 <canvas #barCanvas8></canvas>
             </ion-card-content>
         </ion-card>
-        <ion-card *ngIf="show9">
+        <ion-card >
             <ion-card-content style="padding:0">
                 <canvas #barCanvas9></canvas>
             </ion-card-content>

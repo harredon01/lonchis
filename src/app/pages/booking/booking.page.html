@@ -32,7 +32,7 @@
                         <ion-grid>
                             <ion-row>
                                 <ion-col *ngFor="let item of month.days" (click)="selectDate(item)" class="p0">
-                                    <div class="day active" [ngClass]="{'green': item.status=='active', 'red': item.status=='closed'}">
+                                    <div class="day active mb5" [ngClass]="{'green': item.status=='active', 'red': item.status=='closed'}">
                                         <span>{{item.date | date :'E'}}</span>{{item.date | date :'d'}}
                                     </div>
                                 </ion-col>

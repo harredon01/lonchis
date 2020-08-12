@@ -21,6 +21,7 @@ export class BookingPage implements OnInit {
     availableDates: any[] = [];
     selectedSpots: any[] = [];
     availabilities: any[] = [];
+    appointmentOptions: any[] = [];
     months: any[] = [];
     newVisit: boolean = true;
     dateSelected: boolean = false;
@@ -501,6 +502,16 @@ export class BookingPage implements OnInit {
             }).then(toast => toast.present());
         }
 
+    }
+    buildSlots() {
+        if (document.URL.startsWith('http')) {
+            this.loadingCtrl.create({
+                spinner: 'crescent',
+                backdropDismiss: true
+            }).then(toast => toast.present());
+        } else {
+            this.spinnerDialog.show();
+        }
     }
     showLoader() {
         if (document.URL.startsWith('http')) {

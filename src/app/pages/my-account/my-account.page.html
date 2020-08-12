@@ -92,10 +92,8 @@
             <ion-item *ngIf="!registrationForm.controls.docNum.valid  && (registrationForm.controls.docNum.dirty || submitAttempt)">
                 <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
             </ion-item>
-            <ion-item  class="form__item button-wrapper">
-                <ion-button class="btn-secondary button__full" full type="submit">{{ 'INPUTS.UPDATE' | translate }}</ion-button>
-            </ion-item>
         </ion-list>
+        <ion-button class="btn-secondary button__full right p10" type="submit">{{ 'INPUTS.UPDATE' | translate }}</ion-button>
     </form>
     <br/><br/><br/>
     <ion-item style="padding-left:17px">

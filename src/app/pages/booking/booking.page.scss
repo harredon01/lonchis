@@ -111,6 +111,7 @@ p {
     .calander-row {
         .red {
             border: 1px dotted var(--ion-color-danger);
+            opacity:0.3;
         }
         .green {
             border: 1px dotted var(--ion-color-success);
