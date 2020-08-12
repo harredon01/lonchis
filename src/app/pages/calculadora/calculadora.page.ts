@@ -214,8 +214,12 @@ export class CalculadoraPage implements OnInit {
     getItems() {
         let today = new Date();
         let todayString = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " 23:59:59";
-        let startDate = new Date(todayString);
+        let startDate = new Date(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + " 23:59:59");
+        console.log("Checking dates")
+        console.log(today.getFullYear() + "/" + (today.getMonth() + 1) + "/" + today.getDate() + " 23:59:59");
+        console.log(startDate);
         startDate.setDate(startDate.getDate() - 30);
+        console.log(startDate);
         let stringStartDate = startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate() + " 00:00:00";
         this.showLoader();
         let where = `delivery>${stringStartDate}&delivery<${todayString}&order_by=delivery,asc&status=completed&limit=100`;
