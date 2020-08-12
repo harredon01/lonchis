@@ -9,7 +9,7 @@
 
 
 <ion-content class="my-account">
-    <form  class="my-account__form basic-form" (submit)="doUpdate()" [formGroup]="registrationForm">
+    <form  class="my-account__form pr20 pl20" (submit)="doUpdate()" [formGroup]="registrationForm">
         <input type="hidden" formControlName="id" />
         <ion-list>
             <ion-item class="ion-no-padding">
@@ -93,9 +93,9 @@
                 <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
             </ion-item>
         </ion-list>
-        <ion-button class="btn-secondary button__full right p10" type="submit">{{ 'INPUTS.UPDATE' | translate }}</ion-button>
+        <ion-button class="btn-secondary right m10" type="submit">{{ 'INPUTS.UPDATE' | translate }}</ion-button>
     </form>
-    <br/><br/><br/>
+    <div class="clear"></div>
     <ion-item style="padding-left:17px">
         <p>{{ 'MY_ACCOUNT.LANGUAGE' | translate }}</p>
     </ion-item>

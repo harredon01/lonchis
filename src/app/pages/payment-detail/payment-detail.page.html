@@ -8,8 +8,9 @@
 </ion-header>
 <ion-content class="checkout-prepare"> 
 
-    <ion-card >        
-        <ion-card-header class="product-header-information">            
+    <ion-card class="m0">        
+        <ion-card-header class="product-header-information">  
+            <h2>{{ 'PAYMENT_DETAIL.DESCRIPTION' | translate }}</h2>
             {{ 'PAYMENT.STATUS' | translate }} <span *ngIf="item.status == 'payment_in_bank'">{{ 'PAYMENT.PAYMENT_IN_BANK' | translate }}</span>
             <span *ngIf="item.status == 'pending' || item.status == 'payment_created'">{{ 'PAYMENT.PENDING' | translate }}</span> 
             <span *ngIf="item.status == 'denied'">{{ 'PAYMENT.DENIED2' | translate }}</span> 
@@ -42,7 +43,7 @@
             <p>{{ 'PAYMENT.STATUS' | translate }}: {{item.order.status }}</p>
             <h3>{{ 'ORDER_DETAIL.ITEMS' | translate }}</h3>
             <ion-grid>
-                <div class="checkout-prepare__items" *ngFor="let cartItem of item.order.items">
+                <div class="checkout-prepare__items mb20" *ngFor="let cartItem of item.order.items">
                      <div class="checkout__item"><strong>{{ 'CART_ITEM.NAME' | translate }}: </strong> {{cartItem.name}}</div>
                     <div class="checkout__item"><strong>{{ 'CART_ITEM.QUANTITY' | translate }}: </strong> {{cartItem.quantity}}</div>
                     <div class="checkout__item"><strong>{{ 'CART_ITEM.PRICE' | translate }}: </strong> {{cartItem.price| currency}}</div>
@@ -50,14 +51,14 @@
                     <div class="checkout__item"><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{cartItem.priceSumConditions| currency}}</div>
                 </div>
             </ion-grid>
-            <h3>{{ 'ORDER_DETAIL.CONDITIONS' | translate }}</h3>
+            <h3 *ngIf="item.order.order_conditions>0">{{ 'ORDER_DETAIL.CONDITIONS' | translate }}</h3>
             <ion-grid>
                 <div class="checkout-prepare__items" *ngFor="let condition of item.order.order_conditions">
                      <div class="checkout__item"> <strong>{{ 'CART_COND.NAME' | translate }}: </strong>{{condition.name}}</div>
                     <div class="checkout__item"> <strong>{{ 'CART_COND.TOTAL' | translate }}: </strong>{{condition.total| currency}}</div>
                 </div>
             </ion-grid>
-            <p><strong>{{ 'CART_ITEM.TOTAL' | translate }}:</strong> {{item.order.total | currency }}</p>
+            <p><strong>{{ 'CART_ITEM.TOTAL' | translate }}:</strong> {{item.subtotal | currency }}</p>
             <p *ngIf="item.order.recurring_type">{{ 'ORDER_DETAIL.IS_RECURRING' | translate }}</p>
             <p><strong>{{ 'CART_ITEM.NUM_ITEM' | translate }}:</strong>{{item.order.items.length}}</p>
             <div *ngIf="item.order.user_id==userData._user.id">

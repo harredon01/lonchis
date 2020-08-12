@@ -460,6 +460,11 @@ export class BookingPage implements OnInit {
         this.endDate = new Date(this.startDate.getTime() + (parseInt(this.amount) * 50) * 60000);;
         this.timeSelected = true;
     }
+    selectSlot(item:any) {
+        this.startDate = item.start;
+        this.endDate = item.end;
+        this.timeSelected = true;
+    }
 
     selectDate(item: any) {
         if (item.status == 'active') {
@@ -471,6 +476,7 @@ export class BookingPage implements OnInit {
             this.startDateS = selectedDate.toISOString();
             this.selectStart();
             this.dateSelected = true;
+            this.timeSelected = false;
             let strDate = selectedDate.getFullYear() + "-" + (selectedDate.getMonth() + 1) + "-" + selectedDate.getDate();
             let params = {
                 "from": strDate,
@@ -508,35 +514,41 @@ export class BookingPage implements OnInit {
         return new Date(date.getTime() + minutes * 60000);
     }
     buildSlots() {
+        this.appointmentOptions = [];
+        let current = new Date();
+        current = this.addMinutes(current, 30)
         for (let item in this.availabilitiesDate) {
             let container = this.availabilitiesDate[item];
             let open = true;
-            console.log("Building date "+"2020/01/01 "+container.from.replace(" ",":00 "))
-            let start = new Date("2020/01/01 "+container.from.replace(" ",":00 "));
-            let end = new Date("2020/01/01 "+container.to.replace(" ",":00 "));
+            console.log("Building date " + this.startDate.getFullYear() + "/" + (this.startDate.getMonth() + 1) + "/" + this.startDate.getDate() + " " + container.from.replace(" ", ":00 "))
+            let start = new Date(this.startDate.getFullYear() + "/" + (this.startDate.getMonth() + 1) + "/" + this.startDate.getDate() + " " + container.from.replace(" ", ":00 "));
+            let end = new Date(this.startDate.getFullYear() + "/" + (this.startDate.getMonth() + 1) + "/" + this.startDate.getDate() + " " + container.to.replace(" ", ":00 "));
             while (open) {
                 let endApp = this.addMinutes(start, 30);
                 if (endApp <= end) {
-                    let containerSlot = {start: start, end: endApp}
-                    if (!this.checkFilledDate(containerSlot)){
-                        this.appointmentOptions.push(containerSlot);
+                    let containerSlot = {start: start, end: endApp};
+                    if (start > current) {
+                        if (!this.checkFilledDate(containerSlot)) {
+                            this.appointmentOptions.push(containerSlot);
+                        }
                     }
-                    start = this.addMinutes(start,30)
+
+                    start = this.addMinutes(start, 30)
                 } else {
                     open = false;
                 }
             }
         }
     }
-    checkFilledDate(container:any){
+    checkFilledDate(container: any) {
         for (let item in this.selectedSpots) {
             let checking = this.selectedSpots[item];
-            if(container.start==checking.starts_at){
+            if (container.start == checking.starts_at) {
                 return true;
             }
         }
         return false;
-        
+
     }
     showLoader() {
         if (document.URL.startsWith('http')) {
@@ -564,6 +576,9 @@ export class BookingPage implements OnInit {
     }
     changeDate() {
         this.dateSelected = false;
+        this.timeSelected = false;
+    }
+    changeTime() {
         this.timeSelected = false;
     }
 }

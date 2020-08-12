@@ -26,10 +26,10 @@
 <ion-content class="bg-light merchant-list"> 
     <div class="select-cont" > 
         <ion-searchbar class="search__item" [(ngModel)]="textSearch" placeholder="Search..." debounce="1500" (ionChange)="searchText()" *ngIf="typeSearch!='own'"></ion-searchbar>
-        <ion-select [(ngModel)]="category" interface="popover" (ionChange)="searchCategory()" *ngIf="typeSearch!='own'|| false">
+        <!--ion-select [(ngModel)]="category" interface="popover" (ionChange)="searchCategory()" *ngIf="typeSearch!='own'|| false">
             <ion-select-option [value]="category.id" *ngFor="let category of categoryItems">{{category.name}}
         </ion-select-option>
-    </ion-select><div style="clear:both"></div> 
+    </ion-select--><div style="clear:both"></div> 
         <p class="total-result" style="float: left;margin-bottom: 0">{{totalResults}} {{ 'MERCHANT_LISTING.RESULTS_FOUND' | translate }}</p>
     <div class="block--right right" >
         <ion-button clear size="small" class="btn success" (click)="searchNearby()" *ngIf="typeSearch!='own'|| false">
