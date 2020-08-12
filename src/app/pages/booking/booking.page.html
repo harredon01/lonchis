@@ -9,7 +9,7 @@
             {{ 'BOOKING.TITLE' | translate }}
         </ion-title>
     </ion-toolbar>
-    <ion-card class="title">
+    <ion-card class="title ml5 mr5 mb15">
 
         <ion-avatar item-start class="left m10">
             <ion-img [src]="objectIcon" (ionError)="onError()"></ion-img>
@@ -47,7 +47,7 @@
     <div class="ion-padding" *ngIf="dateSelected">
         <h2>{{ dayName }} {{startDate | date :'mediumDate'}}</h2>
         <a href="javascript:;" *ngIf="bookingObj" (click)="changeDate()">{{ 'BOOKING.CHANGE_DATE' | translate }}</a>
-        <p>{{ 'BOOKING.AVAILABLE_TIMES' | translate }}:</p>
+        <p *ngIf="!timeSelected">{{ 'BOOKING.AVAILABLE_TIMES' | translate }}:</p>
         <!--div class="timeing">
             <ion-row>
                 <ion-col *ngFor="let item of availabilitiesDate"><span>{{item.from}}-{{item.to}}</span></ion-col>
