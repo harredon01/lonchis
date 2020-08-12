@@ -494,6 +494,7 @@ export class BookingPage implements OnInit {
                 }
             }
             console.log("Availabilities", this.availabilitiesDate);
+            this.buildSlots();
         } else {
             let toast = this.toastCtrl.create({
                 message: this.notAvailable,
@@ -503,15 +504,39 @@ export class BookingPage implements OnInit {
         }
 
     }
+    addMinutes(date, minutes) {
+        return new Date(date.getTime() + minutes * 60000);
+    }
     buildSlots() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
+        for (let item in this.availabilitiesDate) {
+            let container = this.availabilitiesDate[item];
+            let open = true;
+            console.log("Building date "+"2020/01/01 "+container.from.replace(" ",":00 "))
+            let start = new Date("2020/01/01 "+container.from.replace(" ",":00 "));
+            let end = new Date("2020/01/01 "+container.to.replace(" ",":00 "));
+            while (open) {
+                let endApp = this.addMinutes(start, 30);
+                if (endApp <= end) {
+                    let containerSlot = {start: start, end: endApp}
+                    if (!this.checkFilledDate(containerSlot)){
+                        this.appointmentOptions.push(containerSlot);
+                    }
+                    start = this.addMinutes(start,30)
+                } else {
+                    open = false;
+                }
+            }
         }
+    }
+    checkFilledDate(container:any){
+        for (let item in this.selectedSpots) {
+            let checking = this.selectedSpots[item];
+            if(container.start==checking.starts_at){
+                return true;
+            }
+        }
+        return false;
+        
     }
     showLoader() {
         if (document.URL.startsWith('http')) {

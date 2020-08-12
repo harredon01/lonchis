@@ -53,6 +53,9 @@
                 <ion-col *ngFor="let item of availabilitiesDate"><span>{{item.from}}-{{item.to}}</span></ion-col>
             </ion-row> 
         </div>
+        <ion-list class="time-select">
+            <ion-item *ngFor="let item of appointmentOptions">{{item.start | date :'h:mm a'}}-{{item.end| date :'h:mm a'}}</ion-item>
+        </ion-list>
         <p *ngIf="selectedSpots.length>0">{{ 'BOOKING.OCCUPIED_SLOTS' | translate }}</p>
         <div class="timeing">
             <ion-row>

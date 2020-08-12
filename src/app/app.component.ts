@@ -278,10 +278,17 @@ export class AppComponent {
         }
         let more = false;
         let data = results.data;
+        let today = new Date();
+        let midnnight = new Date(today.getFullYear() + "-" + (1 + today.getMonth()) + "-" + today.getDate()+" 23:59:59");
         for (let msg in data) {
             data[msg].created_at = data[msg].created_at.replace(/-/g, '/');
             data[msg].created_at = new Date(data[msg].created_at);
             data[msg].payload = JSON.parse(data[msg].payload);
+            if(data[msg].created_at < midnnight){
+                data[msg].today = true;
+            } else {
+                data[msg].today = false;
+            }
             if (language == "es") {
                 data[msg].subject = data[msg].subject_es;
             }
