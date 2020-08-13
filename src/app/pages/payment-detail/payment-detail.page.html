@@ -51,7 +51,7 @@
                     <div class="checkout__item"><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{cartItem.priceSumConditions| currency}}</div>
                 </div>
             </ion-grid>
-            <h3 *ngIf="item.order.order_conditions>0">{{ 'ORDER_DETAIL.CONDITIONS' | translate }}</h3>
+            <h3 *ngIf="item.order.order_conditions.length>0">{{ 'ORDER_DETAIL.CONDITIONS' | translate }}</h3>
             <ion-grid>
                 <div class="checkout-prepare__items" *ngFor="let condition of item.order.order_conditions">
                      <div class="checkout__item"> <strong>{{ 'CART_COND.NAME' | translate }}: </strong>{{condition.name}}</div>

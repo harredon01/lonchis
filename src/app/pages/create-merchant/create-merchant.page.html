@@ -296,7 +296,7 @@
                     </ion-item>
                     <ion-item *ngIf="form.get('country_id').value">
                         <ion-label>{{ 'MERCHANT_CREATE.REGION' | translate }}</ion-label>
-                        <ion-select formControlName="region_id" (ionChange)="selectRegion()" name="region_id">
+                        <ion-select formControlName="region_id" (ionChange)="selectRegion(null)" name="region_id">
                             <ion-select-option *ngFor="let item of regions" [value]='item.id'>{{item.name}}</ion-select-option>
                         </ion-select>
                     </ion-item>

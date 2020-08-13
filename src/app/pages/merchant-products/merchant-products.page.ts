@@ -29,11 +29,13 @@ export class MerchantProductsPage implements OnInit {
     loading: any;
     merchantObj: {
         merchant_name: string,
+        merchant_description_more: boolean,
         merchant_description: string,
         merchant_type: string,
         src: string,
     } = {
             merchant_name: "",
+            merchant_description_more:false,
             merchant_description: "",
             merchant_type: "",
             src: "",
@@ -41,13 +43,13 @@ export class MerchantProductsPage implements OnInit {
     possibleAmounts: any[];
     merchant: any;
     page: any;
-    private cartErrorString: string;
-    private showMoreText: string;
-    private showLessText: string;
-    private dateLessText: string;
-    private clearCartText: string;
-    private cartUpdate: string;
-    private minAmount: string;
+    public cartErrorString: string;
+    public showMoreText: string;
+    public showLessText: string;
+    public dateLessText: string;
+    public clearCartText: string;
+    public cartUpdate: string;
+    public minAmount: string;
 
     constructor(public navCtrl: NavController,
         public activatedRoute: ActivatedRoute,
