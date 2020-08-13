@@ -277,7 +277,7 @@ export class BookingPage implements OnInit {
         //        console.log("start date",startDate);
         let strDate = startDate.toISOString();
         //        console.log("start date2",startDate.toISOString());
-        let endDate = new Date(startDate.getTime() + parseInt(this.amount) * 3000 * 1000 /*4 hrs in ms*/);
+        let endDate = new Date(this.endDate.getTime() - this.endDate.getTimezoneOffset() * 60000);
         let ndDate = endDate.toISOString();
         let virtual = false;
         console.log("Virtual meeting", this.virtualMeeting);
@@ -333,7 +333,7 @@ export class BookingPage implements OnInit {
         console.log("offset", this.startDate.getTimezoneOffset() * 60000);
         let startDate = new Date(this.startDate.getTime() - this.startDate.getTimezoneOffset() * 60000);
         let strDate = startDate.toISOString();
-        let endDate = new Date(startDate.getTime() + parseInt(this.amount) * 3000 * 1000 /*4 hrs in ms*/);
+        let endDate = new Date(this.endDate.getTime() - this.endDate.getTimezoneOffset() * 60000);
         let ndDate = endDate.toISOString();
         this.atributesCont.location = "zoom";
         let data = {
@@ -460,9 +460,9 @@ export class BookingPage implements OnInit {
         this.endDate = new Date(this.startDate.getTime() + (parseInt(this.amount) * 50) * 60000);;
         this.timeSelected = true;
     }
-    selectSlot(item:any) {
+    selectSlot(item: any) {
         this.startDate = item.start;
-        this.endDate = item.end;
+        this.endDate = this.addMinutes(item.end, -5);
         this.timeSelected = true;
     }
 
@@ -484,14 +484,6 @@ export class BookingPage implements OnInit {
                 "type": this.typeObj,
                 "object_id": this.objectId,
             };
-            this.booking.getBookingsObject(params).subscribe((data: any) => {
-                console.log("getBookingsObject", data);
-                this.selectedSpots = data.data;
-                this.dismissLoader();
-            }, (err) => {
-                console.log("Error getBookingsObject");
-                this.api.handleError(err);
-            });
             let day = selectedDate.getDay();
             this.availabilitiesDate = [];
             for (let item in this.availabilities) {
@@ -499,8 +491,20 @@ export class BookingPage implements OnInit {
                     this.availabilitiesDate.push((this.availabilities[item]));
                 }
             }
+            this.booking.getBookingsObject(params).subscribe((data: any) => {
+                console.log("getBookingsObject", data);
+                let results = data.data;
+                for(let i in results){
+                    let bookitem = new Booking(results[i]);
+                    this.selectedSpots.push(bookitem);
+                }
+                this.buildSlots();
+                this.dismissLoader();
+            }, (err) => {
+                console.log("Error getBookingsObject");
+                this.api.handleError(err);
+            });
             console.log("Availabilities", this.availabilitiesDate);
-            this.buildSlots();
         } else {
             let toast = this.toastCtrl.create({
                 message: this.notAvailable,
@@ -543,7 +547,7 @@ export class BookingPage implements OnInit {
     checkFilledDate(container: any) {
         for (let item in this.selectedSpots) {
             let checking = this.selectedSpots[item];
-            if (container.start == checking.starts_at) {
+            if (container.start.getTime() == checking.starts_at.getTime()) {
                 return true;
             }
         }
