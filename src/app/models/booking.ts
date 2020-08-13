@@ -25,6 +25,8 @@ export class Booking {
         if (fields.starts_at) {
             if (typeof fields.starts_at === 'string' || fields.starts_at instanceof String) {
                 fields.starts_at = fields.starts_at.replace(/-/g, '/');
+                fields.starts_at = fields.starts_at.replace("T", ' ');
+                fields.starts_at = fields.starts_at.split(".")[0];
                 fields.starts_at = new Date(fields.starts_at);
             }
         }
@@ -32,6 +34,8 @@ export class Booking {
         if (fields.ends_at) {
             if (typeof fields.ends_at === 'string' || fields.ends_at instanceof String) {
                 fields.ends_at = fields.ends_at.replace(/-/g, '/');
+                fields.ends_at = fields.ends_at.replace("T", ' ');
+                fields.ends_at = fields.ends_at.split(".")[0];
                 fields.ends_at = new Date(fields.ends_at);
             }
         }

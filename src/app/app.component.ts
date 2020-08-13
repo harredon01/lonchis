@@ -115,6 +115,7 @@ export class AppComponent {
                 // user and time are the same arguments passed in `events.publish(user, time)`
             });
             this.events.subscribe('storageInitialized', (data:any) => {
+                console.log("Storage initialized");
                 this.storeDeviceId();
                 // user and time are the same arguments passed in `events.publish(user, time)`
             });
@@ -145,7 +146,9 @@ export class AppComponent {
             window.addEventListener('blur', (e: any) => {
                 this.events.publish('app:stopNotifsWeb',{});
             });
-            
+            if (this.userData.storageLoaded && !this.userData.isDevice){
+                this.storeDeviceId();
+            }
         });
         this.alerts.getLanguage().then((value) => {
             console.log("getLanguage");
