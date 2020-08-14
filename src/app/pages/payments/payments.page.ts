@@ -99,7 +99,7 @@ export class PaymentsPage implements OnInit {
                 this.loadMore = false;
             }
             for (let one in results) {
-                let container = this.orderData.buildPayment(results[one]);
+                let container = new Payment(results[one]);
                 this.currentItems.push(container);
             }
             console.log(JSON.stringify(data));

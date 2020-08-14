@@ -123,7 +123,7 @@ export class PaymentDetailPage implements OnInit {
                     console.log("after get Deliveries");
                     let results = data.data;
                     for (let one in results) {
-                        this.item = this.orderData.buildPayment(results[one]);
+                        this.item = new Payment(results[one]);
                     }
                     if (this.item.order.recurring) {
                         this.recurring = true;
@@ -180,7 +180,7 @@ export class PaymentDetailPage implements OnInit {
             this.dismissLoader();
             if (data.status == "success") {
                 console.log("after addTransactionCosts");
-                this.item = this.orderData.buildPayment(data.payment);
+                this.item = new Payment(data.payment);
             } else {
                 let toast = this.toastCtrl.create({
                     message: this.paymentsErrorChangeString,

@@ -128,13 +128,11 @@
             <ion-item  *ngIf="bookingObj">
                 <a href="javascript:;" (click)="changeDate()">{{ 'BOOKING.CHANGE_DATE' | translate }}</a>
             </ion-item>
-            <ion-item>
-                <ion-label position="floating">{{ 'BOOKING.TYPE_HELP' | translate }}</ion-label>
-                <ion-input type="text" [(ngModel)]="atributesCont.type_help"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label position="floating">{{ 'BOOKING.TYPE_DESC' | translate }}</ion-label>
-                <ion-textarea class="mb20" [(ngModel)]="atributesCont.desc_item"></ion-textarea>
+            <ion-item *ngFor="let item of questions">
+                <ion-label position="floating">{{item.text}}</ion-label>
+                <ion-input *ngIf="item.type=='text'" type="text" [(ngModel)]="item.value"></ion-input>
+                <ion-input *ngIf="item.type=='num'" type="tel" [(ngModel)]="item.value"></ion-input>
+                <ion-textarea *ngIf="item.type=='textarea'" class="mb20" [(ngModel)]="item.value"></ion-textarea>
             </ion-item>
             <ion-button full class="btn success right mt15 mb15" (click)="saveOrCreateBooking()">{{ 'BOOKING.MAKE_RESERVATION' | translate }}</ion-button>
         </ion-card-content>

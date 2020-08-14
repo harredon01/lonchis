@@ -6,7 +6,7 @@
  *
  * The Items service manages creating instances of Item, so go ahead and rename
  * that something that fits your app as well.
- */ 
+ */
 import {Order} from '../models/order';
 export class Payment {
     status: string;
@@ -23,18 +23,45 @@ export class Payment {
     address_id: any;
     created_at: any;
     updated_at: any;
-    order:Order;
+    order: Order;
 
-  constructor(fields: any) {
-    // Quick and dirty extend/assign fields to this model
-    for (const f in fields) {
-      // @ts-ignore
-      this[f] = fields[f];
+    constructor(fields: any) {
+        if(fields.order){
+            fields.order = new Order(fields.order);
+        }
+
+        if (fields.created_at) {
+            if (typeof fields.created_at === 'string' || fields.created_at instanceof String) {
+                fields.created_at = fields.created_at.replace(/-/g, '/');
+                if (fields.created_at.includes("Z")) {
+                    fields.created_at = fields.created_at.replace("T", ' ');
+                    fields.created_at = fields.created_at.split(".")[0];
+                    fields.created_at = new Date(fields.created_at);
+                    fields.created_at = new Date(fields.created_at.getTime() - fields.created_at.getTimezoneOffset() * 60000);
+                }
+            }
+        }
+
+        if (fields.updated_at) {
+            if (typeof fields.updated_at === 'string' || fields.updated_at instanceof String) {
+                fields.updated_at = fields.updated_at.replace(/-/g, '/');
+                if (fields.updated_at.includes("Z")) {
+                    fields.updated_at = fields.updated_at.replace("T", ' ');
+                    fields.updated_at = fields.updated_at.split(".")[0];
+                    fields.updated_at = new Date(fields.updated_at);
+                    fields.updated_at = new Date(fields.updated_at.getTime() - fields.updated_at.getTimezoneOffset() * 60000);
+                }
+            }
+        }
+        // Quick and dirty extend/assign fields to this model
+        for (const f in fields) {
+            // @ts-ignore
+            this[f] = fields[f];
+        }
     }
-  }
 
 }
 
 export interface Payment {
-  [prop: string]: any;
+    [prop: string]: any;
 }

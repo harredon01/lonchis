@@ -14,6 +14,7 @@ import {UserDataService} from './services/user-data/user-data.service';
 import {DynamicRouterService} from './services/dynamic-router/dynamic-router.service';
 import {UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
 import {Friend} from './models/friend';
+import {Notification} from './models/notification';
 declare var Mercadopago: any;
 @Component({
     selector: 'app-root',
@@ -111,6 +112,8 @@ export class AppComponent {
             //                .then((success: any) => console.log(success))
             //                .catch((error: any) => console.log(error));
             this.events.subscribe('authenticated', (data:any) => {
+                this.page = 0;
+                this.items = []
                 this.getAlerts();
                 // user and time are the same arguments passed in `events.publish(user, time)`
             });
@@ -121,19 +124,21 @@ export class AppComponent {
             });
             this.events.subscribe('notifsOpen', (data:any) => {
                 if (this.items.length == 0) {
-                    this.getAlerts();
+                    this.page = 0;
+                this.items = []
+                this.getAlerts();
                 }
             });
             this.events.subscribe('cart:orderFinished', (data:any) => {
                 let vm = this;
-                setTimeout(function () {vm.updateAlerts(1);}, 3000);
+                setTimeout(function () {vm.updateAlerts();}, 3000);
                 // user and time are the same arguments passed in `events.publish(user, time)`
             });
             this.events.subscribe('app:updateNotifsWeb', (data:any) => {
                 console.log("Update Notifs web triggered");
                 this.isFocused = true;
                 if (document.URL.startsWith('http')) {
-                    this.fetchNotisWeb(1,  data.counter, data.timer);
+                    this.fetchNotisWeb( data.counter, data.timer);
                 }
             });
             this.events.subscribe('app:stopNotifsWeb', (data:any) => {
@@ -164,11 +169,9 @@ export class AppComponent {
             this.alerts.setLanguage("es");
         });
         this.platform.resume.subscribe(() => {
-            if (this.items.length > 0) {
-                this.updateAlerts(1);
-            } else {
-                this.getAlerts();
-            }
+            this.page = 0;
+            this.items = []
+            this.getAlerts();
             console.log('****UserdashboardPage RESUMED****');
             if (!document.URL.startsWith('http')) {
                 this.oneSignal.clearOneSignalNotifications();
@@ -190,10 +193,9 @@ export class AppComponent {
             .subscribe(jsonData => {
                 let message = jsonData.payload.additionalData;
                 console.log("Notification received", message);
-                message.subject_es = message.subject;
+                message.language = "es";
                 if (message.created_at.date) {
-                    message.created_at.date = message.created_at.date.replace(/-/g, '/');
-                    message.created_at = new Date(message.created_at.date);
+                    message.created_at = message.created_at.date;
                 }
                 if (message.type == "user_message") {
                     message.id = message.payload.message_id;
@@ -202,17 +204,18 @@ export class AppComponent {
                     message.target_id = message.user_id;
                     //this.chats.saveMessage(message);
                 }
-                this.items.push(message);
+                let notif = new Notification(message);
+                this.items.push(notif);
                 this.cleanResults();
-                console.log('notification received: ', message);
-                this.events.publish('notification:received', {notification:message, time:Date.now()});
+                console.log('notification received: ', notif);
+                this.events.publish('notification:received', {notification: notif, time: Date.now()});
                 this.toastCtrl.create({
-                    message: message.subject_es,
+                    message: notif.subject_es,
                     duration: 3000,
                     position: 'top'
                 }).then(toast => toast.present());
 
-                console.log('notificationOpenedCallback: ' + JSON.stringify(message));
+                console.log('notificationOpenedCallback: ' + JSON.stringify(notif));
             });
         this.oneSignal.endInit();
         this.oneSignal.clearOneSignalNotifications();
@@ -282,32 +285,24 @@ export class AppComponent {
         let more = false;
         let data = results.data;
         let today = new Date();
-        let midnnight = new Date(today.getFullYear() + "/" + (1 + today.getMonth()) + "/" + today.getDate()+" 00:00:00");
+        let midnnight = new Date(today.getFullYear() + "/" + (1 + today.getMonth()) + "/" + today.getDate() + " 00:00:00");
         for (let msg in data) {
-            data[msg].created_at = data[msg].created_at.replace(/-/g, '/');
-            data[msg].created_at = new Date(data[msg].created_at);
-            data[msg].payload = JSON.parse(data[msg].payload);
-            if (data[msg].created_at > midnnight){
-                data[msg].today = true;
-            } else {
-                data[msg].today = false;
-            }
-            if (language == "es") {
-                data[msg].subject = data[msg].subject_es;
-            }
-            if (data[msg].id > this.last_notif) {
-                this.last_notif = data[msg].id;
-                console.log("Last notif increased3",this.last_notif);
+            data[msg].midnight = midnnight;
+            data[msg].language = language;
+            let notif = new Notification(data[msg]);
+            if (notif.id > this.last_notif) {
+                this.last_notif = notif.id;
+                console.log("Last notif increased3", this.last_notif);
             }
             if (triggerEvent) {
-                this.events.publish('notification:received', {notification:data[msg], time:Date.now()});
-                this.items.unshift(data[msg]);
+                this.events.publish('notification:received', {notification: notif, time: Date.now()});
+                this.items.unshift(notif);
             } else {
-                this.items.push(data[msg]);
+                this.items.push(notif);
             }
             if (document.URL.startsWith('http')) {
                 this.toastCtrl.create({
-                    message: data[msg].subject_es,
+                    message: notif.subject_es,
                     duration: 3000,
                     position: 'top'
                 }).then(toast => toast.present());
@@ -334,7 +329,7 @@ export class AppComponent {
     }
     getAlerts() {
         this.page++;
-        let where = "page=" + this.page + "&limit=20&order_by=id,desc";
+        let where = "page=" + this.page + "&limit=30&order_by=id,desc";
         this.alerts.getLanguage().then((value) => {
             console.log("getToken");
             console.log(value);
@@ -344,9 +339,6 @@ export class AppComponent {
             this.alerts.getAlerts(where).subscribe((results: any) => {
                 this.alertLoaded = true;
                 this.alertsmore = this.handleResults(results, false, value);
-                if (this.items.length < 9 && this.alertsmore) {
-                    this.getAlerts();
-                }
             }, (err) => {
 
             });
@@ -355,20 +347,17 @@ export class AppComponent {
             this.alerts.getAlerts(where).subscribe((results: any) => {
                 this.alertLoaded = true;
                 this.alertsmore = this.handleResults(results, false, value);
-                if (this.items.length < 9 && this.alertsmore) {
-                    this.getAlerts();
-                }
             }, (err) => {
 
             });
         });
     }
-    fetchNotisWeb(page, counter: any, timer: any) {
-        this.updateAlerts(page).then((value) => {
+    fetchNotisWeb(counter: any, timer: any) {
+        this.updateAlerts().then((value) => {
             counter--;
             if (counter > 0 && this.isFocused) {
                 let vm = this;
-                setTimeout(function () {vm.fetchNotisWeb(page, counter, timer);}, timer);
+                setTimeout(function () {vm.fetchNotisWeb(counter, timer);}, timer);
             } else {
                 this.isFocused = false;
             }
@@ -376,22 +365,17 @@ export class AppComponent {
 
         });
     }
-    updateAlerts(page) {
+    updateAlerts() {
         return new Promise((resolve, reject) => {
             console.log("Headers", this.userData._headers);
             this.alerts.getLanguage().then((value) => {
                 if (!value) {
                     value = "es";
                 }
-                let where = "page=" + page + "&id>" + this.last_notif + "&limit=20&order_by=id,asc";
+                let where = "page=1&id>" + this.last_notif + "&limit=30&order_by=id,asc";
                 this.alerts.getAlerts(where).subscribe((results: any) => {
                     if (results.total > 0) {
                         let more = this.handleResults(results, true, value);
-
-                        if (more) {
-                            page++
-                            this.updateAlerts(page);
-                    }
                     }
                     resolve("Done");
                 }, (err) => {

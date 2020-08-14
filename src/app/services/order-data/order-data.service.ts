@@ -47,21 +47,6 @@ export class OrderDataService {
             return "tabs/payu/banks";
         }
     }
-    buildPayment(container: any) {
-        console.log("Build payment", container);
-        container.created_at = container.created_at.replace(/-/g, '/');
-        container.updated_at = container.updated_at.replace(/-/g, '/');
-        let result = new Payment(container)
-        result.order = new Order(container.order);
-        result.order.attributes = JSON.parse(result.order.attributes);
-        result.order.split = false;
-        if (result.order.attributes.split_payment) {
-            if (result.order.attributes.split_payment == true) {
-                result.order.split = true;
-            }
-        }
-        return result;
-    }
     savePayer(order_id: any, user_id: any, email: any) {
 
         let query = "SELECT * FROM payers where order_id = ? and user_id = ? ";

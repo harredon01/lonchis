@@ -20,6 +20,7 @@ export class BookingPage implements OnInit {
     availableDays: any[] = [];
     availableDates: any[] = [];
     selectedSpots: any[] = [];
+    questions: any[] = [];
     availabilities: any[] = [];
     appointmentOptions: any[] = [];
     months: any[] = [];
@@ -80,7 +81,9 @@ export class BookingPage implements OnInit {
         this.weekday2[4] = "Jueves";
         this.weekday2[5] = "Viernes";
         this.weekday2[6] = "Sabado";
-
+        this.questions = [{text: "es rico", value: "", type: "text"},
+        {text: "es deli", value: 0, type: "num"},
+        {text: "es sabroso", value: "", type: "textarea"}]
         let vm = this
         this.translateService.get('BOOKING.REQUIRES_AUTH').subscribe(function (value) {
             vm.requiresAuth = value;
@@ -107,35 +110,48 @@ export class BookingPage implements OnInit {
     }
     loadData() {
         let paramsArrived = this.params.getParams();
-        this.typeObj = paramsArrived.type;
-        this.objectId = paramsArrived.objectId;
-        this.objectName = paramsArrived.objectName;
-        this.objectDescription = paramsArrived.objectDescription;
-        this.objectIcon = paramsArrived.objectIcon;
-        if (paramsArrived.expectedPrice) {
-            this.expectedPrice = paramsArrived.expectedPrice;
-        }
-        if (paramsArrived.booking) {
-            this.bookingObj = paramsArrived.booking;
-            this.dateSelected = true;
-            this.timeSelected = true;
-            this.selectDate(this.bookingObj.starts_at);
-            this.expectedPrice = this.bookingObj.price;
-            this.atributesCont = this.bookingObj.options;
-            console.log("Date", this.bookingObj.starts_at.toISOString());
-            this.startDateS = this.bookingObj.starts_at.toISOString();
-            this.selectStart();
-        }
-        if (paramsArrived.availabilities) {
-            this.dateSelected = false;
-            this.availabilities = paramsArrived.availabilities;
-            console.log("Availabilities", this.availabilities);
-            this.getAvailableDates(this.availabilities);
-            this.getDates();
-            console.log("Get availableDays", this.availableDays);
+        if (paramsArrived) {
+            this.typeObj = paramsArrived.type;
+            this.objectId = paramsArrived.objectId;
+            this.objectName = paramsArrived.objectName;
+            this.objectDescription = paramsArrived.objectDescription;
+            this.objectIcon = paramsArrived.objectIcon;
+            if (paramsArrived.expectedPrice) {
+                this.expectedPrice = paramsArrived.expectedPrice;
+            }
+            if (paramsArrived.questions) {
+                this.questions = paramsArrived.questions;
+            }
+            if (paramsArrived.booking) {
+                this.bookingObj = paramsArrived.booking;
+                this.dateSelected = true;
+                this.timeSelected = true;
+                this.selectDate(this.bookingObj.starts_at);
+                this.expectedPrice = this.bookingObj.price;
+                this.atributesCont = this.bookingObj.options;
+                if (this.atributesCont) {
+                    if (this.atributesCont.questions) {
+                        this.questions = this.atributesCont.questions;
+                    }
+                }
+                console.log("Date", this.bookingObj.starts_at.toISOString());
+                this.startDateS = this.bookingObj.starts_at.toISOString();
+                this.selectStart();
+            }
+            if (paramsArrived.availabilities) {
+                this.dateSelected = false;
+                this.availabilities = paramsArrived.availabilities;
+                console.log("Availabilities", this.availabilities);
+                this.getAvailableDates(this.availabilities);
+                this.getDates();
+                console.log("Get availableDays", this.availableDays);
+            } else {
+                this.getItems();
+            }
         } else {
             this.getItems();
         }
+
         console.log("Get availableDays", this.dateSelected);
     }
     setOrder(item) {
@@ -267,16 +283,8 @@ export class BookingPage implements OnInit {
         }
         this.submitted = true;
         this.showLoader();
-        //        console.log("toLocaleString", this.startDate.toLocaleString());
-        //        console.log("toString ", this.startDate.toString());
-        //        console.log("toTimeString ", this.startDate.toTimeString());
-        //        console.log("toLocaleDateString ", this.startDate.toLocaleDateString());
-        //        console.log("toLocaleTimeString ", this.startDate.toLocaleTimeString());
-        //        console.log("offset", this.startDate.getTimezoneOffset() * 60000);
         let startDate = new Date(this.startDate.getTime() - this.startDate.getTimezoneOffset() * 60000);
-        //        console.log("start date",startDate);
         let strDate = startDate.toISOString();
-        //        console.log("start date2",startDate.toISOString());
         let endDate = new Date(this.endDate.getTime() - this.endDate.getTimezoneOffset() * 60000);
         let ndDate = endDate.toISOString();
         let virtual = false;
@@ -318,6 +326,7 @@ export class BookingPage implements OnInit {
         });
     }
     saveOrCreateBooking() {
+        this.atributesCont.questions = this.questions;
         if (this.bookingObj) {
             this.editBooking()
         } else {
@@ -335,7 +344,13 @@ export class BookingPage implements OnInit {
         let strDate = startDate.toISOString();
         let endDate = new Date(this.endDate.getTime() - this.endDate.getTimezoneOffset() * 60000);
         let ndDate = endDate.toISOString();
-        this.atributesCont.location = "zoom";
+        let virtual = false;
+        console.log("Virtual meeting", this.virtualMeeting);
+        if (this.virtualMeeting == 'virtual') {
+            virtual = true;
+            this.atributesCont.virtual_provider = "zoom";
+            this.atributesCont.virtual_meeting = true;
+        }
         let data = {
             "booking_id": this.bookingObj.id,
             "type": this.typeObj,
@@ -494,7 +509,7 @@ export class BookingPage implements OnInit {
             this.booking.getBookingsObject(params).subscribe((data: any) => {
                 console.log("getBookingsObject", data);
                 let results = data.data;
-                for(let i in results){
+                for (let i in results) {
                     let bookitem = new Booking(results[i]);
                     this.selectedSpots.push(bookitem);
                 }
