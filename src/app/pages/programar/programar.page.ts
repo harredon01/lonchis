@@ -19,13 +19,13 @@ import {DynamicRouterService} from '../../services/dynamic-router/dynamic-router
 })
 export class ProgramarPage implements OnInit {
     @ViewChild(IonContent) content: IonContent;
-    private listArticles: any = [];
-    private slides: any = [];
+    public listArticles: any = [];
+    public slides: any = [];
 
-    private foodTypeSelected: any = {}
-    private attributes: any = [];
-    private submitting: boolean = false;
-    private isProgrammed: boolean;
+    public foodTypeSelected: any = {}
+    public attributes: any = [];
+    public submitting: boolean = false;
+    public isProgrammed: boolean;
     public isDeposit: boolean;
     weekenddateError: boolean = false;
     dateError: boolean = false;
@@ -55,10 +55,10 @@ export class ProgramarPage implements OnInit {
     deliveryMainTitle: string;
     deliveryDrinkTitle: string;
 
-    private detailDelivery: {type: string, starter: string, main: string} = {
+    public detailDelivery: {type: string, starter: string, main: string} = {
         type: 'vegetariano', starter: 'opcion 1', main: 'plato 1'
     }
-    private saveDelivery: {
+    public saveDelivery: {
         type_id: any,
         starter_id: any,
         drink_id: any,
@@ -88,7 +88,7 @@ export class ProgramarPage implements OnInit {
             details: this.detailDelivery
         };
 
-    private deliveryParams: any;
+    public deliveryParams: any;
     isDelivery: boolean = false;
     loading: any;
     constructor(public navCtrl: NavController,

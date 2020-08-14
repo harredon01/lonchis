@@ -87,6 +87,13 @@
                 <p *ngIf="mainBooking.options.type_help"><span>{{ 'BOOKING.type_help' | translate }}</span>: {{mainBooking.options.type_help}}</p>
                 <h4 *ngIf="mainBooking.options.desc_item">{{ 'BOOKING.desc_item' | translate }}</h4>
                 <p *ngIf="mainBooking.options.desc_item">{{mainBooking.options.desc_item}}</p>
+                <div *ngIf="mainBooking.options.questions">
+                    <div *ngFor="let item of mainBooking.options.questions">
+                        <p *ngIf="item.type=='text'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
+                        <p *ngIf="item.type=='num'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
+                        <div *ngIf="item.type=='textarea'"><span>{{item.text}}</span>:<br/><p [innerHTML]="item.value"></p></div>
+                    </div>
+                </div>
             </div>
         </ion-card-content>
     </ion-card>

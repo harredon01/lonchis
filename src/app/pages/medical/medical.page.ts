@@ -10,22 +10,22 @@ import {AuthService} from '../../services/auth/auth.service';
 })
 export class MedicalPage implements OnInit { 
     @ViewChild(IonContent) content: IonContent;
-    private data: any = {};
+    public data: any = {};
     public showForm = false;
     private medicalSuccess:string = "";
     private medicalError:string = "";
     public showProfile = false;
-    private genders:any[] = [
+    public genders:any[] = [
         {name: "M", value: "m"},
         {name: "F", value: "f"}
     ];
-    private bloods:any[] = [
+    public bloods:any[] = [
         {name: "A", value: "a"},
         {name: "O", value: "o"},
         {name: "B", value: "b"},
         {name: "AB", value: "ab"}
     ];
-    private antigens:any[] = [
+    public antigens:any[] = [
         {name: "+", value: "+"},
         {name: "-", value: "-"}
     ];
@@ -39,6 +39,21 @@ export class MedicalPage implements OnInit {
     }
 
     ngOnInit() {
+    }
+    keytab(event, maxlength: any) {
+        let nextInput = event.srcElement.nextElementSibling; // get the sibling element
+        console.log('nextInput', nextInput);
+        var target = event.target || event.srcElement;
+        console.log('target', target);
+        console.log('targetvalue', target.value);
+        console.log('targettype', target.nodeType);
+        if (target.value.length < maxlength) {
+            return;
+        }
+        if (nextInput == null)  // check the maxLength from here
+            return;
+        else
+            nextInput.focus();   // focus if not null
     }
     toggleForm() {
         if (this.showProfile == true) {
