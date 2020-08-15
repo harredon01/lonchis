@@ -179,7 +179,7 @@ export class AppComponent {
         });
     }
     private handlerNotifications() {
-        this.oneSignal.startInit('339fd4b1-61d2-4fbe-abe7-ebd5fb433a02', 'petcare-a539b');
+        this.oneSignal.startInit('c418a5d1-0e20-4504-ba3f-7a521949be49', 'food-1535811427713');
         this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification);
         this.oneSignal.handleNotificationOpened()
             .subscribe(jsonData => {
