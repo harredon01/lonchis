@@ -169,9 +169,7 @@ export class AppComponent {
             this.alerts.setLanguage("es");
         });
         this.platform.resume.subscribe(() => {
-            this.page = 0;
-            this.items = []
-            this.getAlerts();
+            this.updateAlerts();
             console.log('****UserdashboardPage RESUMED****');
             if (!document.URL.startsWith('http')) {
                 this.oneSignal.clearOneSignalNotifications();

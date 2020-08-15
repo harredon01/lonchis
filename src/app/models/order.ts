@@ -28,9 +28,15 @@ export class Order {
     split: boolean;
 
     constructor(fields: any) {
+        fields.split = false;
         if (fields.attributes) {
             if (typeof fields.attributes === 'string' || fields.attributes instanceof String) {
                 fields.attributes = JSON.parse(fields.attributes);
+            }
+            if (fields.attributes.split_payment) {
+                if (fields.attributes.split_payment == true) {
+                    fields.split = true;
+                }
             }
         }
         if (fields.created_at) {
@@ -56,12 +62,8 @@ export class Order {
                 }
             }
         }
-        fields.split = false;
-        if (fields.attributes.split_payment) {
-            if (fields.attributes.split_payment == true) {
-                fields.split = true;
-            }
-        }
+
+
         // Quick and dirty extend/assign fields to this model
         for (const f in fields) {
             // @ts-ignore
