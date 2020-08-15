@@ -785,7 +785,8 @@
         "FEE":"Tarifa",
         "FEE2":"Tarifa Virtual",
         "FEE3":"Consulta rápida (20 mins)",
-        "FEEDBACK":"Calificaciones"
+        "FEEDBACK":"Calificaciones",
+        "NEXT_APPOINTMENT":"Próximo horario de atención"
     },
     "MY_ACCOUNT": {
         "TITLE": "Mi cuenta",

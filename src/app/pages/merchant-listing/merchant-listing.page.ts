@@ -182,14 +182,14 @@ export class MerchantListingPage implements OnInit {
 
         let searchObj = null
         if (this.typeSearch == "category") {
-            let query = "page=" + this.page + "&category_id=" + this.category;
+            let query = "includes=availabilities&page=" + this.page + "&category_id=" + this.category;
             searchObj = this.merchantsServ.getMerchants(query);
         } else if (this.typeSearch == "text") {
-            searchObj = this.merchantsServ.searchMerchants(this.textSearch + "&page=" + this.page);
+            searchObj = this.merchantsServ.searchMerchants(this.textSearch + "&includes=availabilities&page=" + this.page);
         } else if (this.typeSearch == "nearby") {
             searchObj = this.merchantsServ.getNearbyMerchants(this.location);
         } else if (this.typeSearch == "own") {
-            let query = "page=" + this.page + "&owner_id=" + this.userData._user.id;
+            let query = "includes=availabilities&page=" + this.page + "&owner_id=" + this.userData._user.id;
             searchObj = this.merchantsServ.getMerchants(query);
         }
         searchObj.subscribe((data: any) => {
