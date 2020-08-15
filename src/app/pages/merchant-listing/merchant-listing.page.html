@@ -87,6 +87,9 @@
                                 <span>{{item.rating }} de ({{item.rating_count }})</span>
                             </div></ion-col>
                     </ion-row>
+                    <ion-row *ngFor="let i of item.availabilitiesNext">
+                        <ion-col><strong>{{ 'MERCHANT_LISTING.NEXT_APPOINTMENT' | translate }}:</strong><br/>{{'DAYS.'+i.range.toUpperCase()|translate}}: {{i.from}}-{{i.to}}</ion-col>
+                    </ion-row>
                 </ion-grid>
 
 
