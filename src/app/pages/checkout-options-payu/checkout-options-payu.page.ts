@@ -209,7 +209,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
         let container = {
             quick: true,
             payment_id: this.orderData.payment.id,
-            platform: "Booking"
+            platform: "Food"
         };
         console.log("before payCreditCard token", container);
         this.billing.payCreditCard(container,"PayU").subscribe((data: any) => {
@@ -229,7 +229,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
     openSupport() {
         this.params.setParams({
             type: "platform",
-            objectId: "booking"
+            objectId: "food"
         })
         this.navCtrl.navigateForward('tabs/settings/addresses/');
     }
@@ -250,7 +250,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
             "order_id": this.orderData.currentOrder.id,
             "payers": payers,
             "split_order": this.split,
-            "platform": "Booking",
+            "platform": "Food",
             "recurring": this.recurring,
             "recurring_type": recurring_type,
             "recurring_value": recurring_value,

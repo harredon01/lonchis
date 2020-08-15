@@ -300,13 +300,13 @@ export class CheckoutPreparePage implements OnInit {
             "payers": payers,
             "delivery_date": this.delivery,
             "split_order": this.split,
-            "platform": "Booking",
+            "platform": "Food",
             "recurring": this.recurring,
             "recurring_type": recurring_type,
             "recurring_value": recurring_value,
             "merchant_id": this.orderData.currentOrder.merchant_id
         };
-        this.orderProvider.prepareOrder(container, "Booking").subscribe((resp: any) => {
+        this.orderProvider.prepareOrder(container, "Food").subscribe((resp: any) => {
             if (resp) {
                 if (resp.status == "success") {
                     this.dismissLoader();
@@ -358,7 +358,7 @@ export class CheckoutPreparePage implements OnInit {
     }
     setDiscounts() {
         this.showLoader2()
-        this.orderProvider.setDiscounts(this.orderData.currentOrder.id, "Booking").subscribe((resp: any) => {
+        this.orderProvider.setDiscounts(this.orderData.currentOrder.id, "Food").subscribe((resp: any) => {
 
             if (resp) {
                 console.log("setDiscounts", resp);
@@ -579,7 +579,7 @@ export class CheckoutPreparePage implements OnInit {
         for (let item in payersContainer) {
             payers.push(payersContainer[item].user_id);
         }
-        let data = {"payers": payers, "platform": "Booking"};
+        let data = {"payers": payers, "platform": "Food"};
         this.orderProvider.checkOrder(this.orderData.currentOrder.id, data).subscribe((resp: any) => {
             if (resp) {
                 console.log("Check order result", resp);

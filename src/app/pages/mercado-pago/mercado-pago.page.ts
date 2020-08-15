@@ -213,7 +213,7 @@ export class MercadoPagoPage implements OnInit {
                 let container = {
                     token: response.id,
                     payment_id: this.payment.id,
-                    platform: "Booking",
+                    platform: "Food",
                     payment_method_id: this.paymentMethod,
                     installments: this.installmentsSelected,
                     email: values.email,
