@@ -52,7 +52,8 @@ export class PayuCompletePage implements OnInit {
        * The view loaded, let's query our items for the list
        */
     returnHome() {
-        this.navCtrl.navigateRoot("tabs/home"); 
+        this.navCtrl.navigateRoot('tabs/settings');
+        this.navCtrl.navigateRoot('tabs');
         this.orderData.currentOrder = null;
     }
 

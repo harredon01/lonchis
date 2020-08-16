@@ -298,13 +298,6 @@ export class AppComponent {
             } else {
                 this.items.push(notif);
             }
-            if (document.URL.startsWith('http')) {
-                this.toastCtrl.create({
-                    message: notif.subject_es,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
-            }
         }
         if (results.page < results.last_page) {
             more = true;

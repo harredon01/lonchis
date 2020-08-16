@@ -249,7 +249,7 @@ export class CheckoutPreparePage implements OnInit {
     openSupport() {
         this.params.setParams({
             type: "platform",
-            objectId: "booking"
+            objectId: "food"
         })
         this.navCtrl.navigateForward('tabs/settings/addresses/');
     }

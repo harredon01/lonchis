@@ -333,6 +333,7 @@ export class PaymentDetailPage implements OnInit {
        * The view loaded, let's query our items for the list
        */
     returnHome() {
+        this.navCtrl.navigateRoot('tabs/settings');
         this.navCtrl.navigateRoot('tabs');
     }
 

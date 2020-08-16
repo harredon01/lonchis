@@ -221,6 +221,8 @@ export class LonchisPage implements OnInit {
             this.getCart();
         }
         this.getMerchants();
+        let vm = this
+        setTimeout(function () {vm.dismissLoader(); }, 2000);
         //        console.log("dismiss");
         //        this.dismissLoader();
         //        console.log("dismiss");

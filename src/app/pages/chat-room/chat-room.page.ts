@@ -66,7 +66,7 @@ export class ChatRoomPage implements OnInit {
                 this.getMessages(true);
             }
         } else {
-            paramSent = {"type": "platform", "objectId": "mevico"};
+            paramSent = {"type": "platform", "objectId": "food"};
             let typeObject = paramSent.type;
             let objectId = paramSent.objectId;
             if (typeObject == "group") {
@@ -227,7 +227,7 @@ export class ChatRoomPage implements OnInit {
 
     scrollToBottom() {
         setTimeout(() => {
-            //this.content.scrollToBottom(300);
+            this.content.scrollToBottom(300);
         }, 400);
     }
 

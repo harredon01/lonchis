@@ -21,8 +21,7 @@
                             </div>             
                             <p class="right w80 mt0">
                                 {{p.subject}}
-                                <span *ngIf="p.today">{{p.created_at | date:'shortTime'}}</span>
-                                <span *ngIf="!p.today">{{p.created_at | date}}</span><br/>
+                                <span >{{p.created_at | date:'h:mm a, M/d/yy'}}</span><br/>
                             </p>
                             <div class="clear"></div>             
                         </div>
