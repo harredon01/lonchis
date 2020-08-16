@@ -20,12 +20,12 @@
             <ion-button color="warning" class="btn-secondary right" style="height: 33px;" (click)="openConversion()" *ngIf="userData._user && totalDeliveries < 4">{{ 'HOME.EXISTEN' | translate }}</ion-button>
         </div>
         <div style="clear:both"></div>
+        <div class="" *ngIf="!userData._user">
+            {{ 'HOME.DESCRIPTION' | translate }}<br/><a href="mailto:servicioalcliente@lonchis.com.co">servicioalcliente@lonchis.com.co</a><br/><a href="tel:3103418432">310 3418432</a>
+        </div>
         <ion-list class="home-page__items">
             <ion-list-header class="delivery__title tright" style="padding:0" *ngIf="userData._user">
                 {{ 'HOME.DELIVERIES_TITLE' | translate }}: <b>{{totalDeliveries}}</b>
-            </ion-list-header>
-            <ion-list-header class="delivery__title" style="padding:0" *ngIf="!userData._user">
-                {{ 'HOME.DESCRIPTION' | translate }}
             </ion-list-header>
             <ion-item-sliding class="lunch__item" *ngFor="let item of itemList" >
                               <ion-item>

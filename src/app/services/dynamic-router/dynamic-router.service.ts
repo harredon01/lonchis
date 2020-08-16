@@ -34,7 +34,7 @@ export class DynamicRouterService {
             });
             console.log("Chat room container", friend);
             this.params.setParams({friend});
-            destinyUrl = 'tabs/settings/chat';
+            destinyUrl = 'tabs/chat-room';
         } else if (notification.type == "support_message" || notification.type == "program_reminder") {
             destinyUrl = notification.payload.utl;
             let destinyPayload = notification.payload.page_payload;

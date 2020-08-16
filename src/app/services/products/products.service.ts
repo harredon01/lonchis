@@ -74,8 +74,6 @@ export class ProductsService {
         }
 
         productInfo.inCart = false;
-        console.log("Buildprodsale",productInfo);
-        console.log("Buildprodsale2",container);
         if (container.is_on_sale) {
             
             productInfo.onsale = true;
@@ -88,13 +86,12 @@ export class ProductsService {
 
         productInfo = this.updateProductVisual(container, productInfo);
         productInfo.item_id = null;
-        if (merchant_id == 1299) {
+        if (productInfo.id == 80 || productInfo.id == 81) {
             productInfo.amount = 11;
         } else {
             productInfo.amount = container.min_quantity;
         }
         productInfo.imgs = [];
-        console.log("Build product", productInfo);
         return productInfo;
     }
     updateProductVisual(container: any, productInfo: Product) {

@@ -59,7 +59,7 @@
                 </ion-item>
                 <ion-item>
                     <ion-label>{{ 'PRODUCTS.AMOUNT' | translate }}</ion-label>
-                    <ion-select [(ngModel)]="item.amount"  (ionChange)="calculateTotals(null)" (ionChange)="selectVariant(item)">
+                    <ion-select [(ngModel)]="item.amount" (ionChange)="selectVariant(item)">
                         <ion-select-option *ngFor="let option of possibleAmounts" [value]='option.value'>{{option.value}}</ion-select-option>
                     </ion-select>
                 </ion-item>

@@ -182,7 +182,7 @@ const routes: Routes = [
                     }
                 ]
             },
-            {
+            /*{
                 path: 'opentok',
                 children: [
                     {
@@ -203,7 +203,7 @@ const routes: Routes = [
                         loadChildren: () => import('../route-detail/route-detail.module').then(m => m.RouteDetailPageModule)
                     }
                 ]
-            },
+            },*/
             {
                 path: 'chat-room',
                 children: [
@@ -213,7 +213,7 @@ const routes: Routes = [
                     }
                 ]
             },
-            {
+            /*{
                 path: 'contacts',
                 children: [
                     {
@@ -260,7 +260,7 @@ const routes: Routes = [
                         ]
                     }
                 ]
-            },
+            },*/
             {
                 path: 'checkout',
                 children: [
@@ -482,14 +482,14 @@ const routes: Routes = [
                         path: 'addresses',
                         loadChildren: () => import('../addresses/addresses.module').then(m => m.AddressesPageModule)
                     },
-                    {
+                    /*{
                         path: 'medical',
                         loadChildren: () => import('../medical/medical.module').then(m => m.MedicalPageModule)
                     },
                     {
                         path: 'codes',
                         loadChildren: () => import('../codes/codes.module').then(m => m.CodesPageModule)
-                    },
+                    },*/
                     {
                         path: 'chat',
                         loadChildren: () => import('../chat-room/chat-room.module').then(m => m.ChatRoomPageModule)

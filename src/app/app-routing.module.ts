@@ -7,7 +7,7 @@ const routes: Routes = [
     {path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)},
     {path: 'signup', loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupPageModule)},
     {path: 'tabs', loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule)},
-  { path: 'checkout-buyer', loadChildren: () => import('./pages/checkout-buyer/checkout-buyer.module').then(m => m.CheckoutBuyerPageModule) },
+  /*{ path: 'checkout-buyer', loadChildren: () => import('./pages/checkout-buyer/checkout-buyer.module').then(m => m.CheckoutBuyerPageModule) },
   { path: 'checkout-cash', loadChildren: () => import('./pages/checkout-cash/checkout-cash.module').then(m => m.CheckoutCashPageModule) },
   { path: 'checkout-banks', loadChildren: () => import('./pages/checkout-banks/checkout-banks.module').then(m => m.CheckoutBanksPageModule) },
   { path: 'checkout-payer', loadChildren: () => import('./pages/checkout-payer/checkout-payer.module').then(m => m.CheckoutPayerPageModule) },
@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'map', loadChildren: () => import('./pages/map/map.module').then(m => m.MapPageModule) },
   { path: 'cart', loadChildren: () => import('./pages/cart/cart.module').then(m => m.CartPageModule) },
   { path: 'chat-room', loadChildren: () => import('./pages/chat-room/chat-room.module').then(m => m.ChatRoomPageModule) },
-  { path: 'comments', loadChildren: () => import('./pages/comments/comments.module').then(m => m.CommentsPageModule) },
+  { path: 'comments', loadChildren: () => import('./pages/comments/comments.module').then(m => m.CommentsPageModule) },*/
   { path: 'categories', loadChildren: () => import('./pages/merchant-categories/merchant-categories.module').then(m => m.MerchantCategoriesPageModule) },
 //  { path: 'home', loadChildren: './pages/home/home.module#HomePageModule' },
   { path: 'home', loadChildren: () => import('./pages/lonchis/lonchis.module').then(m => m.LonchisPageModule) },
@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'home/:categoryId/merchant/:objectId/products', loadChildren: () => import('./pages/merchant-products/merchant-products.module').then(m => m.MerchantProductsPageModule) },
   { path: 'home/:categoryId/merchant/:objectId/book', loadChildren: () => import('./pages/booking/booking.module').then(m => m.BookingPageModule) },
   { path: 'search-filtering', loadChildren: () => import('./pages/search-filtering/search-filtering.module').then(m => m.SearchFilteringPageModule) },
-  { path: 'booking-list', loadChildren: () => import('./pages/booking-list/booking-list.module').then(m => m.BookingListPageModule) },
+  /*{ path: 'booking-list', loadChildren: () => import('./pages/booking-list/booking-list.module').then(m => m.BookingListPageModule) },
   { path: 'booking-detail', loadChildren: () => import('./pages/booking-detail/booking-detail.module').then(m => m.BookingDetailPageModule) },
   { path: 'routes', loadChildren: () => import('./pages/routes/routes.module').then(m => m.RoutesPageModule) },
   { path: 'route-detail', loadChildren: () => import('./pages/route-detail/route-detail.module').then(m => m.RouteDetailPageModule) },
@@ -54,10 +54,10 @@ const routes: Routes = [
   { path: 'edit-products', loadChildren: () => import('./pages/edit-products/edit-products.module').then(m => m.EditProductsPageModule) },
   { path: 'images', loadChildren: () => import('./pages/images/images.module').then(m => m.ImagesPageModule) },
   { path: 'availability-create', loadChildren: () => import('./pages/availability-create/availability-create.module').then(m => m.AvailabilityCreatePageModule) },
-  { path: 'mercado-pago-options', loadChildren: () => import('./pages/mercado-pago-options/mercado-pago-options.module').then(m => m.MercadoPagoOptionsPageModule) },
+  { path: 'mercado-pago-options', loadChildren: () => import('./pages/mercado-pago-options/mercado-pago-options.module').then(m => m.MercadoPagoOptionsPageModule) },*/
   { path: 'forgot-pass', loadChildren: () => import('./pages/forgot-pass/forgot-pass.module').then(m => m.ForgotPassPageModule) },
-  { path: 'new-merchant', loadChildren: () => import('./pages/new-merchant/new-merchant.module').then(m => m.NewMerchantPageModule) },
-  { path: 'zoom-meeting', loadChildren: () => import('./pages/zoom-meeting/zoom-meeting.module').then(m => m.ZoomMeetingPageModule) },
+  /*{ path: 'new-merchant', loadChildren: () => import('./pages/new-merchant/new-merchant.module').then(m => m.NewMerchantPageModule) },
+  { path: 'zoom-meeting', loadChildren: () => import('./pages/zoom-meeting/zoom-meeting.module').then(m => m.ZoomMeetingPageModule) },*/
 ];
 
 @NgModule({
