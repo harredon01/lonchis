@@ -23,12 +23,13 @@ export class ChatRoomPage implements OnInit {
     public tabBarElement: any;
     public input: string = '';
     loading: any;
-    public backButton:boolean = false;
+    public backButton: boolean = false;
     public type: string = '';
     public targetId: string = '';
     public objectId: string = '';
     public lastId: any = null;
     public isNew: boolean = true;
+    public willContinue: boolean = true;
     paymentsGetStartString = '';
     avatar = 'assets/avatar/Dylan.png';
     paymentsErrorString = '';
@@ -63,7 +64,9 @@ export class ChatRoomPage implements OnInit {
                 }
                 this.targetId = this.friend.id;
                 this.objectId = this.friend.id;
-                this.getMessages(true);
+                this.page = 0;
+                this.messages=[];
+                this.getMessages(true, false);
             }
         } else {
             paramSent = {"type": "platform", "objectId": "food"};
@@ -78,21 +81,36 @@ export class ChatRoomPage implements OnInit {
             this.getSupportAgent(typeObject, objectId);
         }
         console.log("onPageWillEnter");
-        this.events.subscribe('notification:received', (data:any) => {
-            console.log("result warnshoov",data.notification);
+        this.events.subscribe('notification:received', (data: any) => {
+            console.log("result warnshoov", data.notification);
             this.receiveMessage(data.notification);
         });
-        this.events.publish('app:updateNotifsWeb',{iterations:500, interval:5000} );
+        this.willContinue = true;
         this.page = 0;
         console.log("using ionViewDidEnter", this.lastId);
         console.log("Friend", this.friend);
+        let vm = this;
+        setTimeout(() => {
+            vm.recurringMessage();
+        }, 5000);
     }
 
     ionViewDidLeave() {
         console.log("onPageWillLeave");
-        this.events.publish('app:stopNotifsWeb',{});
+        this.events.publish('app:stopNotifsWeb', {});
+        this.willContinue = false;
         //this.tabBarElement.style.display = 'flex';
         this.events.destroy('notification:received');
+    }
+    recurringMessage() {
+        this.getMessages(true, true);
+        if (this.willContinue) {
+            let vm = this;
+            setTimeout(() => {
+                vm.recurringMessage();
+            }, 30000);
+        }
+
     }
 
     checkAddMessage(id) {
@@ -117,22 +135,30 @@ export class ChatRoomPage implements OnInit {
             this.spinnerDialog.hide();
         }
     }
-    getMessages(scroll) {
-        this.page++;
-        this.showLoader();
+    getMessages(scroll, update) {
+        if (!update) {
+            this.showLoader();
+        }
         let where = "";
         if (this.type == "user_message") {
             where = "type=user&to_id=" + this.objectId + "&page=" + this.page
         } else if (this.type == "group_message") {
             where = "type=group&to_id=" + this.objectId + "&page=" + this.page
         }
-        //        if (this.lastId) {
-        //            console.log("using id", this.lastId);
-        //            where = where + "&id_after=" + this.lastId;
-        //        } 
+        if (update && this.lastId) {
+            if (this.type == "user_message") {
+                where = "type=user&to_id=" + this.objectId + "&page=1&id_after=" + this.lastId;
+            } else if (this.type == "group_message") {
+                where = "type=group&to_id=" + this.objectId + "&page=1&id_after=" + this.lastId;
+            }
+        } else {
+            this.page++;
+        }
 
         this.chats.getServerChatDetail(where).subscribe((results: any) => {
-            this.dismissLoader();
+            if (!update) {
+                this.dismissLoader();
+            }
             let data = results.data;
             for (let msg in data) {
                 let check = this.checkAddMessage(data[msg].id);
@@ -197,7 +223,9 @@ export class ChatRoomPage implements OnInit {
                 }
                 this.targetId = this.friend.id;
                 this.objectId = this.friend.id;
-                this.getMessages(true);
+                this.page = 0;
+                this.messages=[];
+                this.getMessages(true, false);
             }
         }, (err) => {
             this.dismissLoader();
@@ -214,8 +242,9 @@ export class ChatRoomPage implements OnInit {
         console.log('Begin async operation', this.messagemore);
         if (this.messagemore) {
             this.messagemore = false;
+            let vm = this;
             setTimeout(() => {
-                this.getMessages(false);
+                vm.getMessages(false, false);
                 console.log('Async operation has ended');
                 infiniteScroll.target.complete();
             }, 500);
@@ -241,7 +270,7 @@ export class ChatRoomPage implements OnInit {
 
         let activeView = this.router.url;
         console.log("getActive", activeView);
-        if (activeView == "tabs/chat") {
+        if (activeView == "tabs/chat-room") {
             if (notification.from_id == this.friend.id) {
                 let message: Message = new Message({});
                 message.to = 'me';
