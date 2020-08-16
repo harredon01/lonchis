@@ -294,7 +294,10 @@ export class CheckoutOptionsPayuPage implements OnInit {
     transactionResponse(transaction, paid) {
         this.dismissLoader();
         console.log("after payCreditCard");
-        let total = this.orderData.currentOrder.total;
+        let total = null;
+        if(this.orderData.currentOrder){
+            total = this.orderData.currentOrder.total;
+        }
         this.orderData.clearOrder();
         let vm = this;
         setTimeout(function () {vm.user.postLogin();}, 1000);

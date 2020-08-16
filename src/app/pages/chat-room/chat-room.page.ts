@@ -161,6 +161,11 @@ export class ChatRoomPage implements OnInit {
             }
             let data = results.data;
             for (let msg in data) {
+                if(update){
+                    if(this.userData._user.id==data[msg].user_id){
+                        continue;
+                    }
+                }
                 let check = this.checkAddMessage(data[msg].id);
                 if (check) {
                     let message: Message = new Message({});
@@ -255,8 +260,12 @@ export class ChatRoomPage implements OnInit {
     }
 
     scrollToBottom() {
+        let vm = this;
         setTimeout(() => {
-            this.content.scrollToBottom(300);
+            vm.content.scrollToBottom(300);
+                setTimeout(() => {
+                vm.content.scrollToBottom(300);
+            }, 1000);
         }, 400);
     }
 
@@ -270,9 +279,10 @@ export class ChatRoomPage implements OnInit {
 
         let activeView = this.router.url;
         console.log("getActive", activeView);
-        if (activeView == "tabs/chat-room") {
+        if (activeView.includes("chat")) {
             if (notification.from_id == this.friend.id) {
                 let message: Message = new Message({});
+                message.id = notification.id;
                 message.to = 'me';
                 message.to_id = notification.user_id;
                 message.from_id = notification.from_id;
