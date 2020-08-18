@@ -13,6 +13,7 @@ import {UserDataService} from '../../services/user-data/user-data.service';
 import {CategoriesService} from '../../services/categories/categories.service';
 import {Merchant} from '../../models/merchant';
 import {ApiService} from '../../services/api/api.service';
+import {Router} from '@angular/router';
 @Component({
     selector: 'app-merchant-listing',
     templateUrl: './merchant-listing.page.html',
@@ -41,6 +42,7 @@ export class MerchantListingPage implements OnInit {
         public mapData: MapDataService,
         public categories: CategoriesService,
         public merchantsServ: MerchantsService,
+        public router: Router,
         public toastCtrl: ToastController,
         public modalCtrl: ModalController,
         public loadingCtrl: LoadingController,
@@ -48,9 +50,16 @@ export class MerchantListingPage implements OnInit {
         public api: ApiService,
         private spinnerDialog: SpinnerDialog) {
         this.category = this.activatedRoute.snapshot.paramMap.get('categoryId');
-        let paramsContainer = this.params.getParams();
         if (this.userData._user) {
-            this.urlSearch = 'tabs/home/categories/' + this.category + '/merchant/';
+            let activeView = this.router.url;
+            console.log("getActive", activeView);
+            if (activeView.includes("settings")) {
+                this.typeSearch = "own";
+                this.urlSearch = 'tabs/settings/merchants/';
+            } else {
+                this.urlSearch = 'tabs/home/categories/' + this.category + '/merchant/';
+            }
+
         } else {
             this.urlSearch = 'home/' + this.category + '/merchant/';
         }
@@ -190,7 +199,7 @@ export class MerchantListingPage implements OnInit {
             searchObj = this.merchantsServ.getNearbyMerchants(this.location);
         } else if (this.typeSearch == "own") {
             let query = "includes=availabilities&page=" + this.page + "&owner_id=" + this.userData._user.id;
-            searchObj = this.merchantsServ.getMerchants(query);
+            searchObj = this.merchantsServ.getMerchantsPrivate(query);
         }
         searchObj.subscribe((data: any) => {
             if (this.page == 1) {

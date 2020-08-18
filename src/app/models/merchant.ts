@@ -32,6 +32,9 @@ export class Merchant {
             // @ts-ignore
             this[f] = fields[f];
         }
+        if(!this.attributes){
+            this.attributes=[];
+        }
         if (this.availabilities.length > 0) {
             let date2 = new Date();
             let daynum = date2.getDay();

@@ -50,6 +50,15 @@ export class MerchantsService {
         let seq = this.api.get(url);
         return seq;
     }
+    getMerchantsPrivate(where: string) {
+        let url = "/private/merchants";
+
+        if (where) {
+            url = url + "?" + where;
+        }
+        let seq = this.api.get(url);
+        return seq;
+    }
     getNearbyMerchants(data: any) {
         let url = "/merchants/nearby";
         let seq = this.api.get(url, data);
