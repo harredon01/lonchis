@@ -288,7 +288,12 @@ export class MercadoPagoPage implements OnInit {
                 if (status !== 200) {
                     console.log("Error", response)
                 } else {
-                    this.installments = response[0].payer_costs;
+                    let installments = response[0].payer_costs;
+                    for(let item in installments){
+                        installments[item].recommended_message = installments[item].recommended_message.replace("cuota ", "");
+                        installments[item].recommended_message = installments[item].recommended_message.replace("cuotas ", "");
+                    }
+                    this.installments = installments;
                     this.issuerId = response[0].issuer.id;
                     console.log("Issuer id");
                     console.log("Exito", response)

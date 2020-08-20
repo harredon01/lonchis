@@ -43,30 +43,7 @@ export class AvailabilitiesPage implements OnInit {
 
         this.getItems();
     }
-    setOrder(item) {
-        if (item.range == 'sunday') {
-            item.order = 0;
-        }
-        if (item.range == 'monday') {
-            item.order = 1;
-        }
-        if (item.range == 'tuesday') {
-            item.order = 2;
-        }
-        if (item.range == 'wednesday') {
-            item.order = 3;
-        }
-        if (item.range == 'thursday') {
-            item.order = 4;
-        }
-        if (item.range == 'friday') {
-            item.order = 5;
-        }
-        if (item.range == 'saturday') {
-            item.order = 6;
-        }
-        return item;
-    }
+
     getItems() {
         this.page++
         this.showLoader();
@@ -77,9 +54,7 @@ export class AvailabilitiesPage implements OnInit {
             console.log("after getItems", data);
             let results = data.data;
             for (let one in results) {
-
                 let container = new Availability(results[one]);
-                container = this.setOrder(container);
                 this.currentItems.push(container);
             }
             this.currentItems.sort((a, b) => (a.order > b.order) ? 1 : -1)
@@ -159,22 +134,24 @@ export class AvailabilitiesPage implements OnInit {
     }
 
     async editAvailability(container: any) {
+        this.params.setParams(container);
         let addModal = await this.modalCtrl.create({
-            component: AvailabilityCreatePage,
-            componentProps: container
+            component: AvailabilityCreatePage
         });
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
         if (data) {
             console.log("Process complete, address created", data);
-            let container = new Availability(data);
-            container = this.setOrder(container);
-            this.currentItems.push(container);
+            this.currentItems.splice(this.currentItems.indexOf(container), 1);
+            let results = new Availability(data);
+            this.currentItems.push(results);
             this.currentItems.sort((a, b) => (a.order > b.order) ? 1 : -1)
 
         }
     }
-    openItem(item: Availability) {
+    openItem(item: any) {
+        item.object_id = this.merchant;
+        item.type = "Merchant";
         this.editAvailability(item);
     }
     createItem() {

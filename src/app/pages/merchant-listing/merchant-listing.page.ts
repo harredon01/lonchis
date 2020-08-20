@@ -196,6 +196,7 @@ export class MerchantListingPage implements OnInit {
         } else if (this.typeSearch == "text") {
             searchObj = this.merchantsServ.searchMerchants(this.textSearch + "&includes=availabilities&page=" + this.page);
         } else if (this.typeSearch == "nearby") {
+            this.location.includes = 'availabilities';
             searchObj = this.merchantsServ.getNearbyMerchants(this.location);
         } else if (this.typeSearch == "own") {
             let query = "includes=availabilities&page=" + this.page + "&owner_id=" + this.userData._user.id;

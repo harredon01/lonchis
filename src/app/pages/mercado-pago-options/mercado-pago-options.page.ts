@@ -362,7 +362,12 @@ export class MercadoPagoOptionsPage implements OnInit {
                     console.log("Error", response)
                 } else {
                     console.log("Get installments",response);
-                    this.installments = response[0].payer_costs;
+                    let installments = response[0].payer_costs;
+                    for(let item in installments){
+                        installments[item].recommended_message = installments[item].recommended_message.replace("cuota ", "");
+                        installments[item].recommended_message = installments[item].recommended_message.replace("cuotas ", "");
+                    }
+                    this.installments = installments;
                     if (this.installments.length>0){
                         console.log("Patching",this.installments[0].installments);
                         this.payerForm3.patchValue({installmentsSelected: this.installments[0].installments });

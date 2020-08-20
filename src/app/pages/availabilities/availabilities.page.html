@@ -19,14 +19,8 @@
     
     <ion-list>
         <ion-item-sliding *ngFor="let item of currentItems">
-            <ion-item class="floating">
-                <h2>{{ 'AVAILABILITIES.RANGE' | translate }}: <span *ngIf="item.range == 'sunday'">{{ 'DAYS.SUNDAY' | translate }}</span>
-                    <span *ngIf="item.range == 'monday'">{{ 'DAYS.MONDAY' | translate }}</span>
-                    <span *ngIf="item.range == 'tuesday'">{{ 'DAYS.TUESDAY' | translate }}</span>
-                    <span *ngIf="item.range == 'wednesday'">{{ 'DAYS.WEDNESDAY' | translate }}</span>
-                    <span *ngIf="item.range == 'thursday'">{{ 'DAYS.THURSDAY' | translate }}</span>
-                    <span *ngIf="item.range == 'friday'">{{ 'DAYS.FRIDAY' | translate }}</span>
-                    <span *ngIf="item.range == 'saturday'">{{ 'DAYS.SATURDAY' | translate }}</span></h2>
+            <ion-item class="floating" (click)="openItem(item)">
+                <h2>{{ 'AVAILABILITIES.RANGE' | translate }}: <span>{{ 'DAYS.'+item.range.toUpperCase() | translate }}</span></h2>
                 <p>{{ 'AVAILABILITIES.FROM' | translate }}: {{item.from }}</p>
                 <p>{{ 'AVAILABILITIES.TO' | translate }}: {{item.to }}</p>
             </ion-item>

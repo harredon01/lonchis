@@ -3,21 +3,21 @@
         <ion-title>{{ 'AVAILABILITY_CREATE.TITLE' | translate }}</ion-title>
         <ion-buttons class="my-addresses__button my-addresses__button--left" slot="secondary">
             <ion-button (click)="cancel()">
-                <ion-icon class="close-button" name="md-close" showWhen="android,windows"></ion-icon>
+                <ion-icon name="close-circle-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
         <ion-buttons class="my-addresses__button my-addresses__button--right" slot="primary">
             <ion-button (click)="done()" [disabled]="!isReadyToSave" strong>
-                <span class="done-button" color="primary"></span>
-                <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <div class="my-addresses__wrapper">
+    <div class="my-addresses__wrapper pr15 pl15">
         <form [formGroup]="form" (ngSubmit)="done()">
+            <input type="hidden" formControlName="id" />
             <input type="hidden" formControlName="object_id" />
             <input type="hidden" formControlName="type" />
             <ion-list>
@@ -44,10 +44,8 @@
                 <ion-item *ngIf="!form.controls.to.valid  && (form.controls.to.dirty || submitAttempt)">
                     <p class="error-message">{{ 'AVAILABILITY_CREATE.TO_ERROR' | translate }}</p>
                 </ion-item>
-                <ion-item>
-                    <ion-button full type="submit">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
-                </ion-item>
             </ion-list>
+            <ion-button type="submit" class="right m15">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
         </form>
     </div>
 </ion-content>

@@ -105,13 +105,13 @@ export class MerchantDetailPage implements OnInit {
             this.params.setParams({"merchant_id": this.merchant.id});
             if (this.userData._user) {
                 if (data == "Shipping") {
-                    this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + this.merchant);
+                    this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + this.merchant.id);
                 } else {
                     this.navCtrl.navigateForward('tabs/home/checkout/prepare');
                 }
             } else {
                 if (data == "Shipping") {
-                    this.drouter.addPages('tabs/home/checkout/shipping/' + this.merchant);
+                    this.drouter.addPages('tabs/home/checkout/shipping/' + this.merchant.id);
                 } else {
                     this.drouter.addPages('tabs/home/checkout/prepare');
                 }

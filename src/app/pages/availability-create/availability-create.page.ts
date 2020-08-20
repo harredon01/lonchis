@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, NavParams, LoadingController} from '@ionic/angular';
+import {NavController, ToastController, ModalController, LoadingController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {BookingService} from '../../services/booking/booking.service';
+import {ParamsService} from '../../services/params/params.service';
 
 @Component({
     selector: 'app-availability-create',
@@ -26,7 +27,7 @@ export class AvailabilityCreatePage implements OnInit {
         public booking: BookingService,
         public loadingCtrl: LoadingController,
         public translateService: TranslateService,
-        public navParams: NavParams,
+        public params: ParamsService,
         private spinnerDialog: SpinnerDialog) {
         this.days = []
         this.submitAttempt = false;
@@ -67,32 +68,39 @@ export class AvailabilityCreatePage implements OnInit {
             from: ['', Validators.required],
             to: ['', Validators.required],
             type: ['', Validators.required],
-            object_id: ['']
+            object_id: ['', Validators.required],
+            id: ['']
         });
-        let address_id: string = navParams.get('id');
-        if (address_id) {
-            let container = {
-                range: navParams.get('range'),
-                from: navParams.get('from'),
-                to: navParams.get('to'),
-                object_id: navParams.get('object_id'),
-                type: navParams.get('type'),
-            };
-            console.log("Setting form values: ", container);
-            this.isReadyToSave = true;
-            this.form.setValue(container);
-
-        } else {
-            let container = {
-                range: "",
-                from: "",
-                to: "",
-                object_id: navParams.get('object_id'),
-                type: navParams.get('type'),
-            };
-            console.log("Setting form values: ", container);
-            this.isReadyToSave = true;
-            this.form.setValue(container);
+        let container = this.params.getParams();
+        if (container) {
+            if (container.id) {
+                let today = new Date();
+                let fromD = new Date(today.getFullYear() + "/" + (1 + today.getMonth()) + "/" + today.getDate() + " " + container.from);
+                let toD = new Date(today.getFullYear() + "/" + (1 + today.getMonth()) + "/" + today.getDate() + " " + container.to);
+                let data = {
+                    id: container.id,
+                    range: container.range,
+                    from: fromD.toISOString(),
+                    to: toD.toISOString(),
+                    object_id: container.object_id,
+                    type: container.type,
+                };
+                console.log("Setting form values: ", data);
+                this.isReadyToSave = true;
+                this.form.setValue(data);
+            } else {
+                let data = {
+                    id: null,
+                    range: "",
+                    from: "",
+                    to: "",
+                    object_id: container.object_id,
+                    type: container.type,
+                };
+                console.log("Setting form values: ", data);
+                this.isReadyToSave = true;
+                this.form.setValue(data);
+            }
         }
         // Watch the form for changes, and
         this.form.valueChanges.subscribe((v) => {
@@ -115,20 +123,52 @@ export class AvailabilityCreatePage implements OnInit {
             this.spinnerDialog.hide();
         }
     }
+    formatAMPM(date: Date) {
+        var hours = date.getHours();
+        let minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        let Strminutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + Strminutes + ' ' + ampm;
+        return strTime;
+    }
     /**
            * Send a POST request to our signup endpoint with the data
            * the user entered on the form.
            */
     saveAvailability(availability: any) {
-        this.submitAttempt = true;
         console.log("saveavailability");
-        if (!this.form.valid) {return;}
-
         return new Promise((resolve, reject) => {
             console.log("Save availability", availability);
             if (availability) {
                 this.showLoader();
-                
+                let today = new Date();
+                let offset = today.getTimezoneOffset() / 60;
+                if (availability.from.includes("-0" + offset + ":00")) {
+                    availability.from = availability.from.replace("-0" + offset + ":00", "");
+                } else if (availability.from.includes("Z")) {
+                    availability.from = availability.from.replace("T", ' ');
+                    availability.from = availability.from.split(".")[0];
+                    let avail = new Date(availability.from);
+                    avail = new Date(avail.getTime() - avail.getTimezoneOffset() * 60000);
+                    availability.from = this.formatAMPM(avail);
+                }
+                if (availability.from.includes(".")) {
+                    availability.from = availability.from.split(".")[0];
+                }
+                if (availability.to.includes("-0" + offset + ":00")) {
+                    availability.to = availability.to.replace("-0" + offset + ":00", "");
+                } else if (availability.to.includes("Z")) {
+                    availability.to = availability.to.replace("T", ' ');
+                    availability.to = availability.to.split(".")[0];
+                    let avail = new Date(availability.to);
+                    avail = new Date(avail.getTime() - avail.getTimezoneOffset() * 60000);
+                    availability.to = this.formatAMPM(avail);
+                }
+                if (availability.to.includes(".")) {
+                    availability.to = availability.to.split(".")[0];
+                }
                 this.booking.saveOrCreateAvailability(availability).subscribe((resp: any) => {
                     this.dismissLoader();
                     console.log("Save Address result", resp);
@@ -162,6 +202,7 @@ export class AvailabilityCreatePage implements OnInit {
      * back to the presenter.
      */
     done() {
+        this.submitAttempt = true;
         if (!this.form.valid) {return;}
         this.saveAvailability(this.form.value).then((value) => {
             console.log("saveAvailability result", value);
