@@ -9,100 +9,102 @@
 
 
 <ion-content class="my-account">
-    <form  class="my-account__form pr20 pl20" (submit)="doUpdate()" [formGroup]="registrationForm">
-        <input type="hidden" formControlName="id" />
-        <ion-list>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">
-                    <span class="text--bold">
-                        {{ 'USER.FIRSTNAME' | translate }}
-                    </span>
-                </ion-label>
-                <ion-input type="text" formControlName="firstName"></ion-input>
-            </ion-item>
-            <ion-item  class="form__item" *ngIf="!registrationForm.controls.firstName.valid  && (registrationForm.controls.firstName.dirty || submitAttempt)">
-                       <p class="error-message">{{ 'USER.FIRSTNAME_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">
-                    <span class="text--bold">
-                        {{ 'USER.LASTNAME' | translate }}
-                    </span>
-                </ion-label>
-                <ion-input type="text" formControlName="lastName"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.lastName.valid  && (registrationForm.controls.lastName.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.LASTNAME_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">
-                    <span class="text--bold">
-                        {{ 'USER.EMAIL' | translate }}
-                    </span>
-                </ion-label>
-                <ion-input type="email" formControlName="email"></ion-input>
-            </ion-item>
-            <ion-item  class="form__item" *ngIf="!registrationForm.controls.email.valid  && (registrationForm.controls.email.dirty || submitAttempt)">
-                       <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">
-                    <span class="text--bold">
-                        {{ 'USER.AREA_CODE' | translate }}
-                    </span>
-                </ion-label> 
-                <ion-input type="tel" formControlName="area_code"></ion-input>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">{{ 'USER.MOBILE' | translate }}</ion-label>
-                <ion-input class="form__input" type="tel" formControlName="cellphone"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.cellphone.valid  && (registrationForm.controls.cellphone.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.MOBILE_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">
-                    <span class="text--bold">
-                        {{ 'USER.DOC_TYPE' | translate }}
-                    </span>
-                </ion-label>
-                <ion-select formControlName="docType">
-                    <ion-select-option value="CC">Cédula de ciudadanía</ion-select-option>
-                    <ion-select-option value="CE">Cédula de extranjería.</ion-select-option>
-                    <ion-select-option value="NIT">Número de Identificación Tributario</ion-select-option>
-                    <ion-select-option value="TI">Tarjeta de Identidad</ion-select-option>
-                    <ion-select-option value="PP">Pasaporte</ion-select-option>
-                    <ion-select-option value="IDC">Identificador único de cliente</ion-select-option>
-                    <ion-select-option value="CEL">línea del móvil</ion-select-option>
-                    <ion-select-option value="RC">Registro civil de nacimiento.</ion-select-option>
-                    <ion-select-option value="DE">Documento de identificación extranjero</ion-select-option>
-                </ion-select>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.docType.valid  && (registrationForm.controls.docType.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.DOC_TYPE_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding"> 
-                <ion-label position="floating">
-                    <span class="text--bold">
-                        {{ 'USER.ID' | translate }}
-                    </span>
-                </ion-label>
-                <ion-input type="TEXT" formControlName="docNum"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.docNum.valid  && (registrationForm.controls.docNum.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
-            </ion-item>
-        </ion-list>
-        <ion-button class="btn-secondary right m10" type="submit">{{ 'INPUTS.UPDATE' | translate }}</ion-button>
-    </form>
-    <div class="clear"></div>
-    <ion-item style="padding-left:17px">
-        <p>{{ 'MY_ACCOUNT.LANGUAGE' | translate }}</p>
-    </ion-item>
-    <ion-item class="ion-no-padding">
-        <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()">
-            <ion-select-option value="es">Español</ion-select-option>
-            <ion-select-option value="en">English</ion-select-option>
-        </ion-select>
-    </ion-item>
+    <div class="webcont">
+        <form  class="my-account__form pr20 pl20" (submit)="doUpdate()" [formGroup]="registrationForm">
+            <input type="hidden" formControlName="id" />
+            <ion-list>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">
+                        <span class="text--bold">
+                            {{ 'USER.FIRSTNAME' | translate }}
+                        </span>
+                    </ion-label>
+                    <ion-input type="text" formControlName="firstName"></ion-input>
+                </ion-item>
+                <ion-item  class="form__item" *ngIf="!registrationForm.controls.firstName.valid  && (registrationForm.controls.firstName.dirty || submitAttempt)">
+                           <p class="error-message">{{ 'USER.FIRSTNAME_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">
+                        <span class="text--bold">
+                            {{ 'USER.LASTNAME' | translate }}
+                        </span>
+                    </ion-label>
+                    <ion-input type="text" formControlName="lastName"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.lastName.valid  && (registrationForm.controls.lastName.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.LASTNAME_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">
+                        <span class="text--bold">
+                            {{ 'USER.EMAIL' | translate }}
+                        </span>
+                    </ion-label>
+                    <ion-input type="email" formControlName="email"></ion-input>
+                </ion-item>
+                <ion-item  class="form__item" *ngIf="!registrationForm.controls.email.valid  && (registrationForm.controls.email.dirty || submitAttempt)">
+                           <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">
+                        <span class="text--bold">
+                            {{ 'USER.AREA_CODE' | translate }}
+                        </span>
+                    </ion-label> 
+                    <ion-input type="tel" formControlName="area_code"></ion-input>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">{{ 'USER.MOBILE' | translate }}</ion-label>
+                    <ion-input class="form__input" type="tel" formControlName="cellphone"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.cellphone.valid  && (registrationForm.controls.cellphone.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.MOBILE_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">
+                        <span class="text--bold">
+                            {{ 'USER.DOC_TYPE' | translate }}
+                        </span>
+                    </ion-label>
+                    <ion-select formControlName="docType">
+                        <ion-select-option value="CC">Cédula de ciudadanía</ion-select-option>
+                        <ion-select-option value="CE">Cédula de extranjería.</ion-select-option>
+                        <ion-select-option value="NIT">Número de Identificación Tributario</ion-select-option>
+                        <ion-select-option value="TI">Tarjeta de Identidad</ion-select-option>
+                        <ion-select-option value="PP">Pasaporte</ion-select-option>
+                        <ion-select-option value="IDC">Identificador único de cliente</ion-select-option>
+                        <ion-select-option value="CEL">línea del móvil</ion-select-option>
+                        <ion-select-option value="RC">Registro civil de nacimiento.</ion-select-option>
+                        <ion-select-option value="DE">Documento de identificación extranjero</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.docType.valid  && (registrationForm.controls.docType.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.DOC_TYPE_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding"> 
+                    <ion-label position="floating">
+                        <span class="text--bold">
+                            {{ 'USER.ID' | translate }}
+                        </span>
+                    </ion-label>
+                    <ion-input type="TEXT" formControlName="docNum"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.docNum.valid  && (registrationForm.controls.docNum.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
+                </ion-item>
+            </ion-list>
+            <ion-button class="btn-secondary right m10" type="submit">{{ 'INPUTS.UPDATE' | translate }}</ion-button>
+        </form>
+        <div class="clear"></div>
+        <ion-item style="padding-left:17px">
+            <p>{{ 'MY_ACCOUNT.LANGUAGE' | translate }}</p>
+        </ion-item>
+        <ion-item class="ion-no-padding">
+            <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()">
+                <ion-select-option value="es">Español</ion-select-option>
+                <ion-select-option value="en">English</ion-select-option>
+            </ion-select>
+        </ion-item>
+    </div>
 </ion-content>

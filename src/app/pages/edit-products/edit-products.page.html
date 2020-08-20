@@ -8,246 +8,240 @@
 </ion-header>
 
 <ion-content>
-    <ion-card>
-        <ion-card-content class="info" >
-            <p>{{ 'EDIT_PRODUCTS.DESC1' | translate }}</p>
-            <p>{{ 'EDIT_PRODUCTS.DESC2' | translate }} </p>
-            <p>{{ 'EDIT_PRODUCTS.DESC3' | translate }} </p>
-            <p>{{ 'EDIT_PRODUCTS.DESC4' | translate }} </p>
-        </ion-card-content>
-    </ion-card>
-    <div *ngIf="!isNew">
-        <form [formGroup]="formP" (ngSubmit)="saveProduct()" *ngIf="!editingVariant"  class="mr10 ml10">
-            <input type="hidden" formControlName="id" />
-            <ion-list>
+    <div class="webcont">
+        <ion-card>
+            <ion-card-content class="info" >
+                <p>{{ 'EDIT_PRODUCTS.DESC1' | translate }}</p>
+                <p>{{ 'EDIT_PRODUCTS.DESC2' | translate }} </p>
+                <p>{{ 'EDIT_PRODUCTS.DESC3' | translate }} </p>
+                <p>{{ 'EDIT_PRODUCTS.DESC4' | translate }} </p>
+            </ion-card-content>
+        </ion-card>
+        <div *ngIf="!isNew">
+            <form [formGroup]="formP" (ngSubmit)="saveProduct()" *ngIf="!editingVariant"  class="mr10 ml10">
+                <input type="hidden" formControlName="id" />
+                <ion-list>
+                    <ion-item>
+                        <h3>{{ 'EDIT_PRODUCTS.SUBTITLE' | translate }}</h3>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.NAME' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="name"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formP.controls.name.valid  && (formP.controls.name.dirty || submitAttemptP)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.NAME_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="description"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formP.controls.description.valid  && (formP.controls.description.dirty || submitAttemptP)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item class="right">
+                        <ion-button color="danger" (click)="deleteProduct()" *ngIf="!isNew">
+                            {{ 'INPUTS.DELETE' | translate }}
+                        </ion-button>
+                        <ion-button color="secondary" (click)="createVariant()" *ngIf="!isNew">
+                            {{ 'EDIT_PRODUCTS.CREATE_VARIANT' | translate }}
+                        </ion-button>
+                        <ion-button full type="submit" *ngIf="formP.controls.name.dirty||formP.controls.description.dirty">{{ 'MAP.DONE_SHIPPING' | translate}}</ion-button>
+                    </ion-item>
+                </ion-list>
+            </form>
+            <h3 class="ml15">{{ 'EDIT_PRODUCTS.PURCHASE_TITLE' | translate }}</h3>
+            <ion-list *ngIf="!editingVariant">
+                <ion-card *ngFor="let item of variants">
+                    <ion-card-header>
+                        <ion-card-title>{{item.sku}}</ion-card-title>
+                        <ion-card-subtitle>{{item.description}}</ion-card-subtitle>
+                    </ion-card-header>
+                    <ion-card-content class="info">
+                        <p>{{ 'EDIT_PRODUCTS.PRICE' | translate }}: {{item.price | currency}}</p>
+                        <p>{{ 'EDIT_PRODUCTS.SALE' | translate }}: {{item.sale | currency}}</p>
+                        <p>{{ 'EDIT_PRODUCTS.TAX' | translate }}: {{item.tax | currency}}</p>
+                        <p>{{ 'EDIT_PRODUCTS.COST' | translate }}: {{item.cost | currency}}</p>
+                        <p>{{ 'EDIT_PRODUCTS.QUANTITY' | translate }}: {{item.quantity}}</p>
+                        <ion-button color="danger" class="right" (click)="deleteVariant(item.id)">
+                            {{ 'INPUTS.DELETE' | translate }}
+                        </ion-button>
+                        <ion-button color="primary" class="right" (click)="editVariant(item)">
+                            {{ 'INPUTS.EDIT' | translate }}
+                        </ion-button>
+                        <div class="clear"></div>
+                    </ion-card-content>
+                </ion-card>
+            </ion-list>
+            <form [formGroup]="formV" (ngSubmit)="saveVariant()" *ngIf="editingVariant" class="mr10 ml10">
+                <input type="hidden" formControlName="id" />
+                <ion-list>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.SKU' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="sku"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formV.controls.sku.valid  && (formV.controls.sku.dirty || submitAttemptV)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.SKU_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION2' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="description"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formV.controls.description.valid  && (formV.controls.description.dirty || submitAttemptV)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION2_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.PRICE' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="price"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formV.controls.price.valid  && (formV.controls.price.dirty || submitAttemptV)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.PRICE_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.SALE' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="sale"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formV.controls.sale.valid  && (formV.controls.sale.dirty || submitAttemptV)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.SALE_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.TAX' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="tax"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formV.controls.tax.valid  && (formV.controls.tax.dirty || submitAttemptV)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.TAX_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'EDIT_PRODUCTS.IS_SHIPPABLE' | translate }}</ion-label>
+                        <ion-checkbox formControlName="is_shippable"></ion-checkbox>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'EDIT_PRODUCTS.IS_ON_SALE' | translate }}</ion-label>
+                        <ion-checkbox formControlName="is_on_sale"></ion-checkbox>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'EDIT_PRODUCTS.IS_DIGITAL' | translate }}</ion-label>
+                        <ion-checkbox formControlName="is_digital"></ion-checkbox>
+                    </ion-item>
+                    <ion-item *ngIf="!formV.get('is_digital').value">
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.QUANTITY' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="quantity"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formV.controls.quantity.valid  && (formV.controls.quantity.dirty || submitAttemptV)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.QUANTITY_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item class="right">
+                        <ion-button full type="submit">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
+                    </ion-item>
+                    <ion-item class="right">
+                        <ion-button color="primary" (click)="cancelEditVariant()">
+                            {{ 'INPUTS.CANCEL' | translate }}
+                        </ion-button>
+                    </ion-item>
+                </ion-list>
+            </form>
+        </div>
+        <div *ngIf="isNew">
+            <p *ngIf="selectingCategory" class="mr10 ml10">{{ 'EDIT_PRODUCTS.SELECT_CATEGORY' | translate }}</p>
+            <ion-list *ngIf="selectingCategory" class="mr10 ml10">
+                <ion-item-sliding *ngFor="let item of categories">
+                    <ion-item (click)="selectCategory(item.id)" >
+                        {{ item.name}}
+                    </ion-item>
+                </ion-item-sliding>
                 <ion-item>
-                    <h3>{{ 'EDIT_PRODUCTS.SUBTITLE' | translate }}</h3>
+                    {{ 'EDIT_PRODUCTS.NEW_CATEGORY' | translate }}
                 </ion-item>
                 <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.NAME' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="name"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formP.controls.name.valid  && (formP.controls.name.dirty || submitAttemptP)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.NAME_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="description"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formP.controls.description.valid  && (formP.controls.description.dirty || submitAttemptP)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION_ERROR' | translate }}</p>
+                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.CATEGORY' | translate }}</ion-label>
+                    <ion-input type="text" name="category" [(ngModel)]="category"></ion-input>
                 </ion-item>
                 <ion-item class="right">
-                    <ion-button color="danger" (click)="deleteProduct()" *ngIf="!isNew">
-                        {{ 'INPUTS.DELETE' | translate }}
-                    </ion-button>
-                    <ion-button color="secondary" (click)="createVariant()" *ngIf="!isNew">
-                        {{ 'EDIT_PRODUCTS.CREATE_VARIANT' | translate }}
-                    </ion-button>
-                    <ion-button full type="submit" *ngIf="formP.controls.name.dirty||formP.controls.description.dirty">{{ 'MAP.DONE_SHIPPING' | translate}}</ion-button>
+                    <ion-button full (click)="addCategory()">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
                 </ion-item>
             </ion-list>
-        </form>
-
-
-        <h3 class="ml15">{{ 'EDIT_PRODUCTS.PURCHASE_TITLE' | translate }}</h3>
-        <ion-list *ngIf="!editingVariant">
-            <ion-card *ngFor="let item of variants">
-                <ion-card-header>
-                    <ion-card-title>{{item.sku}}</ion-card-title>
-                    <ion-card-subtitle>{{item.description}}</ion-card-subtitle>
-                </ion-card-header>
-                <ion-card-content class="info">
-                    <p>{{ 'EDIT_PRODUCTS.PRICE' | translate }}: {{item.price | currency}}</p>
-                    <p>{{ 'EDIT_PRODUCTS.SALE' | translate }}: {{item.sale | currency}}</p>
-                    <p>{{ 'EDIT_PRODUCTS.TAX' | translate }}: {{item.tax | currency}}</p>
-                    <p>{{ 'EDIT_PRODUCTS.COST' | translate }}: {{item.cost | currency}}</p>
-                    <p>{{ 'EDIT_PRODUCTS.QUANTITY' | translate }}: {{item.quantity}}</p>
-                    <ion-button color="danger" class="right" (click)="deleteVariant(item.id)">
-                        {{ 'INPUTS.DELETE' | translate }}
-                    </ion-button>
-                    <ion-button color="primary" class="right" (click)="editVariant(item)">
-                        {{ 'INPUTS.EDIT' | translate }}
-                    </ion-button>
-                    <div class="clear"></div>
-                </ion-card-content>
-
-
-            </ion-card>
-        </ion-list>
-        <form [formGroup]="formV" (ngSubmit)="saveVariant()" *ngIf="editingVariant" class="mr10 ml10">
-            <input type="hidden" formControlName="id" />
-            <ion-list>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.SKU' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="sku"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formV.controls.sku.valid  && (formV.controls.sku.dirty || submitAttemptV)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.SKU_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION2' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="description"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formV.controls.description.valid  && (formV.controls.description.dirty || submitAttemptV)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION2_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.PRICE' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="price"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formV.controls.price.valid  && (formV.controls.price.dirty || submitAttemptV)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.PRICE_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.SALE' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="sale"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formV.controls.sale.valid  && (formV.controls.sale.dirty || submitAttemptV)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.SALE_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.TAX' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="tax"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formV.controls.tax.valid  && (formV.controls.tax.dirty || submitAttemptV)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.TAX_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item >
-                    <ion-label>{{ 'EDIT_PRODUCTS.IS_SHIPPABLE' | translate }}</ion-label>
-                    <ion-checkbox formControlName="is_shippable"></ion-checkbox>
-                </ion-item>
-                <ion-item >
-                    <ion-label>{{ 'EDIT_PRODUCTS.IS_ON_SALE' | translate }}</ion-label>
-                    <ion-checkbox formControlName="is_on_sale"></ion-checkbox>
-                </ion-item>
-                <ion-item >
-                    <ion-label>{{ 'EDIT_PRODUCTS.IS_DIGITAL' | translate }}</ion-label>
-                    <ion-checkbox formControlName="is_digital"></ion-checkbox>
-                </ion-item>
-                <ion-item *ngIf="!formV.get('is_digital').value">
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.QUANTITY' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="quantity"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formV.controls.quantity.valid  && (formV.controls.quantity.dirty || submitAttemptV)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.QUANTITY_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item class="right">
-                    <ion-button full type="submit">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
-                </ion-item>
-                <ion-item class="right">
-                    <ion-button color="primary" (click)="cancelEditVariant()">
-                        {{ 'INPUTS.CANCEL' | translate }}
-                    </ion-button>
-                </ion-item>
-            </ion-list>
-        </form>
+            <form [formGroup]="formPNew" (ngSubmit)="createProduct()" *ngIf="!selectingCategory" class="mr10 ml10">
+                <input type="hidden" formControlName="category_id" />
+                <input type="hidden" formControlName="category_name" />
+                <ion-list>
+                    <ion-item>
+                        <h3>{{ 'EDIT_PRODUCTS.NEW_PRODUCT' | translate }}</h3>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.NAME' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="name"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.name.valid  && (formPNew.controls.name.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.NAME_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="description"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.description.valid  && (formPNew.controls.description.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <h3>{{ 'EDIT_PRODUCTS.NEW_VARIANT' | translate }}</h3>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.SKU' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="sku"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.sku.valid  && (formPNew.controls.sku.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.SKU_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.PRICE' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="price"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.price.valid  && (formPNew.controls.price.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.PRICE_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.SALE' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="sale"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.sale.valid  && (formPNew.controls.sale.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.SALE_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.TAX' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="tax"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.tax.valid  && (formPNew.controls.tax.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.TAX_ERROR' | translate }}</p>
+                    </ion-item>                
+                    <ion-item>
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION2' | translate }}</ion-label>
+                        <ion-input type="text" formControlName="description2"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.description2.valid  && (formPNew.controls.description2.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION2_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'EDIT_PRODUCTS.IS_SHIPPABLE' | translate }}</ion-label>
+                        <ion-checkbox formControlName="is_shippable"></ion-checkbox>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'EDIT_PRODUCTS.IS_ON_SALE' | translate }}</ion-label>
+                        <ion-checkbox formControlName="is_on_sale"></ion-checkbox>
+                    </ion-item>
+                    <ion-item >
+                        <ion-label>{{ 'EDIT_PRODUCTS.IS_DIGITAL' | translate }}</ion-label>
+                        <ion-checkbox formControlName="is_digital"></ion-checkbox>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.get('is_digital').value">
+                        <ion-label position="floating">{{ 'EDIT_PRODUCTS.QUANTITY' | translate }}</ion-label>
+                        <ion-input type="tel" formControlName="quantity"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!formPNew.controls.quantity.valid  && (formPNew.controls.quantity.dirty || submitAttemptPNew)">
+                        <p class="error-message">{{ 'EDIT_PRODUCTS.QUANTITY_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item class="right">
+                        <ion-button full type="submit" class="right">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
+                    </ion-item>
+                </ion-list>
+            </form>
+        </div>
     </div>
-
-    <div *ngIf="isNew">
-        <p *ngIf="selectingCategory" class="mr10 ml10">{{ 'EDIT_PRODUCTS.SELECT_CATEGORY' | translate }}</p>
-        <ion-list *ngIf="selectingCategory" class="mr10 ml10">
-            <ion-item-sliding *ngFor="let item of categories">
-                <ion-item (click)="selectCategory(item.id)" >
-                    {{ item.name}}
-                </ion-item>
-            </ion-item-sliding>
-            <ion-item>
-                {{ 'EDIT_PRODUCTS.NEW_CATEGORY' | translate }}
-            </ion-item>
-            <ion-item>
-                <ion-label position="floating">{{ 'EDIT_PRODUCTS.CATEGORY' | translate }}</ion-label>
-                <ion-input type="text" name="category" [(ngModel)]="category"></ion-input>
-            </ion-item>
-            <ion-item class="right">
-                <ion-button full (click)="addCategory()">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
-            </ion-item>
-        </ion-list>
-        <form [formGroup]="formPNew" (ngSubmit)="createProduct()" *ngIf="!selectingCategory" class="mr10 ml10">
-            <input type="hidden" formControlName="category_id" />
-            <input type="hidden" formControlName="category_name" />
-            <ion-list>
-                <ion-item>
-                    <h3>{{ 'EDIT_PRODUCTS.NEW_PRODUCT' | translate }}</h3>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.NAME' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="name"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.name.valid  && (formPNew.controls.name.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.NAME_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="description"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.description.valid  && (formPNew.controls.description.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION_ERROR' | translate }}</p>
-                </ion-item>
-
-                <ion-item>
-                    <h3>{{ 'EDIT_PRODUCTS.NEW_VARIANT' | translate }}</h3>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.SKU' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="sku"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.sku.valid  && (formPNew.controls.sku.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.SKU_ERROR' | translate }}</p>
-                </ion-item>
-
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.PRICE' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="price"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.price.valid  && (formPNew.controls.price.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.PRICE_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.SALE' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="sale"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.sale.valid  && (formPNew.controls.sale.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.SALE_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.TAX' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="tax"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.tax.valid  && (formPNew.controls.tax.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.TAX_ERROR' | translate }}</p>
-                </ion-item>                
-                <ion-item>
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.DESCRIPTION2' | translate }}</ion-label>
-                    <ion-input type="text" formControlName="description2"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.description2.valid  && (formPNew.controls.description2.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.DESCRIPTION2_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item >
-                    <ion-label>{{ 'EDIT_PRODUCTS.IS_SHIPPABLE' | translate }}</ion-label>
-                    <ion-checkbox formControlName="is_shippable"></ion-checkbox>
-                </ion-item>
-                <ion-item >
-                    <ion-label>{{ 'EDIT_PRODUCTS.IS_ON_SALE' | translate }}</ion-label>
-                    <ion-checkbox formControlName="is_on_sale"></ion-checkbox>
-                </ion-item>
-                <ion-item >
-                    <ion-label>{{ 'EDIT_PRODUCTS.IS_DIGITAL' | translate }}</ion-label>
-                    <ion-checkbox formControlName="is_digital"></ion-checkbox>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.get('is_digital').value">
-                    <ion-label position="floating">{{ 'EDIT_PRODUCTS.QUANTITY' | translate }}</ion-label>
-                    <ion-input type="tel" formControlName="quantity"></ion-input>
-                </ion-item>
-                <ion-item *ngIf="!formPNew.controls.quantity.valid  && (formPNew.controls.quantity.dirty || submitAttemptPNew)">
-                    <p class="error-message">{{ 'EDIT_PRODUCTS.QUANTITY_ERROR' | translate }}</p>
-                </ion-item>
-                <ion-item class="right">
-                    <ion-button full type="submit" class="right">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
-                </ion-item>
-            </ion-list>
-        </form>
-    </div>
-
 </ion-content>

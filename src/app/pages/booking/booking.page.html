@@ -9,53 +9,55 @@
             {{ 'BOOKING.TITLE' | translate }}
         </ion-title>
     </ion-toolbar>
-    <ion-card class="title ml5 mr5 mb15">
 
-        <ion-avatar item-start class="left m10">
-            <ion-img [src]="objectIcon" (ionError)="onError()"></ion-img>
-        </ion-avatar>
-        <h3>{{objectName}}</h3>
-
-    </ion-card>
 </ion-header>
 
 <ion-content class="bg-light">
-    <div class="calender-container" *ngIf="!dateSelected">
-        <ion-card *ngFor="let month of months" class="mr0 ml0">
-            <ion-card-header>
-                <ion-card-title class="tcenter">{{ month.title }}</ion-card-title>
-            </ion-card-header>
+    <div class="webcont" style="width:600px">
+        <ion-card class="title ml5 mr5 mb15">
 
-            <ion-card-content>
-                <div class="calander">
-                    <div class="calander-row"> 
-                        <ion-grid>
-                            <ion-row>
-                                <ion-col *ngFor="let item of month.days" (click)="selectDate(item)" class="p0">
-                                    <div class="day active mb5" [ngClass]="{'green': item.status=='active', 'red': item.status=='closed'}">
-                                        <span>{{item.date | date :'E'}}</span>{{item.date | date :'d'}}
-                                    </div>
-                                </ion-col>
-                            </ion-row>
-                        </ion-grid>
+            <ion-avatar item-start class="left m10">
+                <ion-img [src]="objectIcon" (ionError)="onError()"></ion-img>
+            </ion-avatar>
+            <h3>{{objectName}}</h3>
 
-                    </div>
-                </div>
-            </ion-card-content>
         </ion-card>
-    </div>
-    <div class="ion-padding" *ngIf="dateSelected">
-        <h2>{{ dayName }} {{startDate | date :'mediumDate'}}</h2>
-        <a href="javascript:;" *ngIf="bookingObj" (click)="changeDate()">{{ 'BOOKING.CHANGE_DATE' | translate }}</a>
-        <p *ngIf="!timeSelected">{{ 'BOOKING.AVAILABLE_TIMES' | translate }}:</p>
-        <!--div class="timeing">
-            <ion-row>
-                <ion-col *ngFor="let item of availabilitiesDate"><span>{{item.from}}-{{item.to}}</span></ion-col>
-            </ion-row> 
-        </div-->
-    </div>
-    
-        <ion-list class="time-select" *ngIf="!timeSelected">
+        <div class="calender-container" *ngIf="!dateSelected">
+            <ion-card *ngFor="let month of months" class="mr0 ml0">
+                <ion-card-header>
+                    <ion-card-title class="tcenter">{{ month.title }}</ion-card-title>
+                </ion-card-header>
+
+                <ion-card-content>
+                    <div class="calander">
+                        <div class="calander-row"> 
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col *ngFor="let item of month.days" (click)="selectDate(item)" class="p0">
+                                        <div class="day active mb5" [ngClass]="{'green': item.status=='active', 'red': item.status=='closed'}">
+                                            <span>{{item.date | date :'E'}}</span>{{item.date | date :'d'}}
+                                        </div>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+
+                        </div>
+                    </div>
+                </ion-card-content>
+            </ion-card>
+        </div>
+        <div class="ion-padding" *ngIf="dateSelected">
+            <h2>{{ dayName }} {{startDate | date :'mediumDate'}}</h2>
+            <a href="javascript:;" *ngIf="bookingObj" (click)="changeDate()">{{ 'BOOKING.CHANGE_DATE' | translate }}</a>
+            <p *ngIf="!timeSelected">{{ 'BOOKING.AVAILABLE_TIMES' | translate }}:</p>
+            <!--div class="timeing">
+                <ion-row>
+                    <ion-col *ngFor="let item of availabilitiesDate"><span>{{item.from}}-{{item.to}}</span></ion-col>
+                </ion-row> 
+            </div-->
+        </div>
+
+        <ion-list class="time-select" *ngIf="!timeSelected && dateSelected">
             <ion-item *ngFor="let item of appointmentOptions">
                 <ion-label>{{item.start | date :'h:mm a'}}-{{item.end| date :'h:mm a'}}</ion-label>
                 <ion-button slot="end" (click)="selectSlot(item)">
@@ -63,78 +65,80 @@
                 </ion-button>
             </ion-item>
         </ion-list>
-    <div class="ion-padding" *ngIf="dateSelected">
-        <!--p *ngIf="selectedSpots.length>0">{{ 'BOOKING.OCCUPIED_SLOTS' | translate }}</p>
-        <div class="timeing">
-            <ion-row>
-                <ion-col *ngFor="let item of selectedSpots"><span>{{item.starts_at | date :'h:mm a'}}-{{item.ends_at | date :'h:mm a'}}</span></ion-col>
-            </ion-row>
-        </div-->
-        <div class="difault-form">
-            <ion-item *ngIf="timeSelected">
-                <ion-label>{{ 'BOOKING.START_TIME' | translate }}</ion-label>
-                <p style='color: gray'>{{startDate | date :'h:mm a'}}</p> 
-            </ion-item>
-            <ion-item *ngIf="timeSelected">
-                <a href="javascript:;" (click)="changeTime()">{{ 'BOOKING.CHANGE_TIME' | translate }}</a> 
-            </ion-item>
-            <!--ion-item>
-                <ion-label>{{ 'BOOKING.HOURS' | translate }}</ion-label>
-                <ion-select placeholder="Select One" [(ngModel)]="amount" (ionChange)="selectStart()">
-                    <ion-select-option value="1">1</ion-select-option>
-                    <ion-select-option value="2">2</ion-select-option>
-                    <ion-select-option value="3">3</ion-select-option>
-                    <ion-select-option value="4">4</ion-select-option> 
-                </ion-select>
-            </ion-item>
-            <ion-item>
-                <ion-label>{{ 'BOOKING.START_TIME' | translate }}</ion-label>
-                <ion-datetime display-format="h:mm A" picker-format="h:mm A" [(ngModel)]="startDateS" (ionChange)="selectStart()" display-timezone="cot"></ion-datetime>
-            </ion-item>
-            <ion-item *ngIf="timeSelected">
-                <ion-label>{{ 'BOOKING.END_TIME' | translate }}</ion-label>
-                <p style='color: gray'>{{endDate | date :'h:mm a'}}</p> 
-            </ion-item>
-            <ion-item *ngIf="!bookingObj">
-                <p>{{ 'BOOKING.VIRTUAL_MEETING_DESC' | translate }}</p>
-            </ion-item>
-            <ion-item *ngIf="!bookingObj">
-                <ion-label>{{ 'BOOKING.VIRTUAL_MEETING_LABEL' | translate }}</ion-label>
-                <ion-checkbox [(ngModel)]="virtualMeeting"></ion-checkbox>
-            </ion-item-->
-            <ion-list *ngIf="!bookingObj">
-                <ion-radio-group name="radio-group" (ionChange)="selectRadio($event)">
-                    <ion-item>
-                        <ion-label>{{ 'BOOKING.VIRTUAL_MEETING_LABEL' | translate }}</ion-label>
-                        <ion-radio value="virtual"></ion-radio>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>{{ 'BOOKING.PHYSICAL_MEETING_LABEL' | translate }}</ion-label>
-                        <ion-radio value="physical"></ion-radio>
-                    </ion-item>
-                </ion-radio-group>
+        <div class="ion-padding" *ngIf="dateSelected">
+            <!--p *ngIf="selectedSpots.length>0">{{ 'BOOKING.OCCUPIED_SLOTS' | translate }}</p>
+            <div class="timeing">
+                <ion-row>
+                    <ion-col *ngFor="let item of selectedSpots"><span>{{item.starts_at | date :'h:mm a'}}-{{item.ends_at | date :'h:mm a'}}</span></ion-col>
+                </ion-row>
+            </div-->
+            <div class="difault-form">
+                <ion-item *ngIf="timeSelected">
+                    <ion-label>{{ 'BOOKING.START_TIME' | translate }}</ion-label>
+                    <p style='color: gray'>{{startDate | date :'h:mm a'}}</p> 
+                </ion-item>
+                <ion-item *ngIf="timeSelected">
+                    <a href="javascript:;" (click)="changeTime()">{{ 'BOOKING.CHANGE_TIME' | translate }}</a> 
+                </ion-item>
+                <!--ion-item>
+                    <ion-label>{{ 'BOOKING.HOURS' | translate }}</ion-label>
+                    <ion-select placeholder="Select One" [(ngModel)]="amount" (ionChange)="selectStart()">
+                        <ion-select-option value="1">1</ion-select-option>
+                        <ion-select-option value="2">2</ion-select-option>
+                        <ion-select-option value="3">3</ion-select-option>
+                        <ion-select-option value="4">4</ion-select-option> 
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label>{{ 'BOOKING.START_TIME' | translate }}</ion-label>
+                    <ion-datetime display-format="h:mm A" picker-format="h:mm A" [(ngModel)]="startDateS" (ionChange)="selectStart()" display-timezone="cot"></ion-datetime>
+                </ion-item>
+                <ion-item *ngIf="timeSelected">
+                    <ion-label>{{ 'BOOKING.END_TIME' | translate }}</ion-label>
+                    <p style='color: gray'>{{endDate | date :'h:mm a'}}</p> 
+                </ion-item>
+                <ion-item *ngIf="!bookingObj">
+                    <p>{{ 'BOOKING.VIRTUAL_MEETING_DESC' | translate }}</p>
+                </ion-item>
+                <ion-item *ngIf="!bookingObj">
+                    <ion-label>{{ 'BOOKING.VIRTUAL_MEETING_LABEL' | translate }}</ion-label>
+                    <ion-checkbox [(ngModel)]="virtualMeeting"></ion-checkbox>
+                </ion-item-->
+                <ion-list *ngIf="!bookingObj">
+                    <ion-radio-group name="radio-group" (ionChange)="selectRadio($event)">
+                        <ion-item>
+                            <ion-label>{{ 'BOOKING.VIRTUAL_MEETING_LABEL' | translate }}</ion-label>
+                            <ion-radio value="virtual"></ion-radio>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>{{ 'BOOKING.PHYSICAL_MEETING_LABEL' | translate }}</ion-label>
+                            <ion-radio value="physical"></ion-radio>
+                        </ion-item>
+                    </ion-radio-group>
 
-            </ion-list>
-            <ion-item>
-                <p>{{ 'CART_ITEM.SUBTOTAL' | translate }}: {{ expectedPrice*amount | currency }}</p>
-            </ion-item>
+                </ion-list>
+                <ion-item>
+                    <p>{{ 'CART_ITEM.SUBTOTAL' | translate }}: {{ expectedPrice*amount | currency }}</p>
+                </ion-item>
+            </div>
         </div>
+        <ion-card *ngIf="timeSelected" class="m0">
+            <ion-card-header>
+                <ion-card-title>{{ 'BOOKING.DETAILS' | translate }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+                <ion-item  *ngIf="bookingObj">
+                    <a href="javascript:;" (click)="changeDate()">{{ 'BOOKING.CHANGE_DATE' | translate }}</a>
+                </ion-item>
+                <ion-item *ngFor="let item of questions">
+                    <ion-label position="floating">{{item.text}}</ion-label>
+                    <ion-input *ngIf="item.type=='text'" type="text" [(ngModel)]="item.value"></ion-input>
+                    <ion-input *ngIf="item.type=='num'" type="tel" [(ngModel)]="item.value"></ion-input>
+                    <ion-textarea *ngIf="item.type=='textarea'" class="mb20" [(ngModel)]="item.value"></ion-textarea>
+                </ion-item>
+                <ion-button full class="btn success right mt15 mb15" (click)="saveOrCreateBooking()">{{ 'BOOKING.MAKE_RESERVATION' | translate }}</ion-button>
+            </ion-card-content>
+        </ion-card>
     </div>
-    <ion-card *ngIf="timeSelected" class="m0">
-        <ion-card-header>
-            <ion-card-title>{{ 'BOOKING.DETAILS' | translate }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-            <ion-item  *ngIf="bookingObj">
-                <a href="javascript:;" (click)="changeDate()">{{ 'BOOKING.CHANGE_DATE' | translate }}</a>
-            </ion-item>
-            <ion-item *ngFor="let item of questions">
-                <ion-label position="floating">{{item.text}}</ion-label>
-                <ion-input *ngIf="item.type=='text'" type="text" [(ngModel)]="item.value"></ion-input>
-                <ion-input *ngIf="item.type=='num'" type="tel" [(ngModel)]="item.value"></ion-input>
-                <ion-textarea *ngIf="item.type=='textarea'" class="mb20" [(ngModel)]="item.value"></ion-textarea>
-            </ion-item>
-            <ion-button full class="btn success right mt15 mb15" (click)="saveOrCreateBooking()">{{ 'BOOKING.MAKE_RESERVATION' | translate }}</ion-button>
-        </ion-card-content>
-    </ion-card>
+
 </ion-content>

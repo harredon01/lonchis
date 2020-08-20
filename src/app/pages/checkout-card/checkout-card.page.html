@@ -1,76 +1,69 @@
 <ion-header class="section__header">
-
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-back-button></ion-back-button>
         </ion-buttons>
         <ion-title>{{ 'CHECKOUT_CARD.TITLE' | translate }}</ion-title>
     </ion-toolbar>
-
 </ion-header>
-
-
 <ion-content>
-
-    <ion-card>
-
-
-        <ion-card-content>
-            <p>{{ 'CHECKOUT_CARD.DESCRIPTION' | translate }}</p>
-            <img src="http://www.payulatam.com/logos/logo.php?l=133&c=5c6e19348baf9" alt="PayU Latam" border="0" />
-        </ion-card-content>
-    </ion-card>
-    <ion-card>
-
-
-        <ion-card-content>
-            <form (submit)="payCreditCard()" [formGroup]="payerForm" *ngIf="!useToken">
-                <ion-list>
-                    <ion-item>
-                        <ion-input type="tel" placeholder="XXXX-XXXX-XXXX-XXXX" (keyup)="creditTab($event)"  maxLength="16" max="16" formControlName="cc_number"></ion-input>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_number.valid  && (payerForm.controls.cc_number.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <ion-input class="card__type---{{payerForm.get('cc_branch').value}}" style="visibility:visible" type="text" placeholder="FRANQUISIA" formControlName="cc_branch" disabled></ion-input>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_branch.valid  && (payerForm.controls.cc_branch.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_BRANCH_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <input type="tel" style="width:50px" placeholder="MM" (keyup)="keytab($event,2)" formControlName="cc_expiration_month"/>
-                        <input type="tel" style="width:50px" placeholder="YY" (keyup)="keytab($event,2)" formControlName="cc_expiration_year"/>
-                        <input type="tel" style="width:50px" placeholder="CCV" formControlName="cc_security_code"/>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_expiration_month.valid  && (payerForm.controls.cc_expiration_month.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_MONTH_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_expiration_year.valid  && (payerForm.controls.cc_expiration_year.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_YEAR_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="dateError && submitAttempt">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_DATE_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="cvvError && submitAttempt">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_LENGTH_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_security_code.valid  && (payerForm.controls.cc_security_code.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <ion-input type="text" placeholder="{{ 'CHECKOUT_CARD.PAYER_NAME' | translate }}" formControlName="cc_name"></ion-input>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_name.valid  && (payerForm.controls.cc_name.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_NAME_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item >
-                        <ion-label>{{ 'CHECKOUT_CARD.SAVE_CARD' | translate }}</ion-label>
-                        <ion-checkbox formControlName="save_card"></ion-checkbox>
-                    </ion-item>
-                </ion-list>
-                <ion-button class="btn-primary" expand="full" type="submit">{{ 'INPUTS.SUBMIT' | translate }}</ion-button>
-            </form>
-        </ion-card-content>
-    </ion-card>
+    <div class="webcont">
+        <ion-card>
+            <ion-card-content>
+                <p>{{ 'CHECKOUT_CARD.DESCRIPTION' | translate }}</p>
+                <img src="http://www.payulatam.com/logos/logo.php?l=133&c=5c6e19348baf9" alt="PayU Latam" border="0" />
+            </ion-card-content>
+        </ion-card>
+        <ion-card>
+            <ion-card-content>
+                <form (submit)="payCreditCard()" [formGroup]="payerForm" *ngIf="!useToken">
+                    <ion-list>
+                        <ion-item>
+                            <ion-input type="tel" placeholder="XXXX-XXXX-XXXX-XXXX" (keyup)="creditTab($event)"  maxLength="16" max="16" formControlName="cc_number"></ion-input>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_number.valid  && (payerForm.controls.cc_number.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input class="card__type---{{payerForm.get('cc_branch').value}}" style="visibility:visible" type="text" placeholder="FRANQUISIA" formControlName="cc_branch" disabled></ion-input>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_branch.valid  && (payerForm.controls.cc_branch.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_BRANCH_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <input type="tel" style="width:50px" placeholder="MM" (keyup)="keytab($event,2)" formControlName="cc_expiration_month"/>
+                            <input type="tel" style="width:50px" placeholder="YY" (keyup)="keytab($event,2)" formControlName="cc_expiration_year"/>
+                            <input type="tel" style="width:50px" placeholder="CCV" formControlName="cc_security_code"/>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_expiration_month.valid  && (payerForm.controls.cc_expiration_month.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_MONTH_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_expiration_year.valid  && (payerForm.controls.cc_expiration_year.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_YEAR_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="dateError && submitAttempt">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_DATE_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="cvvError && submitAttempt">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_LENGTH_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_security_code.valid  && (payerForm.controls.cc_security_code.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input type="text" placeholder="{{ 'CHECKOUT_CARD.PAYER_NAME' | translate }}" formControlName="cc_name"></ion-input>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_name.valid  && (payerForm.controls.cc_name.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_NAME_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item >
+                            <ion-label>{{ 'CHECKOUT_CARD.SAVE_CARD' | translate }}</ion-label>
+                            <ion-checkbox formControlName="save_card"></ion-checkbox>
+                        </ion-item>
+                    </ion-list>
+                    <ion-button class="btn-primary" expand="full" type="submit">{{ 'INPUTS.SUBMIT' | translate }}</ion-button>
+                </form>
+            </ion-card-content>
+        </ion-card>
+    </div>
 </ion-content>

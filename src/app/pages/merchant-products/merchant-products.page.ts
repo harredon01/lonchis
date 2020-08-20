@@ -34,8 +34,8 @@ export class MerchantProductsPage implements OnInit {
         src: string,
     } = {
             merchant_name: "",
-            merchant_description_more:false,
             merchant_description: "",
+            merchant_description_more:false,
             merchant_type: "",
             src: "",
         };
@@ -473,6 +473,9 @@ export class MerchantProductsPage implements OnInit {
                     if (this.categories[0].products.length > 0) {
                         this.categories[0].products[0].more = true;
                     }
+                    if (this.categories[0].products.length > 1) {
+                        this.categories[0].products[1].more = true;
+                    }
                 }
                 console.log("Merchant", this.merchantObj);
                 if (this.orderData.cartData) {
@@ -581,7 +584,7 @@ export class MerchantProductsPage implements OnInit {
                         }
                         item.unitPrice = item.subtotal / (item.unitLunches * item.amount);
                     }
-                } 
+                }
             }
         }
         this.calculateTotals("select variant");
@@ -608,14 +611,14 @@ export class MerchantProductsPage implements OnInit {
                 product.unitPrice = product.subtotal / (product.unitLunches * product.amount);
             }
         } else {
-            if (product.onsale) {
+        if (product.onsale) {
                 product.exsubtotal = product.exprice * product.amount;
                 product.subtotal = product.price * product.amount;
             } else {
                 product.subtotal = product.price * product.amount;
             }
 
-        }
+    }
     }
     getCart() {
         this.cart.getCart().subscribe((resp) => {

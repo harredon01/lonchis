@@ -186,3 +186,18 @@ button.picker-opt{
     color: var(--ion-color-primary);
     font-size: 24px;
 }
+@media (min-width: 800px) {
+    ion-card.product__item {
+        max-width:600px;
+        float:left;
+        margin-bottom: 10px;
+    }
+    ion-card.product-header {
+        max-width:1200px;
+        margin:0 auto;
+    }
+    .prods-cont {
+        max-width:1200px;
+        margin:0 auto;
+    }
+}

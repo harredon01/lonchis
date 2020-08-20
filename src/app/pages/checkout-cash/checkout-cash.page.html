@@ -1,74 +1,71 @@
 <ion-header class="section__header">
-
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-back-button defaultHref="tabs/home/checkout/prepare"></ion-back-button>
         </ion-buttons>
         <ion-title>{{ 'CHECKOUT_CASH.TITLE' | translate }}</ion-title>
     </ion-toolbar>
-
 </ion-header>
-
 <ion-content>
-    <ion-card>
-        <ion-card-content>
-    <ion-item >
-        <p>{{ 'CHECKOUT_CASH.OTHERS' | translate }}</p>
-    </ion-item>
-    <ion-item >
-        <img src="http://www.payulatam.com/logos/logo.php?l=133&c=5c6e19348baf9" alt="PayU Latam" border="0" />
-    </ion-item>
-    <ion-item class="cash-main-logos" >
-        <img (click)="selectOption('BALOTO')" src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/sprite_source/lg/big/BALOTO.png">
-        <img (click)="selectOption('EFECTY')" src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/sprite_source/lg/big/EFECTY.png">
-    </ion-item>
-    <ion-item class="cash-logos" (click)="selectOption('OTHERS_CASH')">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/paga_todo-payment.gif">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/apuestas_cucuta_75-payment.gif">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/gana-payment.gif">
-    </ion-item>
-    <ion-item  class="cash-logos" (click)="selectOption('OTHERS_CASH')">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/gana_gana-payment.gif">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/su_chance-payment.gif">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/acertemos-payment.gif">
-    </ion-item>
-    <ion-item  class="cash-logos" (click)="selectOption('OTHERS_CASH')">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/la_perla-payment.gif">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/apuestas_unidas-payment.gif">
-        <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/jer-payment.gif">
-    </ion-item>
-    <ion-list>
-        <ion-item > 
-            <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
-            <ion-checkbox [(ngModel)]="v" (click)="useUser()"></ion-checkbox>
-        </ion-item>
-    </ion-list>   
-    
-        
-            <form  (submit)="payCash()" [formGroup]="payerForm" >
+    <div class="webcont">
+        <ion-card>
+            <ion-card-content>
+                <ion-item >
+                    <p>{{ 'CHECKOUT_CASH.OTHERS' | translate }}</p>
+                </ion-item>
+                <ion-item >
+                    <img src="http://www.payulatam.com/logos/logo.php?l=133&c=5c6e19348baf9" alt="PayU Latam" border="0" />
+                </ion-item>
+                <ion-item class="cash-main-logos" >
+                    <img (click)="selectOption('BALOTO')" src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/sprite_source/lg/big/BALOTO.png">
+                    <img (click)="selectOption('EFECTY')" src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/sprite_source/lg/big/EFECTY.png">
+                </ion-item>
+                <ion-item class="cash-logos" (click)="selectOption('OTHERS_CASH')">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/paga_todo-payment.gif">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/apuestas_cucuta_75-payment.gif">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/gana-payment.gif">
+                </ion-item>
+                <ion-item  class="cash-logos" (click)="selectOption('OTHERS_CASH')">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/gana_gana-payment.gif">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/su_chance-payment.gif">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/acertemos-payment.gif">
+                </ion-item>
+                <ion-item  class="cash-logos" (click)="selectOption('OTHERS_CASH')">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/la_perla-payment.gif">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/apuestas_unidas-payment.gif">
+                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/jer-payment.gif">
+                </ion-item>
                 <ion-list>
-                    <ion-item>
-                        <ion-label position="floating">{{ 'CHECKOUT_CASH.OPTIONS' | translate }}</ion-label>
-                        <ion-select formControlName="payment_method">
-                            <ion-select-option value="BALOTO">Baloto</ion-select-option>
-                            <ion-select-option value="EFECTY">Efecty</ion-select-option>
-                            <ion-select-option value="OTHERS_CASH">Otros metodos</ion-select-option>
-                        </ion-select>
+                    <ion-item > 
+                        <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
+                        <ion-checkbox [(ngModel)]="v" (click)="useUser()"></ion-checkbox>
                     </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.payment_method.valid  && (payerForm.controls.payment_method.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CASH.TYPE_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label position="floating">{{ 'USER.EMAIL' | translate }}</ion-label>
-                        <ion-input type="text" formControlName="payer_email"></ion-input>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.payer_email.valid  && (payerForm.controls.payer_email.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
-                    </ion-item>
+                </ion-list>   
+                <form  (submit)="payCash()" [formGroup]="payerForm" >
+                    <ion-list>
+                        <ion-item>
+                            <ion-label position="floating">{{ 'CHECKOUT_CASH.OPTIONS' | translate }}</ion-label>
+                            <ion-select formControlName="payment_method">
+                                <ion-select-option value="BALOTO">Baloto</ion-select-option>
+                                <ion-select-option value="EFECTY">Efecty</ion-select-option>
+                                <ion-select-option value="OTHERS_CASH">Otros metodos</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.payment_method.valid  && (payerForm.controls.payment_method.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CASH.TYPE_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label position="floating">{{ 'USER.EMAIL' | translate }}</ion-label>
+                            <ion-input type="text" formControlName="payer_email"></ion-input>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.payer_email.valid  && (payerForm.controls.payer_email.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
+                        </ion-item>
 
-                </ion-list>
-                <ion-button class="btn-secondary right m10" type="submit" >{{ 'INPUTS.SUBMIT' | translate }}</ion-button>
-            </form>
-        </ion-card-content>
-    </ion-card>
+                    </ion-list>
+                    <ion-button class="btn-secondary right m10" type="submit" >{{ 'INPUTS.SUBMIT' | translate }}</ion-button>
+                </form>
+            </ion-card-content>
+        </ion-card>
+    </div>
 </ion-content>

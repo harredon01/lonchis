@@ -1,5 +1,5 @@
 <ion-content class="outer-content home-page">
-    <div class="home-page__wrapper">
+    <div class="home-page__wrapper webcont">
         <a (click)="goLogin()" class="right mt15" href="javascript:;" style="font-size: 18px;margin-top:45px" *ngIf="!userData._user">{{ 'HOME.LOGIN' | translate }}</a>
         <div class="notification-button" *ngIf="userData._user">
             <div id="counter-items">{{notifs}}</div>

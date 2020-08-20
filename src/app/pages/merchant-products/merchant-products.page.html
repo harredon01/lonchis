@@ -32,12 +32,15 @@
     </ion-card-content>
 </ion-card> 
 
-<div *ngFor="let cat of categories">
-    <h2 style="margin-left: 15px;" (click)="showMoreCat(cat)">{{cat.name}}</h2>
-    <div *ngIf="cat.more">
+<div *ngFor="let cat of categories" class="prods-cont">
+    <h2 style="margin-left: 15px;" (click)="showMoreCat(cat)" *ngIf="cat.products.length > 0">{{cat.name}}</h2>
+    <div *ngIf="cat.products.length > 0">
         <ion-card class="product__item" *ngFor="let item of cat.products">
-                  <ion-card-header class="product-header__information" (click)="showMoreItem(item)">
-                <span>{{item.name}}</span><ion-icon name="arrow-dropdown" *ngIf="!item.more"></ion-icon><ion-icon name="arrow-dropup" *ngIf="item.more"></ion-icon>
+            <ion-card-header class="product-header__information" (click)="showMoreItem(item)" *ngIf="item.onsale">
+                <span>{{item.name}} <b class="price right pr5" *ngIf="!item.more">{{item.subtotal | currency }}</b><b class="exprice right pr5 pt5" *ngIf="!item.more">{{item.exsubtotal | currency }}</b></span><ion-icon name="caret-down-outline" *ngIf="!item.more"></ion-icon><ion-icon name="caret-up-outline" *ngIf="item.more"></ion-icon>
+            </ion-card-header>
+            <ion-card-header class="product-header__information" (click)="showMoreItem(item)" *ngIf="!item.onsale">
+                <span>{{item.name}} <b *ngIf="!item.more" class="right pr5">{{item.subtotal | currency }}</b></span><ion-icon name="caret-down-outline" *ngIf="!item.more"></ion-icon><ion-icon name="caret-up-outline" *ngIf="item.more"></ion-icon>
             </ion-card-header>
             <ion-card-content *ngIf="item.more">
                 <ion-slides>
@@ -89,6 +92,7 @@
             </ion-card-content>
         </ion-card>
     </div>
+    <div class="clear"></div>
 </div>
     <ion-card *ngIf="isOwner">
         <ion-card-content class="info">

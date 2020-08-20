@@ -15,94 +15,97 @@
 </ion-header>
 
 <ion-content class="bg-light">
-    <ion-card>
-        <ion-card-content>
-            <h2>{{ 'BOOKING_DETAIL.TITLE2' | translate }}</h2>
-            <ion-grid>
-                <ion-row class="appot-detail">
-                    <ion-col size="2">
-                        <span>Id: {{mainBooking.id}}</span>
-                    </ion-col>
-                    <ion-col class="detail" size="5">
-                        <span>{{ mainBooking.starts_at| date : 'mediumDate'}}</span>
-                        <span>{{ 'BOOKING_LIST.STARTS_AT' | translate }}:<b>{{ mainBooking.starts_at| date : 'shortTime'}}</b></span>
-                        <span>{{ 'BOOKING_LIST.ENDS_AT' | translate }}:<b>{{ mainBooking.ends_at| date : 'shortTime'}}</b></span>
-                    </ion-col>
-                    <ion-col class="detail tright" *ngIf="mainBooking.total_paid == mainBooking.price" size="5">
-                             <h2 style="font-size:14px">{{ 'BOOKING_DETAIL.PAID' | translate }} </h2>
-                        <span>{{ 'BOOKING_DETAIL.PRICE' | translate }}: <b>{{ mainBooking.price | currency }} </b> </span>
-                    </ion-col>
-                    <ion-col class="detail tright"*ngIf="mainBooking.total_paid == 0" size="5">
-                        <h2>{{ 'BOOKING_DETAIL.UNPAID' | translate }} </h2>
-                        <span>{{ 'BOOKING_DETAIL.PRICE' | translate }}: <b>{{ mainBooking.price | currency }} </b> </span>
-                    </ion-col>
-                    <ion-col class="detail tright"*ngIf="mainBooking.total_paid == -1" size="5">
-                        <h2>{{ 'BOOKING_DETAIL.UNAUTHORIZED' | translate }} </h2>
-                        <span>{{ 'BOOKING_DETAIL.PRICE' | translate }}: <b>{{ mainBooking.price | currency }} </b> </span>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
-            <h2 *ngIf="mainBooking.customer">{{ 'BOOKING_DETAIL.BOOKED_BY' | translate }}</h2>
-            <ion-grid *ngIf="mainBooking.customer">
-                <ion-row class="appot-detail">
-                    <ion-col class="icon" size="2">
-                        <ion-icon name="md-clipboard" class="text-danger"></ion-icon>
-                    </ion-col>
-                    <ion-col class="detail"  size="10">
-                        <span>{{ 'BOOKING_DETAIL.BOOKED_BY' | translate }}</span>
-                        <span>{{mainBooking.customer.firstName}} {{mainBooking.customer.lastName}}</span>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
-            <h2 *ngIf="mainBooking.bookable">{{ 'BOOKING_DETAIL.BOOKED_FOR' | translate }}</h2>
-            <ion-grid *ngIf="mainBooking.bookable">
-                <ion-row class="appot-detail" >
-                    <ion-col class="icon" size="2">
-                        <ion-img [src]="mainBooking.bookable.icon" class="avatar" (ionError)="onError(mainBooking)"></ion-img>
-                    </ion-col>
-                    <ion-col class="detail" size="10">
-                        <ion-row class="appot-detail" >
-                            <ion-col><span>{{mainBooking.bookable.name}}</span></ion-col>
-                            <ion-col><span>{{ 'MERCHANT_LISTING.EXPERIENCE' | translate }}: <b>{{mainBooking.bookable.attributes.years_experience}} {{ 'MERCHANT_LISTING.YEARS' | translate }}</b></span>
-                            </ion-col>
-                        </ion-row>
-                        <ion-row class="appot-detail" >
-                            <ion-col>
-                                <ion-row class="appot-detail" >
-                                    <ion-col>
-                                        <span>{{ 'MERCHANT_LISTING.FEEDBACK' | translate }}:</span>
-                                        <span><b>{{mainBooking.bookable.rating }} de ({{mainBooking.bookable.rating_count }})</b></span>
-                                    </ion-col>
-                                    <ion-col><span>{{ 'MERCHANT_LISTING.FEE' | translate }}</span>
-                                        <span><b>{{mainBooking.bookable.unit_cost | currency}}</b></span></ion-col>
-                                </ion-row>
-                            </ion-col>
-                        </ion-row>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
-            <div class="booking-details">
-                <p *ngIf="mainBooking.options.paid"><span>{{ 'BOOKING.paid' | translate }}: </span>{{mainBooking.options.paid | date : 'mediumDate'}}</p>
-                <p *ngIf="mainBooking.options.virtual_provider"><span>{{ 'BOOKING.virtual_provider' | translate }}: </span><b>{{'BOOKING.'+mainBooking.options.virtual_provider | translate}}</b></p>
-                <p *ngIf="mainBooking.options.type_help"><span>{{ 'BOOKING.type_help' | translate }}</span>: {{mainBooking.options.type_help}}</p>
-                <h4 *ngIf="mainBooking.options.desc_item">{{ 'BOOKING.desc_item' | translate }}</h4>
-                <p *ngIf="mainBooking.options.desc_item">{{mainBooking.options.desc_item}}</p>
-                <div *ngIf="mainBooking.options.questions">
-                    <div *ngFor="let item of mainBooking.options.questions">
-                        <p *ngIf="item.type=='text'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
-                        <p *ngIf="item.type=='num'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
-                        <div *ngIf="item.type=='textarea'"><span>{{item.text}}</span>:<br/><p [innerHTML]="item.value"></p></div>
+    <div class="webcont">
+        <ion-card>
+            <ion-card-content>
+                <h2>{{ 'BOOKING_DETAIL.TITLE2' | translate }}</h2>
+                <ion-grid>
+                    <ion-row class="appot-detail">
+                        <ion-col size="2">
+                            <span>Id: {{mainBooking.id}}</span>
+                        </ion-col>
+                        <ion-col class="detail" size="5">
+                            <span>{{ mainBooking.starts_at| date : 'mediumDate'}}</span>
+                            <span>{{ 'BOOKING_LIST.STARTS_AT' | translate }}:<b>{{ mainBooking.starts_at| date : 'shortTime'}}</b></span>
+                            <span>{{ 'BOOKING_LIST.ENDS_AT' | translate }}:<b>{{ mainBooking.ends_at| date : 'shortTime'}}</b></span>
+                        </ion-col>
+                        <ion-col class="detail tright" *ngIf="mainBooking.total_paid == mainBooking.price" size="5">
+                                 <h2 style="font-size:14px">{{ 'BOOKING_DETAIL.PAID' | translate }} </h2>
+                            <span>{{ 'BOOKING_DETAIL.PRICE' | translate }}: <b>{{ mainBooking.price | currency }} </b> </span>
+                        </ion-col>
+                        <ion-col class="detail tright"*ngIf="mainBooking.total_paid == 0" size="5">
+                            <h2>{{ 'BOOKING_DETAIL.UNPAID' | translate }} </h2>
+                            <span>{{ 'BOOKING_DETAIL.PRICE' | translate }}: <b>{{ mainBooking.price | currency }} </b> </span>
+                        </ion-col>
+                        <ion-col class="detail tright"*ngIf="mainBooking.total_paid == -1" size="5">
+                            <h2>{{ 'BOOKING_DETAIL.UNAUTHORIZED' | translate }} </h2>
+                            <span>{{ 'BOOKING_DETAIL.PRICE' | translate }}: <b>{{ mainBooking.price | currency }} </b> </span>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+                <h2 *ngIf="mainBooking.customer">{{ 'BOOKING_DETAIL.BOOKED_BY' | translate }}</h2>
+                <ion-grid *ngIf="mainBooking.customer">
+                    <ion-row class="appot-detail">
+                        <ion-col class="icon" size="2">
+                            <ion-icon name="md-clipboard" class="text-danger"></ion-icon>
+                        </ion-col>
+                        <ion-col class="detail"  size="10">
+                            <span>{{ 'BOOKING_DETAIL.BOOKED_BY' | translate }}</span>
+                            <span>{{mainBooking.customer.firstName}} {{mainBooking.customer.lastName}}</span>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+                <h2 *ngIf="mainBooking.bookable">{{ 'BOOKING_DETAIL.BOOKED_FOR' | translate }}</h2>
+                <ion-grid *ngIf="mainBooking.bookable">
+                    <ion-row class="appot-detail" >
+                        <ion-col class="icon" size="2">
+                            <ion-img [src]="mainBooking.bookable.icon" class="avatar" (ionError)="onError(mainBooking)"></ion-img>
+                        </ion-col>
+                        <ion-col class="detail" size="10">
+                            <ion-row class="appot-detail" >
+                                <ion-col><span>{{mainBooking.bookable.name}}</span></ion-col>
+                                <ion-col><span>{{ 'MERCHANT_LISTING.EXPERIENCE' | translate }}: <b>{{mainBooking.bookable.attributes.years_experience}} {{ 'MERCHANT_LISTING.YEARS' | translate }}</b></span>
+                                </ion-col>
+                            </ion-row>
+                            <ion-row class="appot-detail" >
+                                <ion-col>
+                                    <ion-row class="appot-detail" >
+                                        <ion-col>
+                                            <span>{{ 'MERCHANT_LISTING.FEEDBACK' | translate }}:</span>
+                                            <span><b>{{mainBooking.bookable.rating }} de ({{mainBooking.bookable.rating_count }})</b></span>
+                                        </ion-col>
+                                        <ion-col><span>{{ 'MERCHANT_LISTING.FEE' | translate }}</span>
+                                            <span><b>{{mainBooking.bookable.unit_cost | currency}}</b></span></ion-col>
+                                    </ion-row>
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+                <div class="booking-details">
+                    <p *ngIf="mainBooking.options.paid"><span>{{ 'BOOKING.paid' | translate }}: </span>{{mainBooking.options.paid | date : 'mediumDate'}}</p>
+                    <p *ngIf="mainBooking.options.virtual_provider"><span>{{ 'BOOKING.virtual_provider' | translate }}: </span><b>{{'BOOKING.'+mainBooking.options.virtual_provider | translate}}</b></p>
+                    <p *ngIf="mainBooking.options.type_help"><span>{{ 'BOOKING.type_help' | translate }}</span>: {{mainBooking.options.type_help}}</p>
+                    <h4 *ngIf="mainBooking.options.desc_item">{{ 'BOOKING.desc_item' | translate }}</h4>
+                    <p *ngIf="mainBooking.options.desc_item">{{mainBooking.options.desc_item}}</p>
+                    <div *ngIf="mainBooking.options.questions">
+                        <div *ngFor="let item of mainBooking.options.questions">
+                            <p *ngIf="item.type=='text'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
+                            <p *ngIf="item.type=='num'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
+                            <div *ngIf="item.type=='textarea'"><span>{{item.text}}</span>:<br/><p [innerHTML]="item.value"></p></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </ion-card-content>
-    </ion-card>
-    <div class="mr5"><ion-button *ngIf="mainBooking.customer_id == userData._user.id && mainBooking.total_paid==mainBooking.price && (mainBooking.options.status=='approved' || mainBooking.options.status=='active')" full class="btn success right" (click)="changeStatusBooking('started')">{{ 'BOOKING_DETAIL.BEGAN' | translate }}</ion-button>
-        <ion-button *ngIf="mainBooking.total_paid==mainBooking.price && mainBooking.options.status=='started'" full class="btn success right" (click)="changeStatusBooking('completed')">{{ 'BOOKING_DETAIL.COMPLETED' | translate }}</ion-button>
-        <ion-button color="success" *ngIf="mainBooking.customer_id != userData._user.id && mainBooking.total_paid==-1" full class="btn success right" (click)="changeStatusBooking('approved')">{{ 'BOOKING_DETAIL.APPROVE' | translate }}</ion-button>
-        <ion-button color="danger" *ngIf="mainBooking.customer_id != userData._user.id && mainBooking.total_paid==-1" full class="btn error right" (click)="changeStatusBooking('denied')">{{ 'BOOKING_DETAIL.DENY' | translate }}</ion-button>
-        <ion-button *ngIf="mainBooking.total_paid==0 || mainBooking.total_paid==-1" full class="btn error right" (click)="editBooking()">{{ 'INPUTS.EDIT' | translate }}</ion-button>
-        <ion-button color="success" *ngIf="mainBooking.customer_id == userData._user.id  && mainBooking.total_paid==0" full class="btn success right" (click)="payBooking()">{{ 'BOOKING_DETAIL.PAY' | translate }}</ion-button>
-        <ion-button color="danger" *ngIf="mainBooking.customer_id == userData._user.id && (mainBooking.total_paid==0 || mainBooking.total_paid==-1)" full class="btn success right" (click)="deleteBooking()">{{ 'BOOKING_DETAIL.DELETE' | translate }}</ion-button></div>
-    <div class="clear"></div> 
+            </ion-card-content>
+        </ion-card>
+        <div class="mr5"><ion-button *ngIf="mainBooking.customer_id == userData._user.id && mainBooking.total_paid==mainBooking.price && (mainBooking.options.status=='approved' || mainBooking.options.status=='active')" full class="btn success right" (click)="changeStatusBooking('started')">{{ 'BOOKING_DETAIL.BEGAN' | translate }}</ion-button>
+            <ion-button *ngIf="mainBooking.total_paid==mainBooking.price && mainBooking.options.status=='started'" full class="btn success right" (click)="changeStatusBooking('completed')">{{ 'BOOKING_DETAIL.COMPLETED' | translate }}</ion-button>
+            <ion-button color="success" *ngIf="mainBooking.customer_id != userData._user.id && mainBooking.total_paid==-1" full class="btn success right" (click)="changeStatusBooking('approved')">{{ 'BOOKING_DETAIL.APPROVE' | translate }}</ion-button>
+            <ion-button color="danger" *ngIf="mainBooking.customer_id != userData._user.id && mainBooking.total_paid==-1" full class="btn error right" (click)="changeStatusBooking('denied')">{{ 'BOOKING_DETAIL.DENY' | translate }}</ion-button>
+            <ion-button *ngIf="mainBooking.total_paid==0 || mainBooking.total_paid==-1" full class="btn error right" (click)="editBooking()">{{ 'INPUTS.EDIT' | translate }}</ion-button>
+            <ion-button color="success" *ngIf="mainBooking.customer_id == userData._user.id  && mainBooking.total_paid==0" full class="btn success right" (click)="payBooking()">{{ 'BOOKING_DETAIL.PAY' | translate }}</ion-button>
+            <ion-button color="danger" *ngIf="mainBooking.customer_id == userData._user.id && (mainBooking.total_paid==0 || mainBooking.total_paid==-1)" full class="btn success right" (click)="deleteBooking()">{{ 'BOOKING_DETAIL.DELETE' | translate }}</ion-button></div>
+        <div class="clear"></div> 
+    </div>
+
 </ion-content>

@@ -11,75 +11,76 @@
 </ion-header>
 
 <ion-content class="bg-light">
-
-    <ion-list class="mainBooking__list" style="padding:0">
-        <ion-item>
-            <ion-label>{{ 'BOOKING_LIST.RESERVATION_PERIOD' | translate }}</ion-label>
-            <ion-select placeholder="Select One" [(ngModel)]="queryMod" (ionChange)="selectQuery()">
-                <ion-select-option *ngFor="let item of queries" [value]="item.value">{{item.name}}</ion-select-option>
-            </ion-select>
-        </ion-item>
-    </ion-list>
-    <p *ngIf="bookings.length ==0" class="m20">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
-    <ion-list class="doctor-list" style="padding:0">
-        <ion-item *ngFor="let booking of bookings">
-            <ion-card> 
-                <ion-grid> 
-                    <ion-row> 
-                        <ion-col class="icon" size="2">
-                            <ion-icon name="md-calendar" style="font-size: 25px" class="text-danger ml10 mr20 mt10"></ion-icon>
-                        </ion-col> 
-                        <ion-col class="icon" size="7">
-                            <h4 *ngIf="target=='bookable'" class="mt10">{{booking.id}} {{booking.customer.firstName}} {{booking.customer.lastName}}</h4>
-                            <h4 *ngIf="target=='customer'" class="mt10">{{booking.id}} {{booking.bookable.name}}</h4>
-                        </ion-col>
-                        <ion-col size="3">
-                            <p><b class="mt10" style="font-size: 17px">{{booking.starts_at | date:'shortDate' }}</b><br/>
-                                <b *ngIf="booking.notes=='ready'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.READY' | translate }}</b>
-                                <b *ngIf="booking.notes=='waiting'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.WAITING' | translate }}</b>
-                                <b *ngIf="booking.notes=='started'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.STARTED' | translate }}</b>
-                                <b *ngIf="booking.notes=='pending'">{{ 'BOOKING_LIST.PENDING' | translate }}</b>
-                                <b *ngIf="booking.notes=='completed'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.COMPLETED' | translate }}</b></p>
-                        </ion-col>
-                    </ion-row> 
-                    <ion-row class="booking-list-grid"> 
-                        <ion-col size="4"> 
-                            <p>{{ 'BOOKING_LIST.STARTS_AT' | translate }}:<br/> <b>{{booking.starts_at | date:'shortTime' }}</b></p>
-                        </ion-col>
-                        <ion-col size="5">
-                            <p>{{ 'CART_ITEM.SUBTOTAL' | translate }}<br/><b>{{ booking.price | currency }}</b>
-                            </p> 
-                        </ion-col>
-                        <ion-col size="3">
-                            <p *ngIf="target=='customer'&&0==booking.total_paid"><ion-button color="success" class="w100" (click)="payBooking(booking)">
-                                Pagar
-                            </ion-button></p>
-                            <p *ngIf="target=='bookable'&&-1==booking.total_paid"><ion-button color="success" class="w100" (click)="changeStatusBooking(booking,'approved')">
-                                Aprobar
-                            </ion-button></p>
-                        </ion-col>
-                    </ion-row> 
-                    <ion-row class="booking-list-grid"> 
-                        <ion-col size="4"> 
-                            <p>{{ 'BOOKING_LIST.ENDS_AT' | translate }}: <br/> <b>{{booking.ends_at | date:'shortTime' }}</b></p>
-                        </ion-col>
-                        <ion-col size="5">
-                            <p>{{ 'BOOKING_LIST.PAYMENT' | translate }}<br/><b *ngIf="booking.price==booking.total_paid">{{ 'BOOKING_LIST.PAID' | translate }}</b>
-                                <b *ngIf="0==booking.total_paid">{{ 'BOOKING_LIST.UNPAID' | translate }}</b>
-                                <b *ngIf="-1==booking.total_paid">{{ 'BOOKING_LIST.UNAPPROVED' | translate }}</b>
-                            </p>
-                        </ion-col>
-                        <ion-col size="3">
-                            <p><ion-button color="primary" class="w100" (click)="openBooking(booking)">
-                                Ver
-                            </ion-button></p>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>               
-            </ion-card>
-        </ion-item>
-    </ion-list>
-    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+    <div class="webcont">
+        <ion-list class="mainBooking__list" style="padding:0">
+            <ion-item>
+                <ion-label>{{ 'BOOKING_LIST.RESERVATION_PERIOD' | translate }}</ion-label>
+                <ion-select placeholder="Select One" [(ngModel)]="queryMod" (ionChange)="selectQuery()">
+                    <ion-select-option *ngFor="let item of queries" [value]="item.value">{{item.name}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+        </ion-list>
+        <p *ngIf="bookings.length ==0" class="m20">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
+        <ion-list class="doctor-list" style="padding:0">
+            <ion-item *ngFor="let booking of bookings">
+                <ion-card> 
+                    <ion-grid> 
+                        <ion-row> 
+                            <ion-col class="icon" size="2">
+                                <ion-icon name="md-calendar" style="font-size: 25px" class="text-danger ml10 mr20 mt10"></ion-icon>
+                            </ion-col> 
+                            <ion-col class="icon" size="7">
+                                <h4 *ngIf="target=='bookable'" class="mt10">{{booking.id}} {{booking.customer.firstName}} {{booking.customer.lastName}}</h4>
+                                <h4 *ngIf="target=='customer'" class="mt10">{{booking.id}} {{booking.bookable.name}}</h4>
+                            </ion-col>
+                            <ion-col size="3">
+                                <p><b class="mt10" style="font-size: 17px">{{booking.starts_at | date:'shortDate' }}</b><br/>
+                                    <b *ngIf="booking.notes=='ready'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.READY' | translate }}</b>
+                                    <b *ngIf="booking.notes=='waiting'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.WAITING' | translate }}</b>
+                                    <b *ngIf="booking.notes=='started'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.STARTED' | translate }}</b>
+                                    <b *ngIf="booking.notes=='pending'">{{ 'BOOKING_LIST.PENDING' | translate }}</b>
+                                    <b *ngIf="booking.notes=='completed'&&booking.price==booking.total_paid">{{ 'BOOKING_LIST.COMPLETED' | translate }}</b></p>
+                            </ion-col>
+                        </ion-row> 
+                        <ion-row class="booking-list-grid"> 
+                            <ion-col size="4"> 
+                                <p>{{ 'BOOKING_LIST.STARTS_AT' | translate }}:<br/> <b>{{booking.starts_at | date:'shortTime' }}</b></p>
+                            </ion-col>
+                            <ion-col size="5">
+                                <p>{{ 'CART_ITEM.SUBTOTAL' | translate }}<br/><b>{{ booking.price | currency }}</b>
+                                </p> 
+                            </ion-col>
+                            <ion-col size="3">
+                                <p *ngIf="target=='customer'&&0==booking.total_paid"><ion-button color="success" class="w100" (click)="payBooking(booking)">
+                                    Pagar
+                                </ion-button></p>
+                                <p *ngIf="target=='bookable'&&-1==booking.total_paid"><ion-button color="success" class="w100" (click)="changeStatusBooking(booking,'approved')">
+                                    Aprobar
+                                </ion-button></p>
+                            </ion-col>
+                        </ion-row> 
+                        <ion-row class="booking-list-grid"> 
+                            <ion-col size="4"> 
+                                <p>{{ 'BOOKING_LIST.ENDS_AT' | translate }}: <br/> <b>{{booking.ends_at | date:'shortTime' }}</b></p>
+                            </ion-col>
+                            <ion-col size="5">
+                                <p>{{ 'BOOKING_LIST.PAYMENT' | translate }}<br/><b *ngIf="booking.price==booking.total_paid">{{ 'BOOKING_LIST.PAID' | translate }}</b>
+                                    <b *ngIf="0==booking.total_paid">{{ 'BOOKING_LIST.UNPAID' | translate }}</b>
+                                    <b *ngIf="-1==booking.total_paid">{{ 'BOOKING_LIST.UNAPPROVED' | translate }}</b>
+                                </p>
+                            </ion-col>
+                            <ion-col size="3">
+                                <p><ion-button color="primary" class="w100" (click)="openBooking(booking)">
+                                    Ver
+                                </ion-button></p>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>               
+                </ion-card>
+            </ion-item>
+        </ion-list>
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
 </ion-content>

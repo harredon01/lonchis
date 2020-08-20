@@ -11,68 +11,70 @@
 </ion-header>
 
 <ion-content class="sign-up">
-    <form class="sign-up__form" (submit)="doSignup()" [formGroup]="registrationForm">
-        <ion-list>
-            <div class="sign__image">
-                <img src="assets/sign_in.png" alt="">
-            </div>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">* {{ 'USER.FIRSTNAME' | translate }}</ion-label>
-                <ion-input type="text" formControlName="firstName"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.firstName.valid  && (registrationForm.controls.firstName.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.FIRSTNAME_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">* {{ 'USER.LASTNAME' | translate }}</ion-label>
-                <ion-input type="text" formControlName="lastName"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.lastName.valid  && (registrationForm.controls.lastName.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.LASTNAME_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">* {{ 'USER.EMAIL' | translate }}</ion-label>
-                <ion-input type="email" formControlName="email"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.email.valid  && (registrationForm.controls.email.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item style="display:none">
-                <ion-label position="floating">{{ 'USER.AREA_CODE' | translate }}</ion-label>
-                <ion-input type="tel" formControlName="area_code" value="57"></ion-input>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">* {{ 'USER.MOBILE' | translate }}</ion-label>
-                <ion-input type="tel" formControlName="cellphone"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.cellphone.valid  && (registrationForm.controls.cellphone.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.MOBILE_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">* {{ 'USER.PASSWORD' | translate }}</ion-label>
-                <ion-input type="password" formControlName="password"></ion-input>
-            </ion-item>
-            <ion-item *ngIf="!registrationForm.controls.password.valid  && (registrationForm.controls.password.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.PASSWORD_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding">
-                <ion-label position="floating">* {{ 'USER.REPEAT_PASSWORD' | translate }}</ion-label>
-                <ion-input type="password" formControlName="password_confirmation"></ion-input>
-            </ion-item>
-            <ion-item class="ion-no-padding" *ngIf="!registrationForm.controls.password_confirmation.valid  && (registrationForm.controls.password_confirmation.dirty || submitAttempt)">
-                <p class="error-message">{{ 'USER.REPEAT_PASSWORD_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding" *ngIf="(passwordError && submitAttempt)">
-                <p class="error-message">{{ 'USER.PASSWORD_MATCH_ERROR' | translate }}</p>
-            </ion-item>
-            <ion-item class="ion-no-padding" lines="none">
-                <ion-button type="submit" class="button button--form" expand="full">
-                    <span class="signup__button text--bold">{{ 'INPUTS.SUBMIT' | translate }}</span>
-                </ion-button>
-            </ion-item>
-            <ion-item class="ion-no-padding" lines="none">
-                <p class="text--small text--right">{{ 'SIGNUP.REQUIRED_FIELDS' | translate }}</p>
-            </ion-item>
-        </ion-list>
-    </form>
+    <div class="webcont">
+        <form class="sign-up__form" (submit)="doSignup()" [formGroup]="registrationForm">
+            <ion-list>
+                <div class="sign__image">
+                    <img src="assets/sign_in.png" alt="">
+                </div>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">* {{ 'USER.FIRSTNAME' | translate }}</ion-label>
+                    <ion-input type="text" formControlName="firstName"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.firstName.valid  && (registrationForm.controls.firstName.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.FIRSTNAME_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">* {{ 'USER.LASTNAME' | translate }}</ion-label>
+                    <ion-input type="text" formControlName="lastName"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.lastName.valid  && (registrationForm.controls.lastName.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.LASTNAME_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">* {{ 'USER.EMAIL' | translate }}</ion-label>
+                    <ion-input type="email" formControlName="email"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.email.valid  && (registrationForm.controls.email.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item style="display:none">
+                    <ion-label position="floating">{{ 'USER.AREA_CODE' | translate }}</ion-label>
+                    <ion-input type="tel" formControlName="area_code" value="57"></ion-input>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">* {{ 'USER.MOBILE' | translate }}</ion-label>
+                    <ion-input type="tel" formControlName="cellphone"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.cellphone.valid  && (registrationForm.controls.cellphone.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.MOBILE_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">* {{ 'USER.PASSWORD' | translate }}</ion-label>
+                    <ion-input type="password" formControlName="password"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="!registrationForm.controls.password.valid  && (registrationForm.controls.password.dirty || submitAttempt)">
+                    <p class="error-message">{{ 'USER.PASSWORD_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding">
+                    <ion-label position="floating">* {{ 'USER.REPEAT_PASSWORD' | translate }}</ion-label>
+                    <ion-input type="password" formControlName="password_confirmation"></ion-input>
+                </ion-item>
+                <ion-item class="ion-no-padding" *ngIf="!registrationForm.controls.password_confirmation.valid  && (registrationForm.controls.password_confirmation.dirty || submitAttempt)">
+                          <p class="error-message">{{ 'USER.REPEAT_PASSWORD_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding" *ngIf="(passwordError && submitAttempt)">
+                          <p class="error-message">{{ 'USER.PASSWORD_MATCH_ERROR' | translate }}</p>
+                </ion-item>
+                <ion-item class="ion-no-padding" lines="none">
+                    <ion-button type="submit" class="button button--form" expand="full">
+                        <span class="signup__button text--bold">{{ 'INPUTS.SUBMIT' | translate }}</span>
+                    </ion-button>
+                </ion-item>
+                <ion-item class="ion-no-padding" lines="none">
+                    <p class="text--small text--right">{{ 'SIGNUP.REQUIRED_FIELDS' | translate }}</p>
+                </ion-item>
+            </ion-list>
+        </form>
+    </div>
 </ion-content>

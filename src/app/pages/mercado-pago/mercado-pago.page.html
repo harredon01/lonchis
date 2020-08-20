@@ -5,104 +5,105 @@
 </ion-header>
 
 <ion-content>
-    <ion-card>
-        <ion-item *ngIf="logo.length>0">
-            <ion-item *ngIf="logo.length>0" style="width:50px">
-                <img [src]="logo">
-            </ion-item>
-        </ion-item>
-        <ion-card-content>
-            <form action="" method="post" id="pay" name="pay" (ngSubmit)="pay()" [formGroup]="payerForm">
-
-                <ion-list>
-
-                    <ion-item>
-                        <ion-label for="cardNumber">Credit card number:</ion-label>
-                        <ion-input class="tright" type="tel" id="cardNumber" (keyup)="creditTab($event)" data-checkout="cardNumber" placeholder="4509 9535 6623 3704" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off formControlName="cc_number"></ion-input> 
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_number.valid  && (payerForm.controls.cc_number.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <label for="cardExpirationMonth" style="margin-right:115px">Expiration month:</label>
-
-                        <input (keyup)="keytab($event,2)" formControlName="cc_expiration_month" style="width:50px" type="tel" id="cardExpirationMonth" data-checkout="cardExpirationMonth" placeholder="12" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
-                        <input (keyup)="keytab($event,4)" formControlName="cc_expiration_year" style="width:50px" type="tel" id="cardExpirationYear" data-checkout="cardExpirationYear" placeholder="2015" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
-                        <input style="width:50px" type="tel" id="securityCode" formControlName="cc_security_code" data-checkout="securityCode" placeholder="CVV" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
-
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_expiration_month.valid  && (payerForm.controls.cc_expiration_month.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_MONTH_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_expiration_year.valid  && (payerForm.controls.cc_expiration_year.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_YEAR_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="dateError && submitAttempt">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_DATE_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="cvvError && submitAttempt">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_LENGTH_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_security_code.valid  && (payerForm.controls.cc_security_code.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>{{ 'CHECKOUT_CARD.SAVE_CARD' | translate }}</ion-label>
-                        <ion-checkbox formControlName="cc_save" ></ion-checkbox> 
-                    </ion-item>
-                    <ion-item>
-                        <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
-                        <ion-checkbox [(ngModel)]="v" (click)="useUser()" [ngModelOptions]="{standalone: true}"></ion-checkbox>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label for="cardholderName">Card holder name:</ion-label>
-                        <ion-input class="tright" type="text" id="cardholderName" data-checkout="cardholderName" placeholder="APRO" formControlName="cc_name"></ion-input>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.cc_name.valid  && (payerForm.controls.cc_name.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_NAME_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label for="email">{{ 'USER.EMAIL' | translate }}</ion-label>
-                        <ion-input class="tright" id="email" name="email" value="test_user_19653727@testuser.com" type="email" placeholder="your email" formControlName="email"></ion-input>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.email.valid  && (payerForm.controls.email.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
-                    </ion-item>
-
-
-                    <ion-item>
-                        <ion-label for="docType">Document type:</ion-label>
-                        <ion-select id="docType" data-checkout="docType" formControlName="doc_type"><ion-select-option *ngFor="let item of doctypes" [value]='item.id'>{{item.name}}</ion-select-option></ion-select>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.doc_type.valid  && (payerForm.controls.doc_type.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'USER.DOC_TYPE_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label for="docNumber">Document number:</ion-label>
-                        <ion-input class="tright" type="text" id="docNumber" data-checkout="docNumber" placeholder="12345678" formControlName="payer_id"></ion-input>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.payer_id.valid  && (payerForm.controls.payer_id.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label for="docType">Installments:</ion-label>
-                        <ion-select class="right" [(ngModel)]="installmentsSelected" formControlName="installmentsSelected"><ion-select-option *ngFor="let item of installments" [value]='item.installments'>{{item.recommended_message}}</ion-select-option></ion-select>
-                    </ion-item>
-                    <ion-item *ngIf="!payerForm.controls.installmentsSelected.valid  && (payerForm.controls.installmentsSelected.dirty || submitAttempt)">
-                        <p class="error-message">{{ 'CHECKOUT_CARD.INSTALLMENTS_ERROR' | translate }}</p>
-                    </ion-item>
-
-                    <ion-item *ngFor="let item of validationErrors" >
-                        <p>{{item}}</p>
-                    </ion-item>
-                </ion-list>
-                <ion-input type="hidden" name="paymentMethodId" formControlName="paymentMethodId" [(ngModel)]="paymentMethod" ></ion-input>
-                <ion-item class="right"> 
-                    <ion-button color="danger" style="width:120px" (click)="goBack()">{{ 'INPUTS.BACK' | translate }}</ion-button>
-                    <ion-button type="submit" style="width:120px">{{ 'BOOKING_DETAIL.PAY' | translate }}</ion-button>
+    <div class="webcont">
+        <ion-card>
+            <ion-item *ngIf="logo.length>0">
+                <ion-item *ngIf="logo.length>0" style="width:50px">
+                    <img [src]="logo">
                 </ion-item>
-            </form>
-        </ion-card-content>
-    </ion-card>
+            </ion-item>
+            <ion-card-content>
+                <form action="" method="post" id="pay" name="pay" (ngSubmit)="pay()" [formGroup]="payerForm">
 
+                    <ion-list>
+
+                        <ion-item>
+                            <ion-label for="cardNumber">Credit card number:</ion-label>
+                            <ion-input class="tright" type="tel" id="cardNumber" (keyup)="creditTab($event)" data-checkout="cardNumber" placeholder="4509 9535 6623 3704" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off formControlName="cc_number"></ion-input> 
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_number.valid  && (payerForm.controls.cc_number.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <label for="cardExpirationMonth" style="margin-right:115px">Expiration month:</label>
+
+                            <input (keyup)="keytab($event,2)" formControlName="cc_expiration_month" style="width:50px" type="tel" id="cardExpirationMonth" data-checkout="cardExpirationMonth" placeholder="12" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
+                            <input (keyup)="keytab($event,4)" formControlName="cc_expiration_year" style="width:50px" type="tel" id="cardExpirationYear" data-checkout="cardExpirationYear" placeholder="2015" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
+                            <input style="width:50px" type="tel" id="securityCode" formControlName="cc_security_code" data-checkout="securityCode" placeholder="CVV" onselectstart="return false" onpaste="return false" onCopy="return false" onCut="return false" onDrag="return false" onDrop="return false" autocomplete=off />
+
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_expiration_month.valid  && (payerForm.controls.cc_expiration_month.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_MONTH_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_expiration_year.valid  && (payerForm.controls.cc_expiration_year.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_EXPIRATION_YEAR_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="dateError && submitAttempt">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_DATE_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="cvvError && submitAttempt">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_LENGTH_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_security_code.valid  && (payerForm.controls.cc_security_code.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CVV_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>{{ 'CHECKOUT_CARD.SAVE_CARD' | translate }}</ion-label>
+                            <ion-checkbox formControlName="cc_save" ></ion-checkbox> 
+                        </ion-item>
+                        <ion-item>
+                            <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
+                            <ion-checkbox [(ngModel)]="v" (click)="useUser()" [ngModelOptions]="{standalone: true}"></ion-checkbox>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label for="cardholderName">Card holder name:</ion-label>
+                            <ion-input class="tright" type="text" id="cardholderName" data-checkout="cardholderName" placeholder="APRO" formControlName="cc_name"></ion-input>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.cc_name.valid  && (payerForm.controls.cc_name.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.PAYER_CC_NAME_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label for="email">{{ 'USER.EMAIL' | translate }}</ion-label>
+                            <ion-input class="tright" id="email" name="email" value="test_user_19653727@testuser.com" type="email" placeholder="your email" formControlName="email"></ion-input>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.email.valid  && (payerForm.controls.email.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
+                        </ion-item>
+
+
+                        <ion-item>
+                            <ion-label for="docType">Document type:</ion-label>
+                            <ion-select id="docType" data-checkout="docType" formControlName="doc_type"><ion-select-option *ngFor="let item of doctypes" [value]='item.id'>{{item.name}}</ion-select-option></ion-select>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.doc_type.valid  && (payerForm.controls.doc_type.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'USER.DOC_TYPE_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label for="docNumber">Document number:</ion-label>
+                            <ion-input class="tright" type="text" id="docNumber" data-checkout="docNumber" placeholder="12345678" formControlName="payer_id"></ion-input>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.payer_id.valid  && (payerForm.controls.payer_id.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'USER.ID_ERROR' | translate }}</p>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label for="docType">Installments:</ion-label>
+                            <ion-select class="right" [(ngModel)]="installmentsSelected" formControlName="installmentsSelected"><ion-select-option *ngFor="let item of installments" [value]='item.installments'>{{item.recommended_message}}</ion-select-option></ion-select>
+                        </ion-item>
+                        <ion-item *ngIf="!payerForm.controls.installmentsSelected.valid  && (payerForm.controls.installmentsSelected.dirty || submitAttempt)">
+                            <p class="error-message">{{ 'CHECKOUT_CARD.INSTALLMENTS_ERROR' | translate }}</p>
+                        </ion-item>
+
+                        <ion-item *ngFor="let item of validationErrors" >
+                            <p>{{item}}</p>
+                        </ion-item>
+                    </ion-list>
+                    <ion-input type="hidden" name="paymentMethodId" formControlName="paymentMethodId" [(ngModel)]="paymentMethod" ></ion-input>
+                    <ion-item class="right"> 
+                        <ion-button color="danger" style="width:120px" (click)="goBack()">{{ 'INPUTS.BACK' | translate }}</ion-button>
+                        <ion-button type="submit" style="width:120px">{{ 'BOOKING_DETAIL.PAY' | translate }}</ion-button>
+                    </ion-item>
+                </form>
+            </ion-card-content>
+        </ion-card>
+    </div>
 </ion-content>

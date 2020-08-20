@@ -8,42 +8,43 @@
 </ion-header>
 
 <ion-content>
-    <ion-item>
-        <ion-label>{{ 'BOOKING_LIST.RESERVATION_PERIOD' | translate }}</ion-label>
-        <ion-select placeholder="Select One" [(ngModel)]="status" (ionChange)="selectQuery()">
-            <ion-select-option *ngFor="let item of queries" value="{{item.value}}">{{item.name}}</ion-select-option>
-        </ion-select>
-    </ion-item>
-    <p *ngIf="orders.length ==0">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
-    <ion-list>
-        <ion-card *ngFor="let order of orders">
-            <ion-card-header>
-                <h2>{{ 'PAYU_COMPLETE.ORDER_ID' | translate }}: {{order.id}}</h2>
-                <p>{{ 'PAYU_COMPLETE.TRANSACTION_DATE' | translate }}: {{order.updated_at| date:'medium'}}</p>
-
-            </ion-card-header>
-            <ion-card-content>
-                <div (click)="openItem(item)" class="checkout-prepare__items" *ngFor="let item of order.items">
-                    <div class="checkout__item"><strong>{{ 'CART_ITEM.NAME' | translate }}: </strong> {{item.name}}</div>
-                    <div class="checkout__item"><strong>{{ 'CART_ITEM.QUANTITY' | translate }}: </strong> {{item.quantity}}</div>
-                    <div class="checkout__item"><strong>{{ 'CART_ITEM.PRICE' | translate }}: </strong> {{item.price | currency }}</div>
-                    <div class="checkout__item"><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{item.priceSumConditions | currency }}</div>
-                    <div *ngIf="item.detailsvisible">
-                        <ion-row class="appot-detail" *ngFor="let attr of item.attributes | keyvalue">
-                                 <ion-col class="detail" size="10">
-                                <span>{{attr.key}}</span>
-                                <span>{{attr.value}}</span>
-                            </ion-col> 
-                        </ion-row>
+    <div class="webcont">
+        <ion-item>
+            <ion-label>{{ 'BOOKING_LIST.RESERVATION_PERIOD' | translate }}</ion-label>
+            <ion-select placeholder="Select One" [(ngModel)]="status" (ionChange)="selectQuery()">
+                <ion-select-option *ngFor="let item of queries" value="{{item.value}}">{{item.name}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <p *ngIf="orders.length ==0">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
+        <ion-list>
+            <ion-card *ngFor="let order of orders">
+                <ion-card-header>
+                    <h2>{{ 'PAYU_COMPLETE.ORDER_ID' | translate }}: {{order.id}}</h2>
+                    <p>{{ 'PAYU_COMPLETE.TRANSACTION_DATE' | translate }}: {{order.updated_at| date:'medium'}}</p>
+                </ion-card-header>
+                <ion-card-content>
+                    <div (click)="openItem(item)" class="checkout-prepare__items" *ngFor="let item of order.items">
+                        <div class="checkout__item"><strong>{{ 'CART_ITEM.NAME' | translate }}: </strong> {{item.name}}</div>
+                        <div class="checkout__item"><strong>{{ 'CART_ITEM.QUANTITY' | translate }}: </strong> {{item.quantity}}</div>
+                        <div class="checkout__item"><strong>{{ 'CART_ITEM.PRICE' | translate }}: </strong> {{item.price | currency }}</div>
+                        <div class="checkout__item"><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{item.priceSumConditions | currency }}</div>
+                        <div *ngIf="item.detailsvisible">
+                            <ion-row class="appot-detail" *ngFor="let attr of item.attributes | keyvalue">
+                                     <ion-col class="detail" size="10">
+                                    <span>{{attr.key}}</span>
+                                    <span>{{attr.value}}</span>
+                                </ion-col> 
+                            </ion-row>
+                        </div>
                     </div>
-                </div>
-                <ion-button (click)="fulfillOrder(order)">                
-                    <h2>{{ 'ITEM_DETAIL.FULFILL' | translate }}</h2>
-                </ion-button>    
-            </ion-card-content>
-        </ion-card>
-    </ion-list>
-    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+                    <ion-button (click)="fulfillOrder(order)">                
+                        <h2>{{ 'ITEM_DETAIL.FULFILL' | translate }}</h2>
+                    </ion-button>    
+                </ion-card-content>
+            </ion-card>
+        </ion-list>
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </div>
 </ion-content>

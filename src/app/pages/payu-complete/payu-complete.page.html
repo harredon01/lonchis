@@ -1,43 +1,39 @@
 <ion-header>
-
     <ion-toolbar hideBackButton >
         <ion-title>{{ 'PAYU_COMPLETE.TITLE' | translate }}</ion-title>
     </ion-toolbar>
-
 </ion-header>
 
-
 <ion-content>
-    <ion-card>
+    <div class="webcont">
+        <ion-card>
 
-        <ion-item *ngIf="!is_paid">
-            <h2 *ngIf="transaction.state == 'APPROVED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.APPROVED' | translate }}</h2>
-            <h2 *ngIf="transaction.state == 'DECLINED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.DENIED' | translate }}</h2>
-            <h2 *ngIf="transaction.state == 'PENDING'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.PENDING' | translate }}</h2>
-            <h2 *ngIf="transaction.state == 'ERROR'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.ERROR' | translate }}</h2>
-            <h2 *ngIf="transaction.state == 'EXPIRED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.EXPIRED' | translate }}</h2>
-            
-            
-        </ion-item>
+            <ion-item *ngIf="!is_paid">
+                <h2 *ngIf="transaction.state == 'APPROVED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.APPROVED' | translate }}</h2>
+                <h2 *ngIf="transaction.state == 'DECLINED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.DENIED' | translate }}</h2>
+                <h2 *ngIf="transaction.state == 'PENDING'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.PENDING' | translate }}</h2>
+                <h2 *ngIf="transaction.state == 'ERROR'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.ERROR' | translate }}</h2>
+                <h2 *ngIf="transaction.state == 'EXPIRED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.EXPIRED' | translate }}</h2>
+            </ion-item>
 
-        <ion-card-content *ngIf="!is_paid">
-            <p *ngIf="transaction.state == 'EXPIRED'||transaction.state == 'DECLINED'">{{ 'PAYMENT.DENIED_DESC' | translate }}</p>
-            <p *ngIf="transaction.state == 'ERROR'">{{ 'PAYMENT.ERROR_DESC' | translate }}</p>
-            <br/>
-            <p>{{ 'PAYU_COMPLETE.DESCRIPTION' | translate }}</p>
-            <p *ngIf="transaction.orderId+''.length>0"><b>{{ 'PAYU_COMPLETE.ORDER_ID' | translate }}:</b> {{transaction.orderId}}</p>
-            <p *ngIf="transaction.transactionId.length>0"><b>{{ 'PAYU_COMPLETE.TRANSACTION_ID' | translate }}:</b> {{transaction.transactionId}}</p>
-            <p *ngIf="transaction.responseCode.length>0"><b>{{ 'PAYU_COMPLETE.REFERENCE' | translate }}:</b> {{transaction.responseCode}}</p>
-            <p *ngIf="transaction.operationDate"><b>{{ 'PAYU_COMPLETE.TRANSACTION_DATE' | translate }}:</b> {{transaction.operationDate}}</p>
-            <p *ngIf="transaction.state=='DECLINED'"><strong>{{ 'PAYU_COMPLETE.TRANSACTION_RETRY' | translate }}</strong></p>
-            <br/>
-            <ion-button shape="round" (click)="returnHome()">Volver</ion-button>
-        </ion-card-content>
-        <ion-card-content *ngIf="is_paid">
-            <p>{{ 'PAYU_COMPLETE.IS_PAID' | translate }}</p>
-            <br/>
-            <button ion-button round (click)="returnHome()">Volver</button>
-        </ion-card-content>
-    </ion-card>  
-    
+            <ion-card-content *ngIf="!is_paid">
+                <p *ngIf="transaction.state == 'EXPIRED'||transaction.state == 'DECLINED'">{{ 'PAYMENT.DENIED_DESC' | translate }}</p>
+                <p *ngIf="transaction.state == 'ERROR'">{{ 'PAYMENT.ERROR_DESC' | translate }}</p>
+                <br/>
+                <p>{{ 'PAYU_COMPLETE.DESCRIPTION' | translate }}</p>
+                <p *ngIf="transaction.orderId+''.length>0"><b>{{ 'PAYU_COMPLETE.ORDER_ID' | translate }}:</b> {{transaction.orderId}}</p>
+                <p *ngIf="transaction.transactionId.length>0"><b>{{ 'PAYU_COMPLETE.TRANSACTION_ID' | translate }}:</b> {{transaction.transactionId}}</p>
+                <p *ngIf="transaction.responseCode.length>0"><b>{{ 'PAYU_COMPLETE.REFERENCE' | translate }}:</b> {{transaction.responseCode}}</p>
+                <p *ngIf="transaction.operationDate"><b>{{ 'PAYU_COMPLETE.TRANSACTION_DATE' | translate }}:</b> {{transaction.operationDate}}</p>
+                <p *ngIf="transaction.state=='DECLINED'"><strong>{{ 'PAYU_COMPLETE.TRANSACTION_RETRY' | translate }}</strong></p>
+                <br/>
+                <ion-button shape="round" (click)="returnHome()">Volver</ion-button>
+            </ion-card-content>
+            <ion-card-content *ngIf="is_paid">
+                <p>{{ 'PAYU_COMPLETE.IS_PAID' | translate }}</p>
+                <br/>
+                <button ion-button round (click)="returnHome()">Volver</button>
+            </ion-card-content>
+        </ion-card>  
+    </div>
 </ion-content>

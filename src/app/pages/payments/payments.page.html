@@ -7,7 +7,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="payments">
-    <div class="payments__wrapper">
+    <div class="payments__wrapper webcont">
         <p *ngIf="currentItems.length ==0" class="pdesc">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
         <div>
             <div class="payments__item-wrapper" *ngFor="let item of currentItems">

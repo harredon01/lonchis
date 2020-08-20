@@ -7,69 +7,69 @@
     </ion-toolbar>
 </ion-header>
 <ion-content class="checkout-prepare"> 
+    <div class="webcont">
+        <ion-card class="m0">        
+            <ion-card-header class="product-header-information">  
+                <h2>{{ 'PAYMENT_DETAIL.DESCRIPTION' | translate }}</h2>
+                {{ 'PAYMENT.STATUS' | translate }} <span *ngIf="item.status == 'payment_in_bank'">{{ 'PAYMENT.PAYMENT_IN_BANK' | translate }}</span>
+                <span *ngIf="item.status == 'pending' || item.status == 'payment_created'">{{ 'PAYMENT.PENDING' | translate }}</span> 
+                <span *ngIf="item.status == 'denied'">{{ 'PAYMENT.DENIED2' | translate }}</span> 
+                <span *ngIf="item.status == 'approved'">{{ 'PAYMENT.APPROVED2' | translate }}</span> 
+            </ion-card-header>        
+            <ion-card-content> 
+                <p *ngIf="item.status == 'payment_in_bank'">{{ 'PAYMENT.IN_BANK' | translate }}</p><br *ngIf="item.status == 'payment_in_bank'" />   
+                <p><span>{{ 'PAYMENT.SUBTOTAL' | translate }}:</span> {{item.subtotal | currency }}</p>    
+                <p><span>{{ 'PAYMENT.TRANSACTION_COST' | translate }}:</span> {{item.transaction_cost | currency }}</p>    
+                <p><span>{{ 'PAYMENT.TOTAL' | translate }}:</span> {{item.total | currency }}</p>        
+                <p><span>{{ 'PAYMENT.REFERENCE' | translate }}:</span> {{item.referenceCode}}</p>            
+                <p><span>{{ 'PAYMENT.ORDER' | translate }}:</span> {{item.order_id}}</p>        
+                <p><span>{{ 'PAYMENT.CREATED_AT' | translate }}:</span> {{item.created_at | date:'fullDate'}}</p>        
+                <p><span>{{ 'PAYMENT.UPDATED_AT' | translate }}:</span> {{item.updated_at | date:'fullDate'}}</p>
+                <br/>
+                <ion-button (click)="retryPayment(item)" *ngIf="item.status != 'approved' && item.status != 'payment_in_bank'" class="right m15">                
+                    <h2>{{ 'PAYMENT_DETAIL.RETRY' | translate }}</h2>
+                </ion-button>   
+                <ion-button (click)="addTransactionCosts(item.id)" *ngIf="item.status == 'payment_in_bank'&& !newPayment" class="right m15">                
+                    <h2>{{ 'PAYMENT_DETAIL.CHANGE_PAYMENT' | translate }}</h2>
+                </ion-button>  
+                <ion-button (click)="returnHome()" *ngIf="item.status == 'payment_in_bank' && newPayment" class="right m15">                
+                    <h2>{{ 'PAYMENT_DETAIL.DONE' | translate }}</h2>
+                </ion-button>   
+            </ion-card-content>
+        </ion-card>    
+        <div class="checkout-prepare--wrapper">
+            <div>
+                <h2>{{ 'ORDER_DETAIL.TITLE' | translate }}</h2>
+                <p>{{ 'PAYMENT.STATUS' | translate }}: {{item.order.status }}</p>
+                <h3>{{ 'ORDER_DETAIL.ITEMS' | translate }}</h3>
+                <ion-grid>
+                    <div class="checkout-prepare__items mb20" *ngFor="let cartItem of item.order.items">
+                         <div class="checkout__item"><strong>{{ 'CART_ITEM.NAME' | translate }}: </strong> {{cartItem.name}}</div>
+                        <div class="checkout__item"><strong>{{ 'CART_ITEM.QUANTITY' | translate }}: </strong> {{cartItem.quantity}}</div>
+                        <div class="checkout__item"><strong>{{ 'CART_ITEM.PRICE' | translate }}: </strong> {{cartItem.price| currency}}</div>
 
-    <ion-card class="m0">        
-        <ion-card-header class="product-header-information">  
-            <h2>{{ 'PAYMENT_DETAIL.DESCRIPTION' | translate }}</h2>
-            {{ 'PAYMENT.STATUS' | translate }} <span *ngIf="item.status == 'payment_in_bank'">{{ 'PAYMENT.PAYMENT_IN_BANK' | translate }}</span>
-            <span *ngIf="item.status == 'pending' || item.status == 'payment_created'">{{ 'PAYMENT.PENDING' | translate }}</span> 
-            <span *ngIf="item.status == 'denied'">{{ 'PAYMENT.DENIED2' | translate }}</span> 
-            <span *ngIf="item.status == 'approved'">{{ 'PAYMENT.APPROVED2' | translate }}</span> 
-        </ion-card-header>        
-        <ion-card-content> 
-            <p *ngIf="item.status == 'payment_in_bank'">{{ 'PAYMENT.IN_BANK' | translate }}</p><br *ngIf="item.status == 'payment_in_bank'" />   
-            <p><span>{{ 'PAYMENT.SUBTOTAL' | translate }}:</span> {{item.subtotal | currency }}</p>    
-            <p><span>{{ 'PAYMENT.TRANSACTION_COST' | translate }}:</span> {{item.transaction_cost | currency }}</p>    
-            <p><span>{{ 'PAYMENT.TOTAL' | translate }}:</span> {{item.total | currency }}</p>        
-            <p><span>{{ 'PAYMENT.REFERENCE' | translate }}:</span> {{item.referenceCode}}</p>            
-            <p><span>{{ 'PAYMENT.ORDER' | translate }}:</span> {{item.order_id}}</p>        
-            <p><span>{{ 'PAYMENT.CREATED_AT' | translate }}:</span> {{item.created_at | date:'fullDate'}}</p>        
-            <p><span>{{ 'PAYMENT.UPDATED_AT' | translate }}:</span> {{item.updated_at | date:'fullDate'}}</p>
-            <br/>
-            <ion-button (click)="retryPayment(item)" *ngIf="item.status != 'approved' && item.status != 'payment_in_bank'" class="right m15">                
-                <h2>{{ 'PAYMENT_DETAIL.RETRY' | translate }}</h2>
-            </ion-button>   
-            <ion-button (click)="addTransactionCosts(item.id)" *ngIf="item.status == 'payment_in_bank'&& !newPayment" class="right m15">                
-                <h2>{{ 'PAYMENT_DETAIL.CHANGE_PAYMENT' | translate }}</h2>
-            </ion-button>  
-            <ion-button (click)="returnHome()" *ngIf="item.status == 'payment_in_bank' && newPayment" class="right m15">                
-                <h2>{{ 'PAYMENT_DETAIL.DONE' | translate }}</h2>
-            </ion-button>   
-        </ion-card-content>
-    </ion-card>    
-    <div class="checkout-prepare--wrapper">
-        <div>
-            <h2>{{ 'ORDER_DETAIL.TITLE' | translate }}</h2>
-            <p>{{ 'PAYMENT.STATUS' | translate }}: {{item.order.status }}</p>
-            <h3>{{ 'ORDER_DETAIL.ITEMS' | translate }}</h3>
-            <ion-grid>
-                <div class="checkout-prepare__items mb20" *ngFor="let cartItem of item.order.items">
-                     <div class="checkout__item"><strong>{{ 'CART_ITEM.NAME' | translate }}: </strong> {{cartItem.name}}</div>
-                    <div class="checkout__item"><strong>{{ 'CART_ITEM.QUANTITY' | translate }}: </strong> {{cartItem.quantity}}</div>
-                    <div class="checkout__item"><strong>{{ 'CART_ITEM.PRICE' | translate }}: </strong> {{cartItem.price| currency}}</div>
-
-                    <div class="checkout__item"><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{cartItem.priceSumConditions| currency}}</div>
+                        <div class="checkout__item"><strong>{{ 'CART_ITEM.SUBTOTAL' | translate }}: </strong> {{cartItem.priceSumConditions| currency}}</div>
+                    </div>
+                </ion-grid>
+                <h3 *ngIf="item.order.order_conditions.length>0">{{ 'ORDER_DETAIL.CONDITIONS' | translate }}</h3>
+                <ion-grid>
+                    <div class="checkout-prepare__items" *ngFor="let condition of item.order.order_conditions">
+                         <div class="checkout__item"> <strong>{{ 'CART_COND.NAME' | translate }}: </strong>{{condition.name}}</div>
+                        <div class="checkout__item"> <strong>{{ 'CART_COND.TOTAL' | translate }}: </strong>{{condition.total| currency}}</div>
+                    </div>
+                </ion-grid>
+                <p><strong>{{ 'CART_ITEM.TOTAL' | translate }}:</strong> {{item.subtotal | currency }}</p>
+                <p *ngIf="item.order.recurring_type">{{ 'ORDER_DETAIL.IS_RECURRING' | translate }}</p>
+                <p><strong>{{ 'CART_ITEM.NUM_ITEM' | translate }}:</strong>{{item.order.items.length}}</p>
+                <div *ngIf="item.order.user_id==userData._user.id">
+                    <ion-list *ngIf="item.order.merchant == '1299'">
+                        <ion-item >
+                            <ion-label>{{ 'CHECKOUT_PREPARE.RECURRING' | translate }}</ion-label>
+                            <ion-checkbox [(ngModel)]="recurring" (ionChange)="setOrderRecurringType()" ></ion-checkbox>
+                        </ion-item>
+                    </ion-list>
                 </div>
-            </ion-grid>
-            <h3 *ngIf="item.order.order_conditions.length>0">{{ 'ORDER_DETAIL.CONDITIONS' | translate }}</h3>
-            <ion-grid>
-                <div class="checkout-prepare__items" *ngFor="let condition of item.order.order_conditions">
-                     <div class="checkout__item"> <strong>{{ 'CART_COND.NAME' | translate }}: </strong>{{condition.name}}</div>
-                    <div class="checkout__item"> <strong>{{ 'CART_COND.TOTAL' | translate }}: </strong>{{condition.total| currency}}</div>
-                </div>
-            </ion-grid>
-            <p><strong>{{ 'CART_ITEM.TOTAL' | translate }}:</strong> {{item.subtotal | currency }}</p>
-            <p *ngIf="item.order.recurring_type">{{ 'ORDER_DETAIL.IS_RECURRING' | translate }}</p>
-            <p><strong>{{ 'CART_ITEM.NUM_ITEM' | translate }}:</strong>{{item.order.items.length}}</p>
-            <div *ngIf="item.order.user_id==userData._user.id">
-                <ion-list *ngIf="item.order.merchant == '1299'">
-                    <ion-item >
-                        <ion-label>{{ 'CHECKOUT_PREPARE.RECURRING' | translate }}</ion-label>
-                        <ion-checkbox [(ngModel)]="recurring" (ionChange)="setOrderRecurringType()" ></ion-checkbox>
-                    </ion-item>
-                </ion-list>
             </div>
         </div>
     </div>
-
 </ion-content>

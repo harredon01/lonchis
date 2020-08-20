@@ -13,7 +13,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content padding>
-    <div class="delivery-lunch" *ngIf="!isDeposit">
+    <div class="delivery-lunch webcont" *ngIf="!isDeposit">
         <p class="title pl15">{{ 'DELIVERY_PROGRAM.DESCRIPTION' | translate }} {{deliveryParams.delivery_text }}</p>
         <div *ngIf="!isProgrammed">
             <ion-card *ngFor="let foodItem of listArticles" class="m0">
