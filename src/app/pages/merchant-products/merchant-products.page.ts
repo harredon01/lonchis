@@ -97,12 +97,25 @@ export class MerchantProductsPage implements OnInit {
         if(merchant){
             this.merchant = merchant;
         } else {
-            this.merchant = paramsSent.objectId;
+            if(paramsSent){
+                if(paramsSent.objectId){
+                    this.merchant = paramsSent.objectId;
+                }
+            }
         }
-        this.isOwner = paramsSent.owner;
-        if (paramsSent.settings) {
-            this.urlSearch = "tabs/settings/merchants/" + this.merchant;
-        } else {
+        if(paramsSent){
+            if(paramsSent.owner){
+                this.isOwner = paramsSent.owner;
+            }
+        }
+        let loadedSettings = false;
+        if(paramsSent){
+            if (paramsSent.settings) {
+                this.urlSearch = "tabs/settings/merchants/" + this.merchant;
+                loadedSettings = true;
+            } 
+        }
+        if (!loadedSettings){
             let category = this.activatedRoute.snapshot.paramMap.get('categoryId');
             this.urlSearch = 'tabs/home/categories/' + category + '/merchant/' + this.merchant;
         }

@@ -218,6 +218,9 @@ export class MerchantListingPage implements OnInit {
                 if (results[one].merchant_id) {
                     results[one].id = results[one].merchant_id;
                 }
+                if (results[one].categorizable_id) {
+                    results[one].id = results[one].categorizable_id;
+                }
                 let container = new Merchant(results[one]);
                 this.merchants.push(container);
             }
