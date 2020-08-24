@@ -160,7 +160,7 @@ export class LoginPage implements OnInit {
                 .then((succ: AppleSignInResponse) => {
                     // https://developer.apple.com/documentation/signinwithapplerestapi/verifying_a_user
                     let userData = {
-                        id:succ.user,
+                        id: succ.user,
                         firstName: succ.fullName.givenName,
                         lastName: succ.fullName.familyName,
                         name: succ.fullName.givenName + ' ' + succ.fullName.familyName,
@@ -243,6 +243,12 @@ export class LoginPage implements OnInit {
             } else {
                 this._loadUserData();
             }
+            let vm = this
+            setTimeout(function () {vm.dismissLoader();}, 1000);
+        }, (err) => {
+            this._loadUserData();
+            let vm = this
+            setTimeout(function () {vm.dismissLoader();}, 1000);
         });
     }
 
