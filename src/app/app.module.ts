@@ -31,7 +31,9 @@ import {ForgotPassPageModule} from './pages/forgot-pass/forgot-pass.module'
 import {ConversionPageModule} from './pages/conversion/conversion.module'
 import {AddressCreatePageModule} from './pages/address-create/address-create.module'
 import {AddressesPageModule} from './pages/addresses/addresses.module'
-import {AvailabilityCreatePageModule} from './pages/availability-create/availability-create.module'
+import {AvailabilityCreatePageModule} from './pages/availability-create/availability-create.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment'
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
@@ -57,7 +59,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         ForgotPassPageModule,
         BookingDetailPageModule,
         CommentsPageModule,
-        AvailabilityCreatePageModule],
+        AvailabilityCreatePageModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })],
     providers: [
         StatusBar,
         SplashScreen,

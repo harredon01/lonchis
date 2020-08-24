@@ -99,7 +99,7 @@
                     <ion-item *ngIf="merchant.status=='online'" lines="none" class="profile__options-item ion-no-padding">
                         <div class="profile__options-wrapper" (click)="call()">
                             <img src="assets/icon/phone.svg" alt="">
-                            {{ 'MERCHANT_DETAIL.CALL' | translate }}
+                            {{ 'MERCHANT_DETAIL.CALL' | translate }}<br/>{{ 'MERCHANT_DETAIL.CALL2' | translate }}
                         </div>
                     </ion-item>
                 </ion-list>
@@ -142,8 +142,6 @@
                 </ion-card-content>
             </ion-card> 
         </div>
-
-
         <br/>
         <br/>
         <div class="profile__tab defult-tab bg-white">
@@ -199,7 +197,6 @@
                         </ion-card-content>
                     </ion-card>
                 </div>
-
             </ion-list>
             <ion-list *ngSwitchCase="'feedback'">
                 <div class="bg-white rate-over-all">
@@ -243,7 +240,6 @@
                         {{rating.comment}}
                     </ion-card-content>
                 </ion-card>
-
             </ion-list>
         </div>
     </div>

@@ -5,3 +5,8 @@ form {
     float: right;
     margin: 7px;
 }
+@media (min-width: 800px) {
+    .webcont {
+        max-width: 800px;
+    }
+}

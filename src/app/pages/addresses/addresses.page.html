@@ -19,7 +19,7 @@
         <p *ngIf="currentItems.length ==0">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
         <div class="my-addresses__list">
             <div class="my-addresses__item-wrapper" *ngFor="let item of currentItems">
-                <div class="my-addresses__item" (click)="editAddress(item)">
+                <div class="my-addresses__item">
                     <p class="my-addresses__item-content">
                         <span class="text--bold text--block">
                             Name:
