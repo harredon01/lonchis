@@ -23,7 +23,7 @@
                 <p>{{selectedAddress.countryName}}</p>
             </ion-card-content>
         </ion-card>
-        <ion-list class="checkout-shipping__list" *ngIf="!showAddressCard">
+        <ion-list class="checkout-shipping__list pl10 pr10" *ngIf="!showAddressCard">
             <ion-item-sliding class="checkout-shipping__item" *ngFor="let item of currentItems">
                 <ion-item (click)="saveShipping(item)">
                     <ion-label class="ion-text-wrap">

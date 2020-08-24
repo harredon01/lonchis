@@ -511,7 +511,12 @@ export class LonchisPage implements OnInit {
      */
     openCalc() {
         console.log("Opening calc");
-        this.navCtrl.navigateForward('tabs/home/calculadora');
+        if (this.userData._user) {
+            this.navCtrl.navigateForward('tabs/home/calculadora');
+        } else {
+            this.navCtrl.navigateForward('home/calculadora');
+        }
+
     }
 
     getDeliveries(showLoader: boolean) {
