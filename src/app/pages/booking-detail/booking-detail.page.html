@@ -102,7 +102,7 @@
             <ion-button *ngIf="mainBooking.total_paid==mainBooking.price && mainBooking.options.status=='started'" full class="btn success right" (click)="changeStatusBooking('completed')">{{ 'BOOKING_DETAIL.COMPLETED' | translate }}</ion-button>
             <ion-button color="success" *ngIf="mainBooking.customer_id != userData._user.id && mainBooking.total_paid==-1" full class="btn success right" (click)="changeStatusBooking('approved')">{{ 'BOOKING_DETAIL.APPROVE' | translate }}</ion-button>
             <ion-button color="danger" *ngIf="mainBooking.customer_id != userData._user.id && mainBooking.total_paid==-1" full class="btn error right" (click)="changeStatusBooking('denied')">{{ 'BOOKING_DETAIL.DENY' | translate }}</ion-button>
-            <ion-button *ngIf="mainBooking.total_paid==0 || mainBooking.total_paid==-1" full class="btn error right" (click)="editBooking()">{{ 'INPUTS.EDIT' | translate }}</ion-button>
+            <ion-button *ngIf="mainBooking.notes=='pending'" full class="btn error right" (click)="editBooking()">{{ 'INPUTS.EDIT' | translate }}</ion-button>
             <ion-button color="success" *ngIf="mainBooking.customer_id == userData._user.id  && mainBooking.total_paid==0" full class="btn success right" (click)="payBooking()">{{ 'BOOKING_DETAIL.PAY' | translate }}</ion-button>
             <ion-button color="danger" *ngIf="mainBooking.customer_id == userData._user.id && (mainBooking.total_paid==0 || mainBooking.total_paid==-1)" full class="btn success right" (click)="deleteBooking()">{{ 'BOOKING_DETAIL.DELETE' | translate }}</ion-button></div>
         <div class="clear"></div> 

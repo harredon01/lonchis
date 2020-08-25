@@ -13,7 +13,7 @@
 </ion-header>
 
 <ion-content class="bg-light">
-    <div class="webcont" style="max-width: 600px">
+    <div class="webcont">
         <ion-card class="title ml5 mr5 mb15">
 
             <ion-avatar item-start class="left m10">
@@ -33,8 +33,8 @@
                         <div class="calander-row"> 
                             <ion-grid>
                                 <ion-row>
-                                    <ion-col *ngFor="let item of month.days" (click)="selectDate(item)" class="p0">
-                                        <div class="day active mb5" [ngClass]="{'green': item.status=='active', 'red': item.status=='closed'}">
+                                    <ion-col *ngFor="let item of month.days" (click)="selectDate(item)" class="p0" sizeLg="1.7" sizeMd="1.7">
+                                        <div class="day active mb15" [ngClass]="{'green': item.status=='active', 'red': item.status=='closed'}">
                                             <span>{{item.date | date :'E'}}</span>{{item.date | date :'d'}}
                                         </div>
                                     </ion-col>

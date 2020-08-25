@@ -124,14 +124,8 @@
                 <ion-card-content class="profile__overview-content">
                     <ion-grid>
                         <ion-row>
-                            <ion-col *ngFor="let availability of merchant.availabilitiesOrder" size="6">
-                                <h4 *ngIf="availability.range=='monday'">{{ 'DAYS.MONDAY' | translate }}</h4>
-                                <h4 *ngIf="availability.range=='tuesday'">{{ 'DAYS.TUESDAY' | translate }}</h4>
-                                <h4 *ngIf="availability.range=='wednesday'">{{ 'DAYS.WEDNESDAY' | translate }}</h4>
-                                <h4 *ngIf="availability.range=='thursday'">{{ 'DAYS.THURSDAY' | translate }}</h4>
-                                <h4 *ngIf="availability.range=='friday'">{{ 'DAYS.FRIDAY' | translate }}</h4>
-                                <h4 *ngIf="availability.range=='saturday'">{{ 'DAYS.SATURDAY' | translate }}</h4>
-                                <h4 *ngIf="availability.range=='sunday'">{{ 'DAYS.SUNDAY' | translate }}</h4>
+                            <ion-col *ngFor="let availability of merchant.availabilitiesOrder" size="6" sizeLg="3" sizeMd="4">
+                                <h4>{{ 'DAYS.'+availability.range.toUpperCase() | translate }}</h4>
                                 <p *ngFor="let avs of availability.items">{{avs.from}} hasta {{avs.to}}</p>
                             </ion-col>
                         </ion-row>

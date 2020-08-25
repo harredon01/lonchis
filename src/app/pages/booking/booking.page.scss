@@ -1,3 +1,8 @@
+@media (min-width: 800px) {
+    .webcont {
+        max-width: 800px;
+    }
+}
 ion-header {
     h3 {
         font-size: 1.25rem;
@@ -110,6 +115,7 @@ p {
             font-weight: 600;
             text-align: center;
             height: 5rem;
+            margin:0 auto 15px;
 
             span {
                 display: block;
