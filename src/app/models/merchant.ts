@@ -14,6 +14,7 @@ export class Merchant {
     description: string;
     amount: any;
     product_id: any;
+    unit_cost: any;
     variant_id: any;
     longitude: any;
     latitude: any;

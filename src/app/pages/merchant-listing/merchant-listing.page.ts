@@ -26,6 +26,8 @@ export class MerchantListingPage implements OnInit {
     urlSearch: string = "";
     totalResults: any;
     textSearch: string = "";
+    purpose: string = "";
+    showAddress: boolean = false;
     category: any;
     merchants: Merchant[] = [];
     categoryItems: any[] = [];
@@ -50,6 +52,20 @@ export class MerchantListingPage implements OnInit {
         public api: ApiService,
         private spinnerDialog: SpinnerDialog) {
         this.category = this.activatedRoute.snapshot.paramMap.get('categoryId');
+        let container = this.params.getParams();
+        if (container) {
+            if (container.purpose) {
+                if (container.purpose=='none') {
+                    this.purpose = "";
+                } else {
+                    this.purpose = container.purpose;
+                }
+                
+            }
+            if (container.showAddress) {
+                this.showAddress = container.showAddress;
+            }
+        }
         if (this.userData._user) {
             let activeView = this.router.url;
             console.log("getActive", activeView);
@@ -120,13 +136,31 @@ export class MerchantListingPage implements OnInit {
      * Navigate to the detail page for this item.
      */
     openItem(item: Merchant) {
-        if (this.typeSearch == "own") {
-            this.params.setParams({"item": item, "category": this.category, "owner": true});
+        let params = null;
+        if (this.purpose == 'book') {
+            params = {
+                "availabilities": item.availabilities,
+                "type": "Merchant",
+                "objectId": item.id,
+                "objectName": item.name,
+                "objectDescription": item.description,
+                "objectIcon": item.icon,
+                "expectedPrice": item.unit_cost
+            }
         } else {
-            this.params.setParams({"item": item, "category": this.category});
+            if (this.typeSearch == "own") {
+                params = {"item": item, "category": this.category, "owner": true};
+            } else {
+                params = {"item": item, "category": this.category};
+            }
         }
+        this.params.setParams(params);
         console.log("Entering merchant", item);
-        this.navCtrl.navigateForward(this.urlSearch + item.id);
+        if(this.purpose.length > 0 ){
+             this.navCtrl.navigateForward(this.urlSearch + item.id + "/" + this.purpose);
+        } else {
+            this.navCtrl.navigateForward(this.urlSearch + item.id);
+        }
     }
     /**
      * Navigate to the detail page for this item.

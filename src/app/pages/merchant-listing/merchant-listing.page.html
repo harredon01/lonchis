@@ -70,6 +70,12 @@
                                         </strong>
                                         {{item.Distance}}
                                     </div> 
+                                    <div class="card-component__stats-item" *ngIf="showAddress">
+                                        <strong> 
+                                            {{ 'MERCHANT_LISTING.ADDRESS' | translate }}:
+                                        </strong>
+                                        {{item.address}}
+                                    </div>
                                 </ion-col>
                                 <ion-col *ngIf="item.rating"><div class="card-component__stats-item">
                                         <strong>

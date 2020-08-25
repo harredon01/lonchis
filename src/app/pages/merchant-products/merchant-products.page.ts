@@ -181,13 +181,13 @@ export class MerchantProductsPage implements OnInit {
                         console.log('Confirm Ok', item);
                         this.params.setParams({"merchant_id": this.merchant});
                         if (this.userData._user) {
-                            if (item.attributes.is_shippable == true) {
+                            if (item.attributes.is_shippable == true || item.attributes.shipping > 0) {
                                 this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + this.merchant);
                             } else {
                                 this.navCtrl.navigateForward('tabs/home/checkout/prepare');
                             }
                         } else {
-                            if (item.attributes.is_shippable == true) {
+                            if (item.attributes.is_shippable == true || item.attributes.shipping > 0) {
                                 this.drouter.addPages('tabs/home/checkout/shipping/' + this.merchant);
                             } else {
                                 this.drouter.addPages('tabs/home/checkout/prepare');
