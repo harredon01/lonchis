@@ -126,7 +126,8 @@ export class BookingPage implements OnInit {
                 this.bookingObj = paramsArrived.booking;
                 this.dateSelected = true;
                 this.timeSelected = true;
-                this.selectDate(this.bookingObj.starts_at);
+                let container = {date:this.bookingObj.starts_at,status:'active'};
+                this.selectDate(container);
                 this.expectedPrice = this.bookingObj.price;
                 this.atributesCont = this.bookingObj.options;
                 if (this.atributesCont) {
@@ -198,7 +199,8 @@ export class BookingPage implements OnInit {
             this.getDates();
             console.log("in get items", this.bookingObj);
             if (this.bookingObj) {
-                this.selectDate(this.bookingObj.starts_at);
+                let container = {date:this.bookingObj.starts_at,status:'active'};
+                this.selectDate(container);
             }
             console.log("Get availableDays", this.availableDays);
             console.log(JSON.stringify(data));
@@ -475,50 +477,56 @@ export class BookingPage implements OnInit {
         this.endDate = new Date(this.startDate.getTime() + (parseInt(this.amount) * 50) * 60000);;
         this.timeSelected = true;
     }
+    filterAvailabilities(day: any) {
+        this.availabilitiesDate = [];
+        for (let item in this.availabilities) {
+            if (this.availabilities[item].range == this.weekday[day]) {
+                this.availabilitiesDate.push((this.availabilities[item]));
+            }
+        }
+    }
     selectSlot(item: any) {
         this.startDate = item.start;
         this.endDate = this.addMinutes(item.end, -5);
         this.timeSelected = true;
     }
+getBookingsDay(selectedDate: any) {
+        let strDate = selectedDate.getFullYear() + "-" + (selectedDate.getMonth() + 1) + "-" + selectedDate.getDate();
+        let params = {
+            "from": strDate,
+            "query": "day",
+            "type": this.typeObj,
+            "object_id": this.objectId,
+        };
+        this.booking.getBookingsObject(params).subscribe((data: any) => {
+            console.log("getBookingsObject", data);
+            let results = data.data;
+            for (let i in results) {
+                let bookitem = new Booking(results[i]);
+                this.selectedSpots.push(bookitem);
+            }
+            this.buildSlots();
+            this.dismissLoader();
+        }, (err) => {
+            console.log("Error getBookingsObject");
+            this.api.handleError(err);
+        });
+    }
 
     selectDate(item: any) {
         if (item.status == 'active') {
             let selectedDate = item.date;
+            let day = selectedDate.getDay();
+            this.dateSelected = true;
+            this.timeSelected = false;
             console.log("select date", selectedDate);
             this.showLoader();
-            this.dayName = this.weekday2[selectedDate.getDay()];
+            this.dayName = this.weekday2[day];
             this.startDate = selectedDate;
             this.startDateS = selectedDate.toISOString();
             this.selectStart();
-            this.dateSelected = true;
-            this.timeSelected = false;
-            let strDate = selectedDate.getFullYear() + "-" + (selectedDate.getMonth() + 1) + "-" + selectedDate.getDate();
-            let params = {
-                "from": strDate,
-                "query": "day",
-                "type": this.typeObj,
-                "object_id": this.objectId,
-            };
-            let day = selectedDate.getDay();
-            this.availabilitiesDate = [];
-            for (let item in this.availabilities) {
-                if (this.availabilities[item].range == this.weekday[day]) {
-                    this.availabilitiesDate.push((this.availabilities[item]));
-                }
-            }
-            this.booking.getBookingsObject(params).subscribe((data: any) => {
-                console.log("getBookingsObject", data);
-                let results = data.data;
-                for (let i in results) {
-                    let bookitem = new Booking(results[i]);
-                    this.selectedSpots.push(bookitem);
-                }
-                this.buildSlots();
-                this.dismissLoader();
-            }, (err) => {
-                console.log("Error getBookingsObject");
-                this.api.handleError(err);
-            });
+            this.filterAvailabilities(day);
+            this.getBookingsDay(selectedDate);
             console.log("Availabilities", this.availabilitiesDate);
         } else {
             let toast = this.toastCtrl.create({

@@ -293,6 +293,7 @@ export class BookingDetailPage implements OnInit {
         console.log("Cart closing", data);
         if (data == "Prepare") {
             this.params.setParams({"merchant_id": 1});
+            this.navCtrl.navigateRoot('tabs/settings');
             this.navCtrl.navigateForward('tabs/home/checkout/prepare');
         }
     }
