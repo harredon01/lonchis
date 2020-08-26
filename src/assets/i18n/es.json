@@ -219,7 +219,8 @@
         "COMPLETED":"Terminó",
         "UNAUTHORIZED":"Esperando autorización",
         "UNPAID":"Esperando pago",
-        "PAID":"Confirmada y pagada",
+        "PAID":"Pagada",
+        "CONFIRMED":"Confirmada",
         "PRICE":"Precio",
         "ID_TEXT":"Id de la reserva",
         "ID_TEXT2":"Solo por referencia"
@@ -242,6 +243,7 @@
         "WAITING":"Esperando participantes",
         "STARTED":"Empezó",
         "READY":"Listo para empezar",
+        "UPDATE_ERROR":"Error actualizando la reserva",
         "STATUS":"Estado"
     },
     

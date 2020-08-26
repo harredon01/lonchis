@@ -2,7 +2,7 @@ import {Component, ElementRef, ViewChild, OnInit} from '@angular/core';
 import {IonList} from '@ionic/angular';
 import {TranslateService} from '@ngx-translate/core';
 import {BookingService} from '../../services/booking/booking.service';
-import {NavController, LoadingController, AlertController} from '@ionic/angular';
+import {NavController, LoadingController, AlertController, ToastController} from '@ionic/angular';
 import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {Booking} from '../../models/booking';
 import {ApiService} from '../../services/api/api.service';
@@ -16,7 +16,7 @@ import {OrderDataService} from '../../services/order-data/order-data.service';
     styleUrls: ['./booking-list.page.scss'],
 })
 export class BookingListPage implements OnInit {
-    @ViewChild(IonList, { read: ElementRef }) list: ElementRef;
+    @ViewChild(IonList, {read: ElementRef}) list: ElementRef;
     public bookings: Booking[] = [];
     public loadMore: boolean = false;
     public loadingAll: boolean = false;
@@ -27,6 +27,7 @@ export class BookingListPage implements OnInit {
     public selectedObject: any;
     public typeObj: any;
     public page: any = 0;
+    public updateError: string = "";
     public query: string = "";
     public queryMod: string = "";
     public target: string = "";
@@ -39,6 +40,7 @@ export class BookingListPage implements OnInit {
         public api: ApiService,
         public alertsCtrl: AlertController,
         public orderData: OrderDataService,
+        public toastCtrl: ToastController,
         public cart: CartService,
         public translateService: TranslateService,
         public navCtrl: NavController,
@@ -74,6 +76,9 @@ export class BookingListPage implements OnInit {
         this.translateService.get('BOOKING.ALL').subscribe(function (value) {
             let container = {"name": value, "value": "all"};
             vm.queries.push(container);
+        });
+        this.translateService.get('BOOKING.UPDATE_ERROR').subscribe(function (value) {
+            vm.updateError = value;
         });
         this.queryMod = "all";
     }
@@ -180,15 +185,15 @@ export class BookingListPage implements OnInit {
             setTimeout(function () {vm.scrollToday();}, 800);
         }
     }
-    showAlertTranslation(alert,booking) {
+    showAlertTranslation(alert, booking) {
         this.translateService.get(alert).subscribe(
             value => {
-                this.presentAlertConfirm(value,booking);
+                this.presentAlertConfirm(value, booking);
             }
         )
     }
 
-    async presentAlertConfirm(message,booking) {
+    async presentAlertConfirm(message, booking) {
         console.log("Present alert", message);
         let button = {
             text: 'Ok',
@@ -236,7 +241,16 @@ export class BookingListPage implements OnInit {
         this.showLoader();
         let container = {"booking_id": item.id, "status": status};
         this.booking.changeStatusBookingObject(container).subscribe((data: any) => {
-            item.total_paid = 0;
+            if (data.status == 'success') {
+                item = new Booking(data.booking);
+            } else {
+                this.toastCtrl.create({
+                    message: this.updateError,
+                    duration: 3000,
+                    position: 'top'
+                }).then(toast => toast.present());
+            }
+
             this.dismissLoader();
         }, (err) => {
             console.log("Error cancelBooking");
@@ -273,7 +287,7 @@ export class BookingListPage implements OnInit {
             this.api.handleError(err);
         });
     }
-    editBooking(booking:any) {
+    editBooking(booking: any) {
         let params = {
             "availabilities": null,
             "type": "Merchant",
@@ -302,9 +316,9 @@ export class BookingListPage implements OnInit {
         this.params.setParams(params);
         this.navCtrl.navigateForward('tabs/settings/bookings/' + booking.id + "/edit");
     }
-    
+
     addToCart(booking: any) {
-        console.log("addToCart",this.orderData.cartData.items);
+        console.log("addToCart", this.orderData.cartData.items);
         if (this.orderData.cartData.items) {
             let items = this.orderData.cartData.items;
             for (let i in items) {
@@ -325,7 +339,7 @@ export class BookingListPage implements OnInit {
             if (data.status == "success") {
                 this.addToCart(booking);
             } else {
-                this.showAlertTranslation("BOOKING." + data.message,booking);
+                this.showAlertTranslation("BOOKING." + data.message, booking);
             }
         }, (err) => {
             console.log("Error cancelBooking");

@@ -255,10 +255,10 @@ export class BookingPage implements OnInit {
         let extras = {
             "type": "Booking",
             "id": booking.id,
-            "name": "Booking appointment for: " + booking.bookable.name,
+            "name": "Reserva con: " + booking.bookable.name,
         }
         let item = {
-            "name": "Booking appointment for: " + booking.bookable.name,
+            "name": "Reserva con: " + booking.bookable.name,
             "price": booking.price,
             "quantity": booking.quantity,
             "tax": 0,
@@ -490,7 +490,7 @@ export class BookingPage implements OnInit {
         this.endDate = this.addMinutes(item.end, -5);
         this.timeSelected = true;
     }
-getBookingsDay(selectedDate: any) {
+    getBookingsDay(selectedDate: any) {
         let strDate = selectedDate.getFullYear() + "-" + (selectedDate.getMonth() + 1) + "-" + selectedDate.getDate();
         let params = {
             "from": strDate,
@@ -524,7 +524,6 @@ getBookingsDay(selectedDate: any) {
             this.dayName = this.weekday2[day];
             this.startDate = selectedDate;
             this.startDateS = selectedDate.toISOString();
-            this.selectStart();
             this.filterAvailabilities(day);
             this.getBookingsDay(selectedDate);
             console.log("Availabilities", this.availabilitiesDate);
@@ -566,11 +565,16 @@ getBookingsDay(selectedDate: any) {
                 }
             }
         }
+        if(this.bookingObj){
+            console.log("Loaded booking obj",this.bookingObj);
+            let container = {start:this.bookingObj.starts_at,end:this.bookingObj.ends_at}
+            this.selectSlot(container);
+        }
     }
     checkFilledDate(container: any) {
         for (let item in this.selectedSpots) {
             let checking = this.selectedSpots[item];
-            if (container.start.getTime() == checking.starts_at.getTime()) {
+            if (container.start.getTime() == checking.starts_at.getTime()&& this.bookingObj.id != checking.id) {
                 return true;
             }
         }
