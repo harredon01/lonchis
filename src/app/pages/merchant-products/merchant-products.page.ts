@@ -35,7 +35,7 @@ export class MerchantProductsPage implements OnInit {
     } = {
             merchant_name: "",
             merchant_description: "",
-            merchant_description_more:false,
+            merchant_description_more: false,
             merchant_type: "",
             src: "",
         };
@@ -94,28 +94,29 @@ export class MerchantProductsPage implements OnInit {
         this.slides = [];
         let paramsSent = this.params.getParams();
         let merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
-        if(merchant){
+        if (merchant) {
             this.merchant = merchant;
         } else {
-            if(paramsSent){
-                if(paramsSent.objectId){
+            if (paramsSent) {
+                if (paramsSent.objectId) {
                     this.merchant = paramsSent.objectId;
                 }
             }
         }
-        if(paramsSent){
-            if(paramsSent.owner){
+        if (paramsSent) {
+            if (paramsSent.owner) {
                 this.isOwner = paramsSent.owner;
             }
         }
         let loadedSettings = false;
-        if(paramsSent){
+        if (paramsSent) {
             if (paramsSent.settings) {
                 this.urlSearch = "tabs/settings/merchants/" + this.merchant;
                 loadedSettings = true;
-            } 
+            }
+
         }
-        if (!loadedSettings){
+        if (!loadedSettings) {
             let category = this.activatedRoute.snapshot.paramMap.get('categoryId');
             this.urlSearch = 'tabs/home/categories/' + category + '/merchant/' + this.merchant;
         }
@@ -127,12 +128,12 @@ export class MerchantProductsPage implements OnInit {
             this.getCart();
         }
         console.log("User: ", this.userData._user);
-        events.subscribe('cart:deleteItem', (resp:any) => {
+        events.subscribe('cart:deleteItem', (resp: any) => {
             console.log("Deleting item", resp.item);
             this.clearCartItem(resp.item);
             // user and time are the same arguments passed in `events.publish(user, time)`
         });
-        events.subscribe('cart:clear', (resp:any) => {
+        events.subscribe('cart:clear', (resp: any) => {
             this.clearCart();
             // user and time are the same arguments passed in `events.publish(user, time)`
         });
@@ -144,12 +145,70 @@ export class MerchantProductsPage implements OnInit {
         this.loadOptions();
         if (document.URL.startsWith('http')) {
             let vm = this;
-            setTimeout(function(){ vm.dismissLoader();console.log("Retrying closing") }, 1000);
-            setTimeout(function(){ vm.dismissLoader();console.log("Retrying closing") }, 2000);
+            setTimeout(function () {vm.dismissLoader(); console.log("Retrying closing")}, 1000);
+            setTimeout(function () {vm.dismissLoader(); console.log("Retrying closing")}, 2000);
         }
     }
     addCart(item: any) {
-        this.addCartItem(item);
+        console.log("Add cart item", item);
+        if (item.type == 'Booking') {
+            this.appointmentbook(item);
+        } else {
+            this.addCartItem(item);
+        }
+
+    }
+    appointmentbook(item: any) {
+        let questions = [];
+        let category_id = null;
+        let container = null;
+        console.log("variants",item.variants)
+        for(let i in item.variants){
+            if(item.variant_id == item.variants[i].id){
+                container = item.variants[i];
+                break;
+            }
+        }
+        console.log("Container",container);
+        if (container.attributes) {
+            if (container.attributes.questions) {
+                questions = container.attributes.questions;
+            }
+            if (container.attributes.category_id) {
+                category_id = container.attributes.category_id;
+            }
+        }
+        let params = {
+            "availabilities": null,
+            "type": "Merchant",
+            "objectId": this.merchant,
+            "objectName": this.merchantObj.merchant_name,
+            "objectDescription": this.merchantObj.merchant_description,
+            "objectIcon": this.merchantObj.src,
+            "expectedPrice": item.price,
+            "questions": questions,
+            "product_variant_id": item.variant_id,
+            "quantity": item.amount,
+            "purpose":"external_book"
+        }
+        console.log(params);
+        this.params.setParams(params);
+        if (category_id) {
+            if (this.userData._user) {
+                this.navCtrl.navigateForward("tabs/home/categories/"+category_id);
+            } else {
+                this.drouter.addPages("tabs/home/categories/"+category_id);
+                this.navCtrl.navigateForward('login');
+            }
+        } else {
+            if (this.userData._user) {
+                this.navCtrl.navigateForward(this.urlSearch + "/book");
+            } else {
+                this.drouter.addPages(this.urlSearch + "/book");
+                this.navCtrl.navigateForward('login');
+            }
+        }
+
     }
     editProduct(productId: any) {
         if (productId == 0) {
@@ -253,7 +312,7 @@ export class MerchantProductsPage implements OnInit {
             this.orderData.cartData.total = 0;
             this.orderData.cartData.subtotal = 0;
             this.orderData.cartData.totalItems = 0;
-            this.events.publish('cart:clear',{});
+            this.events.publish('cart:clear', {});
             this.addCartItem(item);
             //this.navCtrl.push(MainPage);
         }, (err) => {
@@ -534,7 +593,6 @@ export class MerchantProductsPage implements OnInit {
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
         this.params.setParams({"merchant_id": this.merchant});
-        console.log("After cart",data);
         if (data == "Shipping" || data == 'Prepare') {
             if (this.userData._user) {
                 if (data == "Shipping") {
@@ -564,11 +622,11 @@ export class MerchantProductsPage implements OnInit {
         for (let i in item.variants) {
             let container = item.variants[i];
             if (container.id == item.variant_id) {
-                if(!item.amount){
+                if (!item.amount) {
                     item.amount = container.min_quantity;
                 }
                 if (container.is_on_sale) {
-                    console.log("selectVariantsale",container);
+                    console.log("selectVariantsale", container);
                     item.exprice = container.exprice;
                     item.price = container.price;
                     item.onsale = true;
@@ -625,11 +683,11 @@ export class MerchantProductsPage implements OnInit {
             }
         } else {
         if (product.onsale) {
-                product.exsubtotal = product.exprice * product.amount;
-                product.subtotal = product.price * product.amount;
-            } else {
-                product.subtotal = product.price * product.amount;
-            }
+            product.exsubtotal = product.exprice * product.amount;
+            product.subtotal = product.price * product.amount;
+        } else {
+            product.subtotal = product.price * product.amount;
+        }
 
     }
     }

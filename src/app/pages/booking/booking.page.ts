@@ -39,6 +39,8 @@ export class BookingPage implements OnInit {
     dayName: string;
     success: string;
     atributesCont: any;
+    product_variant_id: any = null;
+    quantity: any = null;
     objectId: string;
     objectName: string;
     objectDescription: string;
@@ -81,9 +83,9 @@ export class BookingPage implements OnInit {
         this.weekday2[4] = "Jueves";
         this.weekday2[5] = "Viernes";
         this.weekday2[6] = "Sabado";
-        this.questions = [{text: "es rico", value: "", type: "text"},
-        {text: "es deli", value: 0, type: "num"},
-        {text: "es sabroso", value: "", type: "textarea"}]
+        this.questions = [{name: "es rico", value: "", type: "text"},
+        {name: "es deli", value: 0, type: "num"},
+        {name: "es sabroso", value: "", type: "textarea"}]
         let vm = this
         this.translateService.get('BOOKING.REQUIRES_AUTH').subscribe(function (value) {
             vm.requiresAuth = value;
@@ -104,6 +106,21 @@ export class BookingPage implements OnInit {
     ngOnInit() {
         this.loadData();
     }
+    keytab(event, maxlength: any) {
+        let nextInput = event.srcElement.nextElementSibling; // get the sibling element
+        console.log('nextInput', nextInput);
+        var target = event.target || event.srcElement;
+        console.log('target', target);
+        console.log('targetvalue', target.value);
+        console.log('targettype', target.nodeType);
+        if (target.value.length < maxlength) {
+            return;
+        }
+        if (nextInput == null)  // check the maxLength from here
+            return;
+        else
+            nextInput.focus();   // focus if not null
+    }
     onError() {
         console.log("IMG ERROR");
         this.objectIcon = "/assets/avatar/Bentley.png";
@@ -122,11 +139,17 @@ export class BookingPage implements OnInit {
             if (paramsArrived.questions) {
                 this.questions = paramsArrived.questions;
             }
+            if (paramsArrived.product_variant_id) {
+                this.product_variant_id = paramsArrived.product_variant_id;
+            }
+            if (paramsArrived.quantity) {
+                this.quantity = paramsArrived.quantity;
+            }
             if (paramsArrived.booking) {
                 this.bookingObj = paramsArrived.booking;
                 this.dateSelected = true;
                 this.timeSelected = true;
-                let container = {date:this.bookingObj.starts_at,status:'active'};
+                let container = {date: this.bookingObj.starts_at, status: 'active'};
                 this.selectDate(container);
                 this.expectedPrice = this.bookingObj.price;
                 this.atributesCont = this.bookingObj.options;
@@ -199,7 +222,7 @@ export class BookingPage implements OnInit {
             this.getDates();
             console.log("in get items", this.bookingObj);
             if (this.bookingObj) {
-                let container = {date:this.bookingObj.starts_at,status:'active'};
+                let container = {date: this.bookingObj.starts_at, status: 'active'};
                 this.selectDate(container);
             }
             console.log("Get availableDays", this.availableDays);
@@ -266,7 +289,20 @@ export class BookingPage implements OnInit {
             "cost": 0,
             "extras": extras
         };
-        this.cart.addCustomCartItem(item).subscribe((data: any) => {
+        let query = null;
+        if (this.product_variant_id) {
+            let container = {
+                product_variant_id: this.product_variant_id,
+                quantity: this.quantity,
+                item_id: null,
+                merchant_id: this.objectId,
+                "extras": extras
+            };
+            query = this.cart.addCartItem(container);
+        } else {
+            query = this.cart.addCustomCartItem(item);
+        }
+        query.subscribe((data: any) => {
             this.orderData.cartData = data.cart;
             this.openCart();
         }, (err) => {
@@ -565,16 +601,16 @@ export class BookingPage implements OnInit {
                 }
             }
         }
-        if(this.bookingObj){
-            console.log("Loaded booking obj",this.bookingObj);
-            let container = {start:this.bookingObj.starts_at,end:this.bookingObj.ends_at}
+        if (this.bookingObj) {
+            console.log("Loaded booking obj", this.bookingObj);
+            let container = {start: this.bookingObj.starts_at, end: this.bookingObj.ends_at}
             this.selectSlot(container);
         }
     }
     checkFilledDate(container: any) {
         for (let item in this.selectedSpots) {
             let checking = this.selectedSpots[item];
-            if (container.start.getTime() == checking.starts_at.getTime()&& this.bookingObj.id != checking.id) {
+            if (container.start.getTime() == checking.starts_at.getTime() && this.bookingObj.id != checking.id) {
                 return true;
             }
         }

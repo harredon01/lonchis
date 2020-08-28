@@ -147,6 +147,13 @@ export class MerchantListingPage implements OnInit {
                 "objectIcon": item.icon,
                 "expectedPrice": item.unit_cost
             }
+        } else if (this.purpose == 'external_book') {
+            params = this.params.getParams();
+            params.objectId = item.id,
+            params.objectName = item.name,
+            params.objectDescription = item.description,
+            params.objectIcon = item.icon,
+            this.purpose = 'book';
         } else {
             if (this.typeSearch == "own") {
                 params = {"item": item, "category": this.category, "owner": true};

@@ -131,10 +131,38 @@
                     <a href="javascript:;" (click)="changeDate()">{{ 'BOOKING.CHANGE_DATE' | translate }}</a>
                 </ion-item>
                 <ion-item *ngFor="let item of questions">
-                    <ion-label position="floating">{{item.text}}</ion-label>
+                    <ion-label *ngIf="item.type=='text' || item.type=='num' || item.type=='textarea'" position="floating">{{item.name}}</ion-label>
                     <ion-input *ngIf="item.type=='text'" type="text" [(ngModel)]="item.value"></ion-input>
                     <ion-input *ngIf="item.type=='num'" type="tel" [(ngModel)]="item.value"></ion-input>
                     <ion-textarea *ngIf="item.type=='textarea'" class="mb20" [(ngModel)]="item.value"></ion-textarea>
+                    <ion-label class="ion-text-wrap" *ngIf="item.type=='radio'||item.type=='multiple' || item.type=='date'"  >
+                        <ion-radio-group *ngIf="item.type=='radio'" [(ngModel)]="item.value" lines="none">
+                            <ion-list lines="none">
+                                <ion-list-header>
+                                    <ion-label>{{item.name}}</ion-label>
+                                </ion-list-header>
+                                <ion-item *ngFor="let question of item.values">
+                                    <ion-label>{{question.name}}</ion-label>
+                                    <ion-radio slot="start" [value]="question.value"></ion-radio>
+                                </ion-item>
+                            </ion-list>
+                        </ion-radio-group>
+                        <ion-list  *ngIf="item.type=='multiple'" lines="none">
+                            <ion-list-header>
+                                <ion-label>{{item.name}}</ion-label>
+                            </ion-list-header>
+                            <ion-item *ngFor="let question of item.values">
+                                <ion-label>{{question.name}}</ion-label>
+                                <ion-checkbox slot="end" [(ngModel)]="question.value"></ion-checkbox>
+                            </ion-item>
+                        </ion-list>
+                        <p *ngIf="item.type=='date'">{{item.name}}</p>
+                        <input type="tel" class='left date-input' style="width:50px" *ngIf="item.type=='date'" [placeholder]="item.values[0].name" (keyup)="keytab($event,2)" [(ngModel)]="item.values[0].value"/>
+                        <input type="tel" class='left date-input' style="width:50px" *ngIf="item.type=='date'" [placeholder]="item.values[1].name" (keyup)="keytab($event,2)" [(ngModel)]="item.values[1].value"/>
+                        <input type="tel" class='left date-input' style="width:50px" *ngIf="item.type=='date'" [placeholder]="item.values[2].name" [(ngModel)]="item.values[2].value"/>
+                        <div class="clear" *ngIf="item.type=='date'"></div>
+                    </ion-label>
+
                 </ion-item>
                 <ion-button full class="btn success right mt15 mb15" (click)="saveOrCreateBooking()">{{ 'BOOKING.MAKE_RESERVATION' | translate }}</ion-button>
             </ion-card-content>

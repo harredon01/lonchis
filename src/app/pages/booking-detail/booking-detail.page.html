@@ -91,10 +91,10 @@
                     <h4 *ngIf="mainBooking.options.desc_item">{{ 'BOOKING.desc_item' | translate }}</h4>
                     <p *ngIf="mainBooking.options.desc_item">{{mainBooking.options.desc_item}}</p>
                     <div *ngIf="mainBooking.options.questions">
-                        <div *ngFor="let item of mainBooking.options.questions">
-                            <p *ngIf="item.type=='text'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
-                            <p *ngIf="item.type=='num'"><span>{{item.text}}</span>:<br/>{{item.value}}</p>
-                            <div *ngIf="item.type=='textarea'"><span>{{item.text}}</span>:<br/><p [innerHTML]="item.value"></p></div>
+                        <div *ngFor="let item of mainBooking.options.questions" class="mb15">
+                            <p *ngIf="item.type=='text'|| item.type=='num'|| item.type=='radio'"><span>{{item.name}}</span>:<br/>{{item.value}}</p>
+                            <div *ngIf="item.type=='textarea'"><span>{{item.name}}</span>:<br/><p [innerHTML]="item.value"></p></div>
+                            <div *ngIf="item.type=='multiple'"><span>{{item.name}}</span>:<br/><div *ngFor="let mult of item.values"><p *ngIf="mult.value">{{mult.name}}</p></div></div>
                         </div>
                     </div>
                 </div>
