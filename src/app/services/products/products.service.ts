@@ -11,7 +11,7 @@ export class ProductsService {
     constructor(public api: ApiService) {}
 
     getProductsMerchant(merchant: string, page: string) {
-        let endpoint = '/products/merchant/' + merchant + "/" + page;
+        let endpoint = '/merchants/products/' + merchant + "/" + page;
         let seq = this.api.get(endpoint);
         return seq;
 
