@@ -73,9 +73,9 @@ export class MerchantsService {
         let seq = this.api.get(url);
         return seq;
     }
-    getMerchant(merchantId: string) {
-        let url = "/merchants/" + merchantId;
-        let seq = this.api.get(url);
+    getMerchant(data: any) {
+        let url = "/merchants/detail" ;
+        let seq = this.api.get(url, data);
         return seq;
     }
     saveMerchant(merchant: any) {

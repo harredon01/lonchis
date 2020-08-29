@@ -530,7 +530,8 @@ export class MerchantProductsPage implements OnInit {
     }
 
     loadProducts() {
-        this.productsServ.getProductsMerchant(this.merchant, this.page).subscribe((resp) => {
+        let container = {"includes":"categories,files,merchant","merchant_id":this.merchant,"page":this.page};
+        this.productsServ.getProductsMerchant(container).subscribe((resp) => {
             if (resp.products_total > 0) {
                 this.categories = this.productsServ.buildProductInformation(resp, this.merchant);
                 console.log("Result build product", this.categories);

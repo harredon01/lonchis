@@ -120,8 +120,9 @@ export class MerchantDetailPage implements OnInit {
         }
     }
 
-    getMerchant(merchantId) {
-        this.merchantsServ.getMerchant(merchantId).subscribe((data: any) => {
+    getMerchant(merchant_id:any) {
+        let container = {"object_id":merchant_id,"includes":"availabilities,files,ratings"};
+        this.merchantsServ.getMerchant(container).subscribe((data: any) => {
             let container = data.merchant;
             container.availabilities = data.availabilities;
             container.ratings = data.ratings;
