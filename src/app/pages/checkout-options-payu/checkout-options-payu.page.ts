@@ -208,7 +208,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
 
         let container = {
             quick: true,
-            payment_id: this.orderData.payment.id,
+            payment_id: this.payment.id,
             platform: "Food"
         };
         console.log("before payCreditCard token", container);
@@ -242,19 +242,24 @@ export class CheckoutOptionsPayuPage implements OnInit {
         }
         let recurring_type = "limit";
         let recurring_value = 3;
-        if (this.orderData.currentOrder.merchant_id == 1300) {
-            recurring_type = "calendar";
-            recurring_value = null;
+        let order_id = null;
+        let merchant_id = null;
+        if(this.orderData.currentOrder){
+            order_id = this.orderData.currentOrder.id;
+            merchant_id = this.orderData.currentOrder.merchant_id;
+        } else {
+            order_id = this.payment.order.id;
+            merchant_id = this.payment.order.merchant_id;
         }
         let container = {
-            "order_id": this.orderData.currentOrder.id,
+            "order_id": order_id,
             "payers": payers,
             "split_order": this.split,
             "platform": "Food",
             "recurring": this.recurring,
             "recurring_type": recurring_type,
             "recurring_value": recurring_value,
-            "merchant_id": this.orderData.currentOrder.merchant_id,
+            "merchant_id": merchant_id,
             "payment_id": this.payment.id
         };
         console.log("before payCreditCard token", container);
