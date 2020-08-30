@@ -84,8 +84,9 @@ export class PaymentDetailPage implements OnInit {
                 this.hasSavedCard = true;
             }
         }
+    }
+    ionViewDidEnter() {
         this.loadPayment();
-
     }
     async dismissLoader() {
         if (document.URL.startsWith('http')) {

@@ -272,8 +272,8 @@ export class CheckoutOptionsPayuPage implements OnInit {
                     objectId: data.payment.id,
                     newPayment: true
                 });
-                this.navCtrl.navigateForward('tabs/settings/payments/' + data.payment.id);
-            } else {
+                    this.navCtrl.navigateForward('tabs/settings/payments/' + data.payment.id);
+                } else {
                 // Unable to pay in bank
                 let toast = this.toastCtrl.create({
                     message: this.banksErrorString,
