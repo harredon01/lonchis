@@ -10,9 +10,9 @@ export class ProductsService {
 
     constructor(public api: ApiService) {}
 
-    getProductsMerchant(data:any) {
+    getProductsMerchant(data: any) {
         let endpoint = '/merchants/products';
-        let seq = this.api.get(endpoint,data);
+        let seq = this.api.get(endpoint, data);
         return seq;
 
     }
@@ -21,8 +21,8 @@ export class ProductsService {
         let seq = this.api.get(endpoint);
         return seq;
     }
-    getProductCategories(merchant_id: string,typeS: string) {
-        let endpoint = '/merchants/' + merchant_id + '/categories/'+typeS;
+    getProductCategories(merchant_id: string, typeS: string) {
+        let endpoint = '/merchants/' + merchant_id + '/categories/' + typeS;
         let seq = this.api.get(endpoint);
         return seq;
     }
@@ -57,7 +57,7 @@ export class ProductsService {
     }
     buildProduct(container: any, merchant: any, merchant_id: any) {
         let productInfo = new Product({});
-        
+
         productInfo.id = container.product_id;
         productInfo.name = container.prod_name;
         productInfo.description = container.prod_desc;
@@ -75,7 +75,7 @@ export class ProductsService {
 
         productInfo.inCart = false;
         if (container.is_on_sale) {
-            
+
             productInfo.onsale = true;
             productInfo.subtotal = productInfo.price;
             productInfo.exsubtotal = productInfo.exprice;
@@ -90,10 +90,71 @@ export class ProductsService {
         productInfo.imgs = [];
         return productInfo;
     }
+    calculateTotals(where, array) {
+        console.log("Calculate totals " + where);
+        for (let i in array) {
+            for (let j in array[i].products) {
+                array[i].products[j] = this.calculateTotalsProduct(array[i].products[j]);
+            }
+        }
+        return array;
+    }
+    calculateTotalsProduct(product: Product) {
+        if (product.onsale) {
+            product.exsubtotal = product.exprice * product.amount;
+            product.subtotal = product.price * product.amount;
+        } else {
+            product.subtotal = product.price * product.amount;
+        }
+        return product;
+    }
+    selectVariant(item: any) {
+        console.log(item);
+        for (let i in item.variants) {
+            let container = item.variants[i];
+            if (container.id == item.variant_id) {
+                if (!item.amount) {
+                    item.amount = container.min_quantity;
+                }
+                if (container.is_on_sale) {
+                    console.log("selectVariantsale", container);
+                    item.exprice = container.exprice;
+                    item.price = container.price;
+                    item.onsale = true;
+                } else {
+                    item.onsale = false;
+                    item.price = container.price;
+                }
+
+                if (item.type == "meal-plan") {
+                    if (container.attributes.buyers) {
+                        item.unitLunches = container.attributes.buyers;
+                    } else {
+                        item.unitLunches = 1;
+                    }
+
+                    if (item.amount > 1 && item.amount < 11) {
+                        item.subtotal = item.price * item.amount;
+                        item.unitPrice = item.subtotal / (item.unitLunches * item.amount);
+                    } else {
+                        let control = item.amount / 10;
+                        let counter2 = Math.floor(item.amount / 10);
+                        if (control == counter2) {
+                            item.subtotal = (item.price * item.amount) - ((counter2 - 1) * item.unitLunches * 11000);
+                        } else {
+                            item.subtotal = (item.price * item.amount) - (counter2 * item.unitLunches * 11000);
+                        }
+                        item.unitPrice = item.subtotal / (item.unitLunches * item.amount);
+                    }
+                }
+            }
+        }
+        return this.calculateTotalsProduct(item);
+    }
     updateProductVisual(container: any, productInfo: Product) {
         if (container.is_on_sale) {
-            console.log("updateProductVisualsale",productInfo);
-            console.log("updateProductVisualsale2",container);
+            console.log("updateProductVisualsale", productInfo);
+            console.log("updateProductVisualsale2", container);
             productInfo.price = container.price;
             productInfo.onsale = true;
             productInfo.exprice = container.exprice;
@@ -120,6 +181,29 @@ export class ProductsService {
         }
         //        console.log("Update Prod Vis3", productInfo);
         return productInfo;
+    }
+    updateVisualWithCart(categories,items) {
+        for (let key in items) {
+            let contItem = items[key].attributes;
+            if (true) {
+                contItem.id = items[key].id;
+                contItem.quantity = items[key].quantity;
+                for (let k in categories) {
+                    for (let j in categories[k].products) {
+                        for (let i in categories[k].products[j].variants) {
+                            if (contItem.product_variant_id == categories[k].products[j].variants[i].id) {
+                                categories[k].products[j].inCart = true;
+                                categories[k].products[j].item_id = contItem.id;
+                                categories[k].products[j].amount = contItem.quantity;
+                                categories[k].products[j] = this.updateProductVisual(categories[k].products[j].variants[i], categories[k].products[j]);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return categories;
     }
     createDeliveryDate(days) {
         let startDate = new Date();

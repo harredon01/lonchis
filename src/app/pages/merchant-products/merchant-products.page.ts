@@ -42,13 +42,9 @@ export class MerchantProductsPage implements OnInit {
     possibleAmounts: any[];
     merchant: any;
     page: any;
-    public cartErrorString: string;
     public showMoreText: string;
     public showLessText: string;
     public dateLessText: string;
-    public clearCartText: string;
-    public cartUpdate: string;
-    public minAmount: string;
 
     constructor(public navCtrl: NavController,
         public activatedRoute: ActivatedRoute,
@@ -66,9 +62,6 @@ export class MerchantProductsPage implements OnInit {
         public userData: UserDataService,
         public orderData: OrderDataService,
         public translateService: TranslateService) {
-        this.translateService.get('CART.ERROR_UPDATE').subscribe((value) => {
-            this.cartErrorString = value;
-        });
         this.translateService.get('CART.PAY_TITLE').subscribe((value) => {
             this.payTitle = value;
         })
@@ -80,15 +73,6 @@ export class MerchantProductsPage implements OnInit {
         })
         this.translateService.get('PRODUCTS.DATE_LESS').subscribe((value) => {
             this.dateLessText = value;
-        })
-        this.translateService.get('CART.ERROR_CLEAR').subscribe((value) => {
-            this.clearCartText = value;
-        })
-        this.translateService.get('CART.ITEM_UPDATED').subscribe((value) => {
-            this.cartUpdate = value;
-        })
-        this.translateService.get('CART.MIN_QUANTITY').subscribe((value) => {
-            this.minAmount = value;
         })
         this.page = 1;
         this.slides = [];
@@ -268,64 +252,6 @@ export class MerchantProductsPage implements OnInit {
             this.spinnerDialog.show();
         }
     }
-    showPrompt(item: any) {
-        const prompt = this.alertCtrl.create({
-            header: 'Atencion',
-            message: this.clearCartText,
-            inputs: [],
-            buttons: [
-                {
-                    text: 'No',
-                    handler: data => {
-                        console.log('Cancel clicked');
-                    }
-                },
-                {
-                    text: 'Si',
-                    handler: data => {
-                        this.clearCartLocal(item);
-                    }
-                }
-            ]
-        }).then(toast => toast.present());
-    }
-    showPromptMin(item: any) {
-        const prompt = this.alertCtrl.create({
-            header: 'Atencion',
-            message: this.minAmount + item.quantity,
-            inputs: [],
-            buttons: [
-                {
-                    text: 'OK',
-                    handler: data => {
-                        console.log('Cancel clicked');
-                    }
-                }
-            ]
-        }).then(toast => toast.present());
-    }
-    clearCartLocal(item: any) {
-        this.cart.clearCart().subscribe((resp) => {
-            this.orderData.cartData = {};
-            this.orderData.shippingAddress = null;
-            this.orderData.cartData.items = [];
-            this.orderData.cartData.total = 0;
-            this.orderData.cartData.subtotal = 0;
-            this.orderData.cartData.totalItems = 0;
-            this.events.publish('cart:clear', {});
-            this.addCartItem(item);
-            //this.navCtrl.push(MainPage);
-        }, (err) => {
-            //this.navCtrl.push(MainPage);
-            // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cartErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
-            this.api.handleError(err);
-        });
-    }
     showMore(item: any) {
         console.log("showMore");
         if (item.description_more) {
@@ -377,13 +303,6 @@ export class MerchantProductsPage implements OnInit {
         item.amount++;
         this.addCartItem(item);
     }
-    cartUpdateMessage() {
-        let toast = this.toastCtrl.create({
-            message: this.cartUpdate,
-            duration: 1300,
-            position: 'top'
-        }).then(toast => toast.present());
-    }
     handleCartSuccess(resp: any, item: any) {
         this.orderData.cartData = resp.cart;
         let showPromt = false;
@@ -399,26 +318,10 @@ export class MerchantProductsPage implements OnInit {
             item.item_id = null;
             item.amount = 1;
         }
-        this.calculateTotals("update cart item");
-        this.cartUpdateMessage();
+        this.productsServ.calculateTotals("update cart item", this.categories);
+        this.cart.cartUpdateMessage();
         if (showPromt) {
             this.presentAlertPay(resp.item);
-        }
-    }
-    handleCartError(resp: any, item) {
-        console.log("Error", resp);
-
-        if (resp.message == "CLEAR_CART") {
-            this.showPrompt(item);
-        } else if (resp.message == "MIN_QUANTITY") {
-
-            this.showPromptMin(resp);
-        } else {
-            let toast = this.toastCtrl.create({
-                message: resp.message,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
         }
     }
     async dismissLoader() {
@@ -435,56 +338,19 @@ export class MerchantProductsPage implements OnInit {
             this.spinnerDialog.hide();
         }
     }
-    handleServerCartError() {
-        this.dismissLoader();
-        //this.navCtrl.push(MainPage);
-        // Unable to log in
-        this.toastCtrl.create({
-            message: this.cartErrorString,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
-    }
     addCartItem(item: any) {
-        this.showLoader();
-        let container = null;
-        container = {
-            product_variant_id: item.variant_id,
-            quantity: item.amount,
-            item_id: item.item_id,
-            merchant_id: this.merchant
-        };
-        console.log("Add cart item", container);
-        if (container.item_id) {
-            this.cart.updateCartItem(container).subscribe((resp: any) => {
-                console.log("updateCartItem", resp);
-                if (resp.status == "success") {
-                    this.handleCartSuccess(resp, item);
-                    if (resp.item) {
-                        return resp.item;
-                    }
-                } else {
-                    this.dismissLoader();
-                    this.handleCartError(resp, item);
+        this.cart.addCart(item).then((resp: any) => {
+            console.log("updateCartItem", resp);
+            if (resp.status == "success") {
+                this.handleCartSuccess(resp, item);
+                if (resp.item) {
+                    return resp.item;
                 }
-            }, (err) => {
-                this.handleServerCartError();
-                this.api.handleError(err);
-            });
-        } else {
-            this.cart.addCartItem(container).subscribe((resp: any) => {
-                if (resp.status == "success") {
-                    this.handleCartSuccess(resp, item);
-                } else {
-                    this.dismissLoader();
-                    this.handleCartError(resp, item);
-                }
-                //this.navCtrl.push(MainPage);
-            }, (err) => {
-                this.handleServerCartError();
-                this.api.handleError(err);
-            });
-        }
+            } else {
+                this.dismissLoader();
+                this.cart.handleCartError(resp, item);
+            }
+        });
     }
     createSlides() {
         this.slides = [];
@@ -553,32 +419,12 @@ export class MerchantProductsPage implements OnInit {
                 console.log("Merchant", this.merchantObj);
                 if (this.orderData.cartData) {
                     let items = this.orderData.cartData.items;
-                    for (let key in items) {
-                        let contItem = items[key].attributes;
-                        if (true) {
-                            contItem.id = items[key].id;
-                            contItem.quantity = items[key].quantity;
-                            for (let k in this.categories) {
-                                for (let j in this.categories[k].products) {
-                                    for (let i in this.categories[k].products[j].variants) {
-                                        if (contItem.product_variant_id == this.categories[k].products[j].variants[i].id) {
-                                            this.categories[k].products[j].inCart = true;
-                                            this.categories[k].products[j].item_id = contItem.id;
-                                            this.categories[k].products[j].amount = contItem.quantity;
-                                            this.categories[k].products[j] = this.productsServ.updateProductVisual(this.categories[k].products[j].variants[i], this.categories[k].products[j]);
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
+                    this.categories = this.productsServ.updateVisualWithCart(this.categories, items);
                 }
-                this.calculateTotals("load products");
+                this.productsServ.calculateTotals("load products", this.categories);
                 //this.createSlides();
-            } else {
-                this.dismissLoader();
-            }
+            } 
+            this.dismissLoader();
         }, (err) => {
             this.api.handleError(err);
             // Unable to log in
@@ -620,77 +466,7 @@ export class MerchantProductsPage implements OnInit {
     }
     selectVariant(item: any) {
         console.log(item);
-        for (let i in item.variants) {
-            let container = item.variants[i];
-            if (container.id == item.variant_id) {
-                if (!item.amount) {
-                    item.amount = container.min_quantity;
-                }
-                if (container.is_on_sale) {
-                    console.log("selectVariantsale", container);
-                    item.exprice = container.exprice;
-                    item.price = container.price;
-                    item.onsale = true;
-                } else {
-                    item.onsale = false;
-                    item.price = container.price;
-                }
-
-                if (item.type == "meal-plan") {
-                    if (container.attributes.buyers) {
-                        item.unitLunches = container.attributes.buyers;
-                    } else {
-                        item.unitLunches = 1;
-                    }
-
-                    if (item.amount > 1 && item.amount < 11) {
-                        item.subtotal = item.price * item.amount;
-                        item.unitPrice = item.subtotal / (item.unitLunches * item.amount);
-                    } else {
-                        let control = item.amount / 10;
-                        let counter2 = Math.floor(item.amount / 10);
-                        if (control == counter2) {
-                            item.subtotal = (item.price * item.amount) - ((counter2 - 1) * item.unitLunches * 11000);
-                        } else {
-                            item.subtotal = (item.price * item.amount) - (counter2 * item.unitLunches * 11000);
-                        }
-                        item.unitPrice = item.subtotal / (item.unitLunches * item.amount);
-                    }
-                }
-            }
-        }
-        this.calculateTotals("select variant");
-    }
-    calculateTotals(where) {
-        console.log("Calculate totals " + where);
-        for (let i in this.categories) {
-            for (let j in this.categories[i].products) {
-                let container = this.categories[i].products[j];
-                this.calculateTotalsProduct(container);
-            }
-        }
-        if (where) {
-            this.dismissLoader();
-        }
-    }
-    calculateTotalsProduct(product: Product) {
-        if (product.type == "meal-plan") {
-            if (product.amount > 0 && product.amount < 10) {
-                product.unitPrice = product.subtotal / (product.unitLunches * product.amount);
-            } else {
-                let counter2 = Math.floor(product.amount / 11);
-                product.subtotal = (product.price * product.amount) - (counter2 * product.unitLunches * 11000);
-                product.unitPrice = product.subtotal / (product.unitLunches * product.amount);
-            }
-        } else {
-        if (product.onsale) {
-            product.exsubtotal = product.exprice * product.amount;
-            product.subtotal = product.price * product.amount;
-        } else {
-            product.subtotal = product.price * product.amount;
-        }
-
-    }
+        this.productsServ.selectVariant(item);
     }
     getCart() {
         this.cart.getCart().subscribe((resp) => {
