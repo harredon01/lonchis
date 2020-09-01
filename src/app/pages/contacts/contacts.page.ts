@@ -1,8 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {NavController, ModalController, ToastController, LoadingController} from '@ionic/angular';
-import {TranslateService} from '@ngx-translate/core';
+import {NavController, ModalController} from '@ionic/angular';
 import {IonInfiniteScroll} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {SearchFilteringPage} from '../search-filtering/search-filtering.page';
 import {ContactsService} from '../../services/contacts/contacts.service';
 import {ParamsService} from '../../services/params/params.service';
@@ -18,20 +16,14 @@ export class ContactsPage implements OnInit {
     contacts: Contact[] = []
     page: any = 0;
     loadMore: boolean = false;
-    itemsErrorGet: string = "";
-    itemsErrorDelete: string = "";
     queryMod: string = "";
     queries:any[]=[];
     itemsErrorBlock: string = "";
     constructor(public navCtrl: NavController,
         public params: ParamsService,
         public contactsServ: ContactsService,
-        public toastCtrl: ToastController,
         public modalCtrl: ModalController,
-        public loadingCtrl: LoadingController,
-        public translateService: TranslateService,
-        public api: ApiService,
-        private spinnerDialog: SpinnerDialog) {}
+        public api: ApiService) {}
 
     async filter() {
         let container;
@@ -60,7 +52,7 @@ export class ContactsPage implements OnInit {
         
     }
     getContacts(event) {
-        this.showLoader();
+        this.api.loader();
         this.page++;
         let query = "page=" + this.page;
         this.contactsServ.getContacts(query).subscribe((data: any) => {
@@ -76,37 +68,29 @@ export class ContactsPage implements OnInit {
             if (event) {
                 event.target.complete();
             }
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error getContacts");
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.itemsErrorGet,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_GET');
             this.api.handleError(err);
         });
     }
     deleteContact(contact:Contact) {
-        this.showLoader();
+        this.api.loader();
         this.contactsServ.deleteContact(contact).subscribe((data: any) => {
             for (let one=0;one< this.contacts.length;one++) {
                 if(this.contacts[one].id == contact.id){
                     this.contacts.splice(one,1);
                 }
             }
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error deleteContact");
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.itemsErrorDelete,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }
@@ -118,38 +102,11 @@ export class ContactsPage implements OnInit {
     importContacts() {
         this.navCtrl.navigateForward('tabs/contacts/import');
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
     ionViewDidEnter(){
         this.getContacts(null);
     }
     
     ngOnInit() {
-        this.translateService.get('CATEGORIES.ERROR_GET').subscribe((value) => {
-            this.itemsErrorGet = value;
-        });
 
         
     }

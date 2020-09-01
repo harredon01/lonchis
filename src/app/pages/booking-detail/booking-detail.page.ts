@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BookingService} from '../../services/booking/booking.service';
-import {NavController, LoadingController, ModalController, AlertController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {Booking} from '../../models/booking';
 import {TranslateService} from '@ngx-translate/core';
 import {ApiService} from '../../services/api/api.service';
@@ -30,9 +29,7 @@ export class BookingDetailPage implements OnInit {
         public cart: CartService,
         public navCtrl: NavController,
         public modalCtrl: ModalController,
-        public api: ApiService,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog
+        public api: ApiService
     ) {
         this.mainBooking = new Booking({total_paid: 0, price: 0, options: {}});
 
@@ -44,11 +41,11 @@ export class BookingDetailPage implements OnInit {
 
     ngOnInit() {
 
-    } 
+    }
     onError(item) {
         console.log("IMG ERROR");
         this.mainBooking.bookable.icon = "/assets/avatar/Bentley.png";
-    }  
+    }   
     
     ionViewDidEnter() {
         let params = this.params.getParams();
@@ -66,9 +63,9 @@ export class BookingDetailPage implements OnInit {
         }
     }
     deleteBooking() {
-        this.showLoader();
+        this.api.loader();
         this.booking.deleteBookingObject(this.mainBooking.id).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("addBookingObject", resp);
             //this.presentAlertConfirm(data);
             if (resp.status == "success") {
@@ -80,7 +77,7 @@ export class BookingDetailPage implements OnInit {
             }
         }, (err) => {
             console.log("Error addBookingObject");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -92,15 +89,15 @@ export class BookingDetailPage implements OnInit {
         }
     }
     changeStatusServer(status, reason) {
-        this.showLoader();
+        this.api.loader();
         let container = {"booking_id": this.mainBooking.id, "status": status, "reason": reason};
         this.booking.changeStatusBookingObject(container).subscribe((data: any) => {
 
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.navCtrl.back();
         }, (err) => {
             console.log("Error cancelBooking");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -115,29 +112,15 @@ export class BookingDetailPage implements OnInit {
 
     }
     getBooking(booking_id: any) {
-        this.showLoader();
+        this.api.loader();
         this.booking.getBooking(booking_id).subscribe((data: any) => {
             this.buildBookingResult(data);
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error cancelBooking");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
     }
 
     editBooking() {
@@ -276,7 +259,7 @@ export class BookingDetailPage implements OnInit {
             }
         }, (err) => {
             console.log("Error cancelBooking");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -298,16 +281,6 @@ export class BookingDetailPage implements OnInit {
         }
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
     done() {
         this.modalCtrl.dismiss("Close");
     }

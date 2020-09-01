@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ToastController, ModalController, AlertController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
-import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {ImagesService} from '../../services/images/images.service';
 import {ApiService} from '../../services/api/api.service';
@@ -16,53 +14,21 @@ import {FileTransfer, FileUploadOptions, FileTransferObject} from '@ionic-native
 export class ImagesPage implements OnInit {
     images: any[] = [];
     icon = "";
-    getImagesError = "";
     constructor(public navCtrl: NavController,
         public activatedRoute: ActivatedRoute,
         public imagesServ: ImagesService,
         private transfer: FileTransfer,
-        public toastCtrl: ToastController,
         public api: ApiService,
         public modalCtrl: ModalController,
         public alertCtrl: AlertController,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
         public params: ParamsService,
-        public translateService: TranslateService,
         private imagePicker: ImagePicker) {
-        this.translateService.get('IMAGES.GET_ERROR').subscribe((value) => {
-            this.getImagesError = value;
-        })
     }
 
     ngOnInit() {
     }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     ionViewDidEnter() {
-        this.showLoader();
+        this.api.loader();
         let params = this.params.getParams();
         let container = {
             type: params.type,
@@ -73,7 +39,7 @@ export class ImagesPage implements OnInit {
         }
         this.images = [];
         this.imagesServ.getFiles(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after get addresses");
             let results = data.data;
             for (let one in results) {
@@ -81,20 +47,16 @@ export class ImagesPage implements OnInit {
             }
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.getImagesError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('IMAGES.GET_ERROR');
             this.api.handleError(err);
         });
     }
     deleteImage(id) {
-        this.showLoader();
+        this.api.loader();
         this.imagesServ.deleteFile(id).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after delete image");
             for (let one in this.images) {
                 if (this.images[one].id == id) {
@@ -103,13 +65,9 @@ export class ImagesPage implements OnInit {
             }
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.getImagesError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('IMAGES.GET_ERROR');
             this.api.handleError(err);
         });
     }
@@ -125,10 +83,10 @@ export class ImagesPage implements OnInit {
             height: 800,
             outputType: 0
         };
-        this.showLoader();
+        this.api.loader();
         this.imagesServ.prepareForUpload(options,container,false).then((value: any) => {
             this.images = this.images.concat(value.files);
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
     setAvatar() {
@@ -147,11 +105,11 @@ export class ImagesPage implements OnInit {
                 this.icon = results[0];
             }
             
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
     prepareForUpload(options,container,avatar) {
-        this.showLoader();
+        this.api.loader();
         this.imagePicker.getPictures(options).then((results) => {
             
             const fileTransfer: FileTransferObject = this.transfer.create();
@@ -198,7 +156,7 @@ export class ImagesPage implements OnInit {
                     this.images.push(response.file);
                 }
                 if(last){
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                 }
             }, (err) => {
                 console.log("Error upload", err)

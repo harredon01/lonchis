@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NavController } from '@ionic/angular';
 import {Events} from '../../services/events/events.service';
-import {TranslateService} from '@ngx-translate/core';
 import {ParamsService} from '../../services/params/params.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 @Component({
@@ -19,8 +18,7 @@ export class PayuCompletePage implements OnInit {
     constructor(public navCtrl: NavController,
         public params: ParamsService,
         public orderData: OrderDataService,
-        public events: Events,
-        public translateService: TranslateService) {
+        public events: Events) {
         let paramsSent = this.params.getParams();
         this.is_paid = paramsSent.is_paid;
         if (!this.is_paid) {

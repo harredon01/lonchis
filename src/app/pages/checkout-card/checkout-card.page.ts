@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
 import {AddressCreatePage} from '../address-create/address-create.page';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {ApiService} from '../../services/api/api.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
@@ -41,11 +39,7 @@ export class CheckoutCardPage implements OnInit {
     dateError: boolean = false;
     cvvError: boolean = false;
     token: any;
-    loading: any;
     useToken: boolean = false;
-
-    private cardErrorString: string;
-    private cardStartingString: string;
 
     constructor(public navCtrl: NavController,
         public orderData: OrderDataService,
@@ -53,19 +47,9 @@ export class CheckoutCardPage implements OnInit {
         public user: UserDataService,
         public modalCtrl: ModalController,
         public billing: BillingService,
-        public toastCtrl: ToastController,
         public api: ApiService,
-        public translateService: TranslateService,
-        public formBuilder: FormBuilder,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public formBuilder: FormBuilder) {
         this.token = null;
-        this.translateService.get('CHECKOUT_CARD.PAY_CC_ERROR').subscribe((value) => {
-            this.cardErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_CARD.PAY_CC_STARTING').subscribe((value) => {
-            this.cardStartingString = value;
-        });
         let c = new Date();
         this.payerForm = formBuilder.group({
             save_card: [''],
@@ -87,20 +71,6 @@ export class CheckoutCardPage implements OnInit {
         this.orderData.payerAddress = item;
     }
 
-
-
-
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.cardStartingString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.cardStartingString);
-        }
-    }
     /**
        * The view loaded, let's query our items for the list
        */
@@ -174,25 +144,12 @@ export class CheckoutCardPage implements OnInit {
             this.api.handleError(err);
         });
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
+
     /**
      * Navigate to the detail page for this item.
      */
     transactionResponse(transaction) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         console.log("after payCreditCard");
         this.orderData.clearOrder();
         this.params.setParams({
@@ -219,7 +176,7 @@ export class CheckoutCardPage implements OnInit {
             this.cvvError = true;
             return;
         }
-        this.showLoader();
+        this.api.loader('CHECKOUT_CARD.PAY_CC_STARTING');
         let contForm = this.payerForm.value
         let buyer = this.orderData.buyerAddress;
         let payer = this.orderData.payerAddress;
@@ -254,18 +211,14 @@ export class CheckoutCardPage implements OnInit {
             let transaction = data.response.transactionResponse;
             this.transactionResponse(transaction);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cardErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_CARD.PAY_CC_ERROR');
             this.api.handleError(err);
         });
     }
     payToken(method) {
-        this.showLoader();
+        this.api.loader('CHECKOUT_CARD.PAY_CC_STARTING');
         let buyer = this.orderData.buyerAddress;
         console.log("buyer", buyer);
         let payer = this.orderData.payerAddress;
@@ -295,13 +248,9 @@ export class CheckoutCardPage implements OnInit {
         this.billing.payCreditCard(container, "PayU").subscribe((data: any) => {
             this.transactionResponse(data.response.transactionResponse);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cardErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_CARD.PAY_CC_ERROR');
             this.api.handleError(err);
         });
     }

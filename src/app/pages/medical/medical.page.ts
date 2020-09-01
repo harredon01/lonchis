@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, IonContent, ToastController} from '@ionic/angular';
+import {NavController, IonContent} from '@ionic/angular';
 import {ApiService} from '../../services/api/api.service';
 import {AuthService} from '../../services/auth/auth.service';
 @Component({
@@ -12,8 +11,6 @@ export class MedicalPage implements OnInit {
     @ViewChild(IonContent) content: IonContent;
     public data: any = {};
     public showForm = false;
-    private medicalSuccess:string = "";
-    private medicalError:string = "";
     public showProfile = false;
     public genders:any[] = [
         {name: "M", value: "m"},
@@ -29,13 +26,7 @@ export class MedicalPage implements OnInit {
         {name: "+", value: "+"},
         {name: "-", value: "-"}
     ];
-    constructor(public auth: AuthService, public navCtrl: NavController, public toastCtrl: ToastController,public api: ApiService, public translateService: TranslateService) {
-        this.translateService.get('MEDICAL.SUCCESS').subscribe((value) => {
-            this.medicalSuccess = value;
-        });
-        this.translateService.get('MEDICAL.ERROR').subscribe((value) => {
-            this.medicalError = value;
-        });
+    constructor(public auth: AuthService, public navCtrl: NavController,public api: ApiService) {
     }
 
     ngOnInit() {
@@ -71,18 +62,10 @@ export class MedicalPage implements OnInit {
         this.data.birth = this.data.birthYear + "-" + this.data.birthMonth + "-" + this.data.birthDay;
         this.auth.updateMedical(this.data).subscribe((resp: any) => {
             if (resp.status = "success") {
-                this.toastCtrl.create({
-                    message: this.medicalSuccess,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('MEDICAL.SUCCESS');
                 this.showForm = false;
             } else {
-                this.toastCtrl.create({
-                    message: this.medicalError,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('MEDICAL.ERROR');
             }
         }, (err) => {
             console.error('ERR', err);
@@ -104,11 +87,7 @@ export class MedicalPage implements OnInit {
             this.data.birthYear = birthdate.getFullYear();
             this.data.password = formData.password;
         }, (err) => {
-            this.toastCtrl.create({
-                message: this.medicalError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('MEDICAL.ERROR');
             this.api.handleError(err);
         });
     }

@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ModalController, ToastController, LoadingController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
 import {Item} from '../../models/item';
 import {ParamsService} from '../../services/params/params.service';
@@ -14,21 +12,13 @@ import {ApiService} from '../../services/api/api.service';
 })
 export class ItemDetailPage implements OnInit {
     item: Item;
-    private itemsErrorGet: string;
     constructor(public navCtrl: NavController,
         public items: ItemsService,
         public params: ParamsService,
         public api: ApiService,
         private activatedRoute: ActivatedRoute,
-        public toastCtrl: ToastController,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
-        public modalCtrl: ModalController,
-        public translateService: TranslateService) {
+        public modalCtrl: ModalController) {
         this.item = new Item({});
-        this.translateService.get('ITEMS.ERROR_GET').subscribe(function (value) {
-            this.itemsErrorGet = value;
-        });
     }
     ionViewDidEnter() {
         this.loadItem();
@@ -44,10 +34,10 @@ export class ItemDetailPage implements OnInit {
         } else {
             let itemId = this.activatedRoute.snapshot.paramMap.get('objectId');
             if (itemId) {
-                this.showLoader();
+                this.api.loader();
                 let query = "id=" + itemId + "&includes=order.user";
                 this.items.getItems(query).subscribe((data: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("after get Deliveries");
                     let results = data.data;
                     for (let one in results) {
@@ -55,13 +45,9 @@ export class ItemDetailPage implements OnInit {
                     }
                     console.log(JSON.stringify(data));
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     // Unable to log in
-                    let toast = this.toastCtrl.create({
-                        message: this.itemsErrorGet,
-                        duration: 3000,
-                        position: 'top'
-                    }).then(toast => toast.present());
+                    this.api.toast('ITEMS.ERROR_GET');
                     this.api.handleError(err);
                 });
             }
@@ -69,38 +55,13 @@ export class ItemDetailPage implements OnInit {
         }
 
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
 
     fulfillItem() {
         let container = {
             "item": this.item.item_id
         };
         this.items.updateItemStatus(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after get Deliveries");
             let results = data.data;
             for (let one in results) {
@@ -108,13 +69,9 @@ export class ItemDetailPage implements OnInit {
             }
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.itemsErrorGet,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ITEMS.ERROR_GET');
             this.api.handleError(err);
         });
     }

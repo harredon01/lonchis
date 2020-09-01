@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Availability} from '../../models/availability';
-import {TranslateService} from '@ngx-translate/core';
 import {ApiService} from '../../services/api/api.service';
-import {NavController, ToastController, LoadingController, ModalController, AlertController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
 import {BookingService} from '../../services/booking/booking.service';
 import {ActivatedRoute} from '@angular/router';
@@ -15,26 +13,17 @@ import {AvailabilityCreatePage} from '../availability-create/availability-create
 })
 export class AvailabilitiesPage implements OnInit {
     currentItems: Availability[];
-    loading: any;
     merchant: any;
     page = 0;
     loadMore = false;
-    private availabilityErrorString: string;
     constructor(public navCtrl: NavController,
         public activatedRoute: ActivatedRoute,
         public booking: BookingService,
-        public toastCtrl: ToastController,
         public api: ApiService,
         public modalCtrl: ModalController,
         public params: ParamsService,
-        public translateService: TranslateService,
-        public alertCtrl: AlertController,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public alertCtrl: AlertController) {
         this.currentItems = [];
-        this.translateService.get('ADDRESS_FIELDS.ERROR_GET').subscribe((value) => {
-            this.availabilityErrorString = value;
-        });
         this.merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
 
     }
@@ -46,11 +35,11 @@ export class AvailabilitiesPage implements OnInit {
 
     getItems() {
         this.page++
-        this.showLoader();
+        this.api.loader();
         this.currentItems = [];
         let where = {"type": "Merchant", "object_id": this.merchant};
         this.booking.getAvailabilitiesObject(where).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after getItems", data);
             let results = data.data;
             for (let one in results) {
@@ -60,13 +49,9 @@ export class AvailabilitiesPage implements OnInit {
             this.currentItems.sort((a, b) => (a.order > b.order) ? 1 : -1)
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.availabilityErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ADDRESS_FIELDS.ERROR_GET');
             this.api.handleError(err);
         });
     }
@@ -84,51 +69,22 @@ export class AvailabilitiesPage implements OnInit {
         }
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     /**
      * Delete an item from the list of items.
      */
     deleteAvailability(item) {
-        this.showLoader();
+        this.api.loader();
         let container = {"id": item.id, "object_id": this.merchant, "type": "Merchant"};
         this.booking.deleteAvailability(container).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (resp.status == "success") {
                 this.currentItems.splice(this.currentItems.indexOf(item), 1);
             }
             //this.navCtrl.push(MainPage);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.availabilityErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ADDRESS_FIELDS.ERROR_GET');
             this.api.handleError(err);
         });
     }

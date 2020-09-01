@@ -2,8 +2,7 @@ import {Component, OnInit, ViewChild, ChangeDetectorRef} from '@angular/core';
 import {Friend} from "../../models/friend";
 import {Message} from "../../models/message";
 import {IonInfiniteScroll} from '@ionic/angular';
-import {NavController, ToastController, LoadingController, AlertController, IonContent} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, AlertController, IonContent} from '@ionic/angular';
 import {Events} from '../../services/events/events.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {ChatService} from '../../services/chat/chat.service';
@@ -22,7 +21,6 @@ export class ChatRoomPage implements OnInit {
     public messages: Message[] = [];
     public tabBarElement: any;
     public input: string = '';
-    loading: any;
     public backButton: boolean = false;
     public type: string = '';
     public targetId: string = '';
@@ -32,15 +30,11 @@ export class ChatRoomPage implements OnInit {
     public willContinue: boolean = true;
     paymentsGetStartString = '';
     avatar = 'assets/avatar/Dylan.png';
-    paymentsErrorString = '';
     public page = 0;
     public messagemore = false;
 
     constructor(public chats: ChatService,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
         private cdr: ChangeDetectorRef,
-        public toastCtrl: ToastController,
         public api: ApiService,
         public navCtrl: NavController,
         public router: Router,
@@ -121,23 +115,9 @@ export class ChatRoomPage implements OnInit {
         }
         return true;
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     getMessages(scroll, update) {
         if (!update) {
-            this.showLoader();
+            this.api.loader();
         }
         let where = "";
         if (this.type == "user_message") {
@@ -157,7 +137,7 @@ export class ChatRoomPage implements OnInit {
 
         this.chats.getServerChatDetail(where).subscribe((results: any) => {
             if (!update) {
-                this.dismissLoader();
+                this.api.dismissLoader();
             }
             let data = results.data;
             for (let msg in data) {
@@ -202,21 +182,17 @@ export class ChatRoomPage implements OnInit {
             console.log("Messages", this.messages);
             console.log("result last id:", this.lastId);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.paymentsErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CATEGORIES.ERROR_GET');
             this.api.handleError(err);
         });
     }
     getSupportAgent(typeObject, objectId) {
-        this.showLoader();
+        this.api.loader();
         this.chats.getSupportAgent(typeObject, objectId).subscribe((results: any) => {
             console.log('getSupportAgent', results);
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (results.id) {
                 this.friend = results;
                 this.friend.avatar = "assets/avatar/Bentley.png";
@@ -233,13 +209,9 @@ export class ChatRoomPage implements OnInit {
                 this.getMessages(true, false);
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.paymentsErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CATEGORIES.ERROR_GET');
             this.api.handleError(err);
         });
     }
@@ -320,17 +292,6 @@ export class ChatRoomPage implements OnInit {
             this.messages.push(message);
             this.scrollToBottom();
             this.input = '';
-        }
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.paymentsGetStartString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.paymentsGetStartString);
         }
     }
 

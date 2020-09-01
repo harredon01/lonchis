@@ -1,8 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {NavController, ModalController, ToastController, LoadingController} from '@ionic/angular';
-import {TranslateService} from '@ngx-translate/core';
+import {NavController, ModalController} from '@ionic/angular';
 import {IonInfiniteScroll} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {ActivatedRoute} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {MapDataService} from '../../services/map-data/map-data.service';
@@ -31,8 +29,6 @@ export class MerchantListingPage implements OnInit {
     category: any;
     merchants: Merchant[] = [];
     categoryItems: any[] = [];
-    categoriesErrorGet: string = "";
-    merchantsErrorGet: string = "";
     page: any = 0;
     loadMore: boolean;
 
@@ -45,12 +41,8 @@ export class MerchantListingPage implements OnInit {
         public categories: CategoriesService,
         public merchantsServ: MerchantsService,
         public router: Router,
-        public toastCtrl: ToastController,
         public modalCtrl: ModalController,
-        public loadingCtrl: LoadingController,
-        public translateService: TranslateService,
-        public api: ApiService,
-        private spinnerDialog: SpinnerDialog) {
+        public api: ApiService) {
         this.category = this.activatedRoute.snapshot.paramMap.get('categoryId');
         let container = this.params.getParams();
         if (container) {
@@ -83,8 +75,8 @@ export class MerchantListingPage implements OnInit {
     ionViewDidEnter() {
         if (document.URL.startsWith('http')) {
             let vm = this;
-            setTimeout(function () {vm.dismissLoader(); console.log("Retrying closing")}, 1000);
-            setTimeout(function () {vm.dismissLoader(); console.log("Retrying closing")}, 2000);
+            setTimeout(function () {vm.api.dismissLoader(); console.log("Retrying closing")}, 1000);
+            setTimeout(function () {vm.api.dismissLoader(); console.log("Retrying closing")}, 2000);
         }
     }
     onError(item) {
@@ -124,11 +116,7 @@ export class MerchantListingPage implements OnInit {
             //this.cdr.detectChanges();
         }, (err) => {
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.categoriesErrorGet,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_GET');
             this.api.handleError(err);
         });
     }
@@ -182,7 +170,7 @@ export class MerchantListingPage implements OnInit {
      * Navigate to the detail page for this item.
      */
     searchNearby() {
-        this.showLoader();
+        this.api.loader();
         this.geolocation.getCurrentPosition().then((resp) => {
             console.log("Getting current position after call", resp);
             // resp.coords.latitude
@@ -191,7 +179,7 @@ export class MerchantListingPage implements OnInit {
             this.merchants = [];
             this.page = 0;
             this.location = {lat: resp.coords.latitude, long: resp.coords.longitude, category: this.category};
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.getMerchants(null);
         }).catch((error) => {
             console.log('Error getting location', error);
@@ -227,7 +215,7 @@ export class MerchantListingPage implements OnInit {
         this.getMerchants(null);
     }
     getMerchants(event) {
-        this.showLoader();
+        this.api.loader();
         this.page++;
 
         let searchObj = null
@@ -268,57 +256,22 @@ export class MerchantListingPage implements OnInit {
             if (event) {
                 event.target.complete();
             }
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error getMerchantsFromServer");
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.merchantsErrorGet,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_GET');
             this.api.handleError(err);
         });
     }
 
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
     categoryFilterChange() {
         this.page = 0;
         this.getMerchants(null);
     }
 
     ngOnInit() {
-
-        this.translateService.get('CATEGORIES.ERROR_GET').subscribe((value) => {
-            this.categoriesErrorGet = value;
-        });
-        this.translateService.get('CATEGORIES.ERROR_GET').subscribe((value) => {
-            this.merchantsErrorGet = value;
-        });
         this.merchants = [];
         this.getMerchants(null);
         this.getItems();

@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ModalController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
 import {BookingService} from '../../services/booking/booking.service';
 import {BookingDetailPage} from '../booking-detail/booking-detail.page';
 import {CommentsPage} from '../comments/comments.page';
+import {ApiService} from '../../services/api/api.service';
 import {TranslateService} from '@ngx-translate/core';
 import {Booking} from '../../models/booking';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {UserDataService} from '../../services/user-data/user-data.service';
 //import * as OT from '@opentok/client';
 declare var OT: any;
@@ -31,9 +31,8 @@ export class OpentokPage implements OnInit {
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
         public userData: UserDataService,
+        public api: ApiService,
         public translateService: TranslateService,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog,
         public params: ParamsService,
         public bookingS: BookingService) {
         this.apiKey = '46389642';
@@ -157,7 +156,7 @@ export class OpentokPage implements OnInit {
             width: 90,
             height: 120,
         };
-        this.showLoader();
+        this.api.loader();
         this.publisher = OT.initPublisher('publisher', publisherOptions);
         OT.updateViews();
         this.session.on({
@@ -186,7 +185,7 @@ export class OpentokPage implements OnInit {
                 let container = {"booking_id": this.bookingId, "connection_id": this.session.connection.connectionId};
                 this.registerConnection(container);
                 this.session.publish(this.publisher);
-                this.dismissLoader();
+                this.api.dismissLoader();
                 let el = (document.querySelector('.OT_publisher') as HTMLElement);
                 if (el) {
                     el.style.setProperty('display', 'block');
@@ -201,30 +200,6 @@ export class OpentokPage implements OnInit {
                 console.log(`There was an error connecting to the session ${error}`);
             }
         });
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
     }
     registerConnection(container) {
         this.bookingS.registerConnection(container).subscribe((resp: any) => {

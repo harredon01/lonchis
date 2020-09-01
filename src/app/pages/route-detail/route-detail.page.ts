@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {Route} from '../../models/route';
-import {NavController, ModalController, ToastController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController} from '@ionic/angular';
 import {ApiService} from '../../services/api/api.service';
 import {Events} from '../../services/events/events.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {RoutingService} from '../../services/routing/routing.service';
 import {ParamsService} from '../../services/params/params.service';
 import {FoodService} from '../../services/food/food.service';
@@ -17,16 +15,7 @@ import {TrackingService} from '../../services/tracking/tracking.service';
 export class RouteDetailPage implements OnInit {
     route: Route;
     listArticles: any[];
-    routeStartedError: string;
-    routeCompletedError: string;
-    stopArrivedError: string;
-    stopFailedError: string;
-    stopCompleteError: string;
-    constructor(public translateService: TranslateService,
-        public navCtrl: NavController,
-        public toastCtrl: ToastController,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog,
+    constructor(public navCtrl: NavController,
         public routingService: RoutingService,
         public api: ApiService,
         public foodService: FoodService,
@@ -43,21 +32,6 @@ export class RouteDetailPage implements OnInit {
 //            this.getArticles(date.getFullYear() + '-' + (date.getMonth() + 1) + "-" + date.getDate());
         }
         console.log("Route", this.route);
-        this.translateService.get('ROUTING.ERROR_ROUTE_START').subscribe(function (value) {
-            this.routeStartedError = value;
-        });
-        this.translateService.get('ROUTING.ERROR_ROUTE_COMPLETED').subscribe(function (value) {
-            this.routeCompletedError = value;
-        });
-        this.translateService.get('ROUTING.ERROR_STOP_ARRIVED').subscribe(function (value) {
-            this.stopArrivedError = value;
-        });
-        this.translateService.get('ROUTING.ERROR_STOP_FAILED').subscribe(function (value) {
-            this.stopFailedError = value;
-        });
-        this.translateService.get('ROUTING.ERROR_STOP_COMPLETED').subscribe(function (value) {
-            this.stopCompleteError = value;
-        });
     }
 
     getArticle(id) {
@@ -126,10 +100,10 @@ export class RouteDetailPage implements OnInit {
         });
     }
     startRoute(route_id) {
-        this.showLoader();
+        this.api.loader();
         let params = {"route_id": route_id};
         this.routingService.startRoute(params).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             for(let item in this.route.stops){
                 let stop:any = this.route.stops[item];
                 this.trackingService.createGeofence(stop.address.lat,stop.address.long,stop.id);
@@ -137,112 +111,67 @@ export class RouteDetailPage implements OnInit {
             console.log("after startRoute");
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.routeStartedError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ROUTING.ERROR_ROUTE_START');
             this.api.handleError(err);
         });
     }
     stopArrived(stop_id) {
-        this.showLoader();
+        this.api.loader();
         let params = {"stop_id": stop_id};
         this.routingService.stopArrived(params).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after stopArrived");
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.stopArrivedError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ROUTING.ERROR_STOP_ARRIVED');
             this.api.handleError(err);
         });
     }
     stopFailed( user_id) {
-        this.showLoader();
+        this.api.loader();
         let params = {"user_id": user_id};
         this.routingService.stopFailed(params).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after stopFailed");
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.stopFailedError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ROUTING.ERROR_STOP_FAILED');
             this.api.handleError(err);
         });
     }
     stopComplete(stop_id) {
-        this.showLoader();
+        this.api.loader();
         let params = {"stop_id": stop_id};
         this.routingService.stopComplete(params).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after stopComplete");
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.stopCompleteError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ROUTING.ERROR_STOP_COMPLETED');
             this.api.handleError(err);
         });
     }
     routeComplete(route_id) {
-        this.showLoader();
+        this.api.loader();
         let params = {"route_id": route_id};
         this.routingService.completeRoute(params).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.trackingService.removeGeofences();
             console.log("after routeComplete");
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.routeCompletedError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ROUTING.ERROR_ROUTE_COMPLETED');
             this.api.handleError(err);
         });
     }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-
 }

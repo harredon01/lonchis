@@ -1,10 +1,10 @@
 import {Component, ViewChild, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
-import {NavController, AlertController, LoadingController, ModalController, ToastController, IonContent} from '@ionic/angular';
+import {NavController, AlertController, ModalController, IonContent} from '@ionic/angular';
 import {FoodService} from '../../services/food/food.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
+import {ApiService} from '../../services/api/api.service';
 import {ParamsService} from '../../services/params/params.service';
 import {Events} from '../../services/events/events.service';
 import {Facebook} from '@ionic-native/facebook/ngx';
@@ -36,11 +36,7 @@ export class ProgramarPage implements OnInit {
     hasStarter: boolean = false;
     hasDrink: boolean = false;
     shouldDrink: boolean = false;
-    deliveriesGetString: string;
     deliveriesChangeAddress: string;
-    deliveriesChangeAddressSuccess: string;
-    deliveriesChangeAddressError: string;
-    deliveriesChangeAddressErrorProduct: string;
     deliverydateErrorTitle: string;
     deliverydateErrorDesc: string;
     deliverysuspErrorTitle: string;
@@ -96,33 +92,19 @@ export class ProgramarPage implements OnInit {
         public userData: UserDataService,
         private drouter: DynamicRouterService,
         public fb: Facebook,
+        public api: ApiService,
         private params: ParamsService,
         private translateService: TranslateService,
         private alertCtrl: AlertController,
         private modalCtrl: ModalController,
-        private toastCtrl: ToastController,
         public food: FoodService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog,
         public formBuilder: FormBuilder) {
         this.isProgrammed = false;
         this.isDeposit = false;
         this.submitting = false;
         this.slides = [];
-        this.translateService.get('DELIVERY_PROGRAM.DELIVERIES_GET').subscribe((value) => {
-            this.deliveriesGetString = value;
-        });
         this.translateService.get('DELIVERY_PROGRAM.CHANGE_ADDRESS_TITLE').subscribe((value) => {
             this.deliveriesChangeAddress = value;
-        });
-        this.translateService.get('DELIVERY_PROGRAM.CHANGE_ADDRESS_SUCCESS').subscribe((value) => {
-            this.deliveriesChangeAddressSuccess = value;
-        });
-        this.translateService.get('DELIVERY_PROGRAM.CHANGE_ADDRESS_ERROR').subscribe((value) => {
-            this.deliveriesChangeAddressError = value;
-        });
-        this.translateService.get('DELIVERY_PROGRAM.CHANGE_ADDRESS_ERROR_PRODUCT').subscribe((value) => {
-            this.deliveriesChangeAddressErrorProduct = value;
         });
         this.translateService.get('DELIVERY_PROGRAM.DELIVERY_DATE_ERROR_TITLE').subscribe((value) => {
             this.deliverydateErrorTitle = value;
@@ -185,27 +167,16 @@ export class ProgramarPage implements OnInit {
     changeAddress(item: any, all: boolean) {
         let container = {"address_id": item.id, "delivery_id": this.deliveryParams.id, "all": all, "merchant_id": "1299"};
         this.food.updateDeliveryAddress(container).subscribe((resp: any) => {
-            this.dismissLoader();
-            let message = this.deliveriesChangeAddressError;
+            this.api.dismissLoader();
             if (resp.status == "success") {
-                message = this.deliveriesChangeAddressSuccess;
+                this.api.toast('DELIVERY_PROGRAM.CHANGE_ADDRESS_SUCCESS');
                 this.deliveryParams.address = item;
             } else if (resp.message == "Forbidden product") {
-                message = this.deliveriesChangeAddressErrorProduct;
+                this.api.toast('DELIVERY_PROGRAM.CHANGE_ADDRESS_ERROR_PRODUCT');
             }
-            let toast = this.toastCtrl.create({
-                message: message,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
-
         }, (err) => {
-            this.dismissLoader();
-            let toast = this.toastCtrl.create({
-                message: this.deliveriesChangeAddressError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.dismissLoader();
+            this.api.toast('DELIVERY_PROGRAM.CHANGE_ADDRESS_ERROR');
         });
     }
     presentAlertChange(item: any) {
@@ -403,34 +374,9 @@ export class ProgramarPage implements OnInit {
         this.slides.push(slide3);
     }
 
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
 
     getArticles() {
-        this.showLoader();
+        this.api.loader();
 
         this.food.getArticlesByDateTimeRange({init: this.deliveryParams.delivery.getFullYear() + '-' + (this.deliveryParams.delivery.getMonth() + 1) + "-" + this.deliveryParams.delivery.getDate()}).subscribe((resp: any) => {
             //this.food.getArticlesByDateTimeRange({init: '2019-10-01', end: '2019-10-03'}).subscribe((resp) => {
@@ -446,9 +392,9 @@ export class ProgramarPage implements OnInit {
                 }
             }
             this.checkDelivery();
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
 
@@ -592,9 +538,9 @@ export class ProgramarPage implements OnInit {
         if (!this.isProgrammed) {
             this.navCtrl.pop();
         } else {
-            this.showLoader();
+            this.api.loader();
             this.food.cancelDeliverySelection(this.deliveryParams.id).subscribe((resp: any) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 if (resp.status == "success") {
                     this.deliveryParams.status = "pending";
                     this.events.publish('home:loadDeliveries', {});
@@ -609,7 +555,7 @@ export class ProgramarPage implements OnInit {
                 }
 
             }, (err) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
             });
         }
     }
@@ -647,13 +593,13 @@ export class ProgramarPage implements OnInit {
         await prompt.present();
     }
     sendDelivery() {
-        this.showLoader();
+        this.api.loader();
         console.log("sdfsd", this.saveDelivery);
         this.fb.logEvent("Program Delivery");
         if (this.deliveryParams.id > 0) {
             this.food.updateDeliveryInformation(this.saveDelivery).subscribe((resp: any) => {
                 this.submitting = false;
-                this.dismissLoader();
+                this.api.dismissLoader();
                 if (resp.status == "success") {
                     this.deliveryParams.status = "enqueue";
                     this.deliveryParams.pending_count = resp.pending_count;
@@ -669,7 +615,7 @@ export class ProgramarPage implements OnInit {
                 }
 
             }, (err) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
             });
         } else {
             this.presentAlertPay();

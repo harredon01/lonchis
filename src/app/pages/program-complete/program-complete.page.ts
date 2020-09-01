@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FoodService} from '../../services/food/food.service';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController} from '@ionic/angular';
+import {NavController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
+import {ApiService} from '../../services/api/api.service';
 @Component({
     selector: 'app-program-complete',
     templateUrl: './program-complete.page.html',
@@ -11,9 +11,8 @@ import {ParamsService} from '../../services/params/params.service';
 export class ProgramCompletePage implements OnInit {
     delivery: any
     constructor(public food: FoodService,
-        public translate: TranslateService,
         public navCtrl: NavController,
-        public toastCtrl: ToastController,
+        public api: ApiService,
         public params: ParamsService) {
         let container = this.params.getParams();
         this.delivery = container.delivery;
@@ -37,11 +36,7 @@ export class ProgramCompletePage implements OnInit {
                 this.params.setParams({item: resp.delivery});
                 this.navCtrl.navigateForward('tabs/home/programar');
             } else {
-                let toast = this.toastCtrl.create({
-                    message: resp.message,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast(resp.message);
             }
         }, (err) => {
 

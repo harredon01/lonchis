@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ModalController, ToastController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController} from '@ionic/angular';
 import {Contacts, Contact, ContactField, ContactName, ContactFindOptions, ContactFieldType} from '@ionic-native/contacts/ngx';
 import {parsePhoneNumberFromString, ParseError} from 'libphonenumber-js'
-import {TranslateService} from '@ngx-translate/core';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {ContactsService} from '../../services/contacts/contacts.service';
 import {ParamsService} from '../../services/params/params.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
@@ -22,15 +20,11 @@ export class ImportContactsPage implements OnInit {
         public params: ParamsService,
         public userData: UserDataService,
         public contactsServ: ContactsService,
-        public toastCtrl: ToastController,
         public modalCtrl: ModalController,
-        public loadingCtrl: LoadingController,
-        public translateService: TranslateService,
-        public api: ApiService,
-        private spinnerDialog: SpinnerDialog) {}
+        public api: ApiService) {}
 
     ngOnInit() {
-        this.showLoader();
+        this.api.loader();
         var options = new ContactFindOptions();
         options.filter = "";
         options.multiple = true;
@@ -154,14 +148,14 @@ export class ImportContactsPage implements OnInit {
         }
         if (counter > 0) {
             this.contactsServ.checkContacts(final).subscribe((resp: any) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.contacts2 = this.contacts2.concat(resp.contacts.contacts);
             }, function (err) {
                 console.error('ERR', err);
                 // err.status will contain the status code
             });
         } else {
-            this.dismissLoader();
+            this.api.dismissLoader();
         }
 
     }
@@ -205,29 +199,4 @@ export class ImportContactsPage implements OnInit {
     addContact(contact) {
         this.importcontacts.push(contact);
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-
 }

@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {BookingService} from '../../services/booking/booking.service';
 import {ParamsService} from '../../services/params/params.service';
-
+import {ApiService} from '../../services/api/api.service';
 @Component({
     selector: 'app-availability-create',
     templateUrl: './availability-create.page.html',
@@ -15,20 +14,16 @@ export class AvailabilityCreatePage implements OnInit {
     isReadyToSave: boolean;
     item: any;
     days: any[] = [];
-    loading: any;
     submitAttempt: boolean;
     form: FormGroup;
-    private availabilityErrorStringSave: string;
 
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
+        public api: ApiService,
         formBuilder: FormBuilder,
-        public toastCtrl: ToastController,
         public booking: BookingService,
-        public loadingCtrl: LoadingController,
         public translateService: TranslateService,
-        public params: ParamsService,
-        private spinnerDialog: SpinnerDialog) {
+        public params: ParamsService) {
         this.days = []
         this.submitAttempt = false;
         let vm = this;
@@ -59,9 +54,6 @@ export class AvailabilityCreatePage implements OnInit {
         this.translateService.get('DAYS.SUNDAY').subscribe((value) => {
             let container = {"name": value, "value": "sunday"};
             vm.days.push(container);
-        });
-        this.translateService.get('AVAILABILITY_CREATE.ERROR_SAVE').subscribe((value) => {
-            vm.availabilityErrorStringSave = value;
         });
         this.form = formBuilder.group({
             range: ['', Validators.required],
@@ -109,20 +101,6 @@ export class AvailabilityCreatePage implements OnInit {
         });
     }
 
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     formatAMPM(date: Date) {
         var hours = date.getHours();
         let minutes = date.getMinutes();
@@ -142,7 +120,7 @@ export class AvailabilityCreatePage implements OnInit {
         return new Promise((resolve, reject) => {
             console.log("Save availability", availability);
             if (availability) {
-                this.showLoader();
+                this.api.loader();
                 let today = new Date();
                 let offset = today.getTimezoneOffset() / 60;
                 if (availability.from.includes("-0" + offset + ":00")) {
@@ -170,7 +148,7 @@ export class AvailabilityCreatePage implements OnInit {
                     availability.to = availability.to.split(".")[0];
                 }
                 this.booking.saveOrCreateAvailability(availability).subscribe((resp: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("Save Address result", resp);
                     if (resp.status == "success") {
                         resolve(availability);
@@ -178,7 +156,7 @@ export class AvailabilityCreatePage implements OnInit {
                         resolve(null);
                     }
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     reject(err);
                 });
             } else {
@@ -210,31 +188,13 @@ export class AvailabilityCreatePage implements OnInit {
                 this.modalCtrl.dismiss(value);
             } else {
                 // Unable to log in
-                this.toastCtrl.create({
-                    message: this.availabilityErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('AVAILABILITY_CREATE.ERROR_SAVE');
             }
         }).catch((error) => {
             console.log('Error saveAvailability', error);
-            this.toastCtrl.create({
-                message: this.availabilityErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('AVAILABILITY_CREATE.ERROR_SAVE');
         });;
 
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
     ngOnInit() {

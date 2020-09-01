@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ToastController, ModalController, AlertController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {Address} from '../../models/address';
 import {ParamsService} from '../../services/params/params.service';
-import {TranslateService} from '@ngx-translate/core';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {MapDataService} from '../../services/map-data/map-data.service';
 import {AddressesService} from '../../services/addresses/addresses.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
@@ -36,10 +34,7 @@ export class CheckoutBuyerPage implements OnInit {
         };
     showAddressCard: boolean;
     selectedAddress: Address;
-    loading: any;
     currentItems: Address[];
-
-    private addressErrorString: string;
 
     constructor(public navCtrl: NavController,
         public user: UserService,
@@ -49,17 +44,10 @@ export class CheckoutBuyerPage implements OnInit {
         public mapData: MapDataService,
         public orderData: OrderDataService,
         public modalCtrl: ModalController,
-        public toastCtrl: ToastController,
-        public translateService: TranslateService,
-        public addresses: AddressesService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public addresses: AddressesService) {
         this.showAddressCard = false;
         this.currentItems = [];
         console.log("checkout buyer");
-        this.translateService.get('ADDRESS_FIELDS.ERROR_GET').subscribe((value) => {
-            this.addressErrorString = value;
-        });
     }
 
     saveBilling(item: Address, save: boolean) {
@@ -78,30 +66,6 @@ export class CheckoutBuyerPage implements OnInit {
 
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     /**
        * The view loaded, let's query our items for the list
        */
@@ -109,7 +73,7 @@ export class CheckoutBuyerPage implements OnInit {
         if (this.orderData.buyerAddress) {
             this.showAddressCard = true;
             this.selectedAddress = this.orderData.buyerAddress;
-            this.dismissLoader();
+            this.api.dismissLoader();
         } else {
             this.getAddresses();
         }
@@ -133,13 +97,9 @@ export class CheckoutBuyerPage implements OnInit {
             //this.createAddress();
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.addressErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ADDRESS_FIELDS.ERROR_GET');
             this.api.handleError(err);
         });
 

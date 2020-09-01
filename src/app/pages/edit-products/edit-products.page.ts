@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ToastController, ModalController, AlertController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
-import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ProductsService} from '../../services/products/products.service';
@@ -15,7 +13,6 @@ import {ApiService} from '../../services/api/api.service';
 })
 export class EditProductsPage implements OnInit {
     product: Product;
-    loading: any;
     submitAttemptP: boolean;
     isNew: boolean = false;
     selectingCategory: boolean = true;
@@ -27,33 +24,15 @@ export class EditProductsPage implements OnInit {
     formP: FormGroup;
     formV: FormGroup;
     formPNew: FormGroup;
-    productsErrorStringSave: string = "";
-    variantsErrorStringSave: string = "";
-    getProductErrorString: string = "";
     category: string = "";
     constructor(public navCtrl: NavController,
         public activatedRoute: ActivatedRoute,
         public productsServ: ProductsService,
-        public toastCtrl: ToastController,
         formBuilder: FormBuilder,
         public api: ApiService,
         public modalCtrl: ModalController,
         public alertCtrl: AlertController,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
-        public params: ParamsService,
-        public translateService: TranslateService) {
-
-        let vm = this;
-        this.translateService.get('AVAILABILITY_CREATE.ERROR_SAVE').subscribe((value) => {
-            vm.productsErrorStringSave = value;
-        });
-        this.translateService.get('AVAILABILITY_CREATE.ERROR_SAVE').subscribe((value) => {
-            vm.variantsErrorStringSave = value;
-        });
-        this.translateService.get('AVAILABILITY_CREATE.ERROR_SAVE').subscribe((value) => {
-            vm.getProductErrorString = value;
-        });
+        public params: ParamsService) {
         this.formP = formBuilder.group({
             id: [''],
             name: ['', Validators.required],
@@ -106,9 +85,9 @@ export class EditProductsPage implements OnInit {
         this.editingVariant = true;
     }
     getItem(productId) {
-        this.showLoader();
+        this.api.loader();
         this.productsServ.getProductSimple(productId).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
 
             let results = data.product;
             this.product = new Product(results);
@@ -124,58 +103,26 @@ export class EditProductsPage implements OnInit {
             this.formP.setValue(container);
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            this.toastCtrl.create({
-                message: this.getProductErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }
     getCategories() {
-        this.showLoader();
+        this.api.loader();
         let merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
         this.productsServ.getProductCategories(merchant,"Product").subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log(JSON.stringify(data));
             this.categories = data.data;
         }, (err) => {
-            this.dismissLoader();
-            this.toastCtrl.create({
-                message: this.getProductErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.dismissLoader();
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
 
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     selectCategory(categoryId) {
         let container = this.formPNew.value;
         container.category_id = categoryId;
@@ -198,32 +145,24 @@ export class EditProductsPage implements OnInit {
         this.submitAttemptP = true;
         console.log("saveOrCreateProduct");
         if (!this.formP.valid) {return;}
-        this.showLoader();
+        this.api.loader();
         let container = this.formP.value;
         if (container.id.length == 0) {
             let merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
             container['merchant_id'] = merchant;
         }
         this.productsServ.saveOrCreateProduct(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 this.filterResults(data);
             } else {
-                this.toastCtrl.create({
-                    message: this.productsErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('INPUTS.ERROR_SAVE');
             }
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            this.toastCtrl.create({
-                message: this.productsErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }
@@ -250,63 +189,47 @@ export class EditProductsPage implements OnInit {
         this.submitAttemptPNew = true;
         console.log("createProduct");
         if (!this.formPNew.valid) {return;}
-        this.showLoader();
+        this.api.loader();
         let container = this.formPNew.value;
         let merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
         container['merchant_id'] = merchant;
         this.productsServ.saveOrCreateProduct(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 this.filterResults(data);
             } else {
-                this.toastCtrl.create({
-                    message: this.productsErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('INPUTS.ERROR_SAVE');
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            this.toastCtrl.create({
-                message: this.productsErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }
     deleteProduct() {
-        this.showLoader();
+        this.api.loader();
         this.productsServ.deleteProduct(this.product.id).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 console.log("after deleteProduct");
                 this.navCtrl.back();
                 console.log(JSON.stringify(data));
             } else {
-                this.toastCtrl.create({
-                    message: this.productsErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('INPUTS.ERROR_SAVE');
             }
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            this.toastCtrl.create({
-                message: this.productsErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }
     deleteVariant(variantId) {
-        this.showLoader();
+        this.api.loader();
         this.productsServ.deleteVariant(variantId).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 console.log("after deleteVariant");
                 for (let item in this.variants) {
@@ -319,21 +242,13 @@ export class EditProductsPage implements OnInit {
                 }
                 console.log(JSON.stringify(data));
             } else {
-                this.toastCtrl.create({
-                    message: this.variantsErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('INPUTS.ERROR_SAVE');
             }
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            this.toastCtrl.create({
-                message: this.variantsErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }
@@ -341,10 +256,10 @@ export class EditProductsPage implements OnInit {
         this.submitAttemptV = true;
         console.log("saveavailability");
         if (!this.formV.valid) {return;}
-        this.showLoader();
+        this.api.loader();
         this.productsServ.saveOrCreateVariant(this.formV.value).subscribe((data: any) => {
 
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 this.editingVariant = false;
                 let variant = data.variant;
@@ -360,21 +275,13 @@ export class EditProductsPage implements OnInit {
                 }
                 console.log(JSON.stringify(data));
             } else {
-                this.toastCtrl.create({
-                    message: this.variantsErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('INPUTS.ERROR_SAVE');
             }
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            this.toastCtrl.create({
-                message: this.variantsErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('INPUTS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }

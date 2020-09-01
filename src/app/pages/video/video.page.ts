@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {NavController, ToastController } from '@ionic/angular';
+import {NavController } from '@ionic/angular';
 declare var OT:any;
 @Component({
   selector: 'app-video',

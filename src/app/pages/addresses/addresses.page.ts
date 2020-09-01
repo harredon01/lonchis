@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Address} from '../../models/address';
-import {TranslateService} from '@ngx-translate/core';
 import {ApiService} from '../../services/api/api.service';
-import {NavController, ToastController, LoadingController, ModalController, AlertController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
 import {AddressesService} from '../../services/addresses/addresses.service';
 import {MapDataService} from '../../services/map-data/map-data.service';
@@ -16,29 +14,16 @@ import {AddressCreatePage} from '../address-create/address-create.page';
 export class AddressesPage implements OnInit {
 
     currentItems: Address[];
-    loading: any;
     isSelect:boolean = false;
-    private addressErrorString: string;
-    private addressErrorStringSave: string;
 
     constructor(public navCtrl: NavController,
         public addresses: AddressesService,
-        public toastCtrl: ToastController,
         public api: ApiService,
         public modalCtrl: ModalController,
         public mapData: MapDataService,
         public params: ParamsService,
-        public translateService: TranslateService,
-        public alertCtrl: AlertController,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public alertCtrl: AlertController) {
         this.currentItems = [];
-        this.translateService.get('ADDRESS_FIELDS.ERROR_GET').subscribe((value) => {
-            this.addressErrorString = value;
-        });
-        this.translateService.get('ADDRESS_FIELDS.ERROR_SAVE').subscribe((value) => {
-            this.addressErrorStringSave = value;
-        });
 
     }
 
@@ -64,46 +49,10 @@ export class AddressesPage implements OnInit {
         }).then(toast => toast.present());
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    showLoaderSave() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-
     /**
      * The view loaded, let's query our items for the list
      */
     ionViewDidEnter() {
-        this.showLoader();
         let result = null;
         let container = this.params.getParams();
         if (container) {
@@ -112,10 +61,10 @@ export class AddressesPage implements OnInit {
                 this.isSelect = true;
             }
         }
-        this.showLoader();
+        this.api.loader();
         this.currentItems = [];
         this.addresses.getAddresses(result).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after get addresses");
             let results = data.addresses;
             for (let one in results) {
@@ -124,13 +73,9 @@ export class AddressesPage implements OnInit {
             }
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.addressErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ADDRESS_FIELDS.ERROR_GET');
             this.api.handleError(err);
         });
     }
@@ -181,20 +126,16 @@ export class AddressesPage implements OnInit {
     deleteAddress(item) {
 
         this.addresses.deleteAddress(item.id).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (resp.status == "success") {
                 this.currentItems.splice(this.currentItems.indexOf(item), 1);
             }
 
             //this.navCtrl.push(MainPage);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.addressErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ADDRESS_FIELDS.ERROR_SAVE');
             this.api.handleError(err);
         });
     }

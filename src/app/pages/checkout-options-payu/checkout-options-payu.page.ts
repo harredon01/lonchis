@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, AlertController, LoadingController, IonContent} from '@ionic/angular';
+import {NavController, ModalController, AlertController, IonContent} from '@ionic/angular';
 import {Item} from '../../models/item';
 import {Payment} from '../../models/payment';
 import {ParamsService} from '../../services/params/params.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {OrderService} from '../../services/order/order.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {UserService} from '../../services/user/user.service';
@@ -35,8 +33,6 @@ export class CheckoutOptionsPayuPage implements OnInit {
     payers: any[] = [];
     // Our translated text strings
     private cartErrorString: string;
-    private couponErrorString: string;
-    private couponErrorString2: string;
     public totalItems: any;
     public delivery: any;
     public delivery2: any;
@@ -46,18 +42,6 @@ export class CheckoutOptionsPayuPage implements OnInit {
     split: any;
     recurring: any;
 
-    private prepareOrderErrorString: string;
-    private prepareOrderStartingString: string;
-    private prepareOrderCreateString: string;
-    private cardErrorString: string;
-    private banksErrorString: string;
-    private couponSuccessString: string;
-    private loginErrorString: string;
-    private cartUpdate: string;
-    private requiresDeliveryString: string;
-    private requiresShippingString: string;
-    private requiresItemString: string;
-    loading: any;
 
     constructor(public navCtrl: NavController,
         public cartProvider: CartService,
@@ -67,13 +51,9 @@ export class CheckoutOptionsPayuPage implements OnInit {
         public user: UserService,
         public orderProvider: OrderService,
         public modalCtrl: ModalController,
-        public toastCtrl: ToastController,
         public billing: BillingService,
         public params: ParamsService,
-        public alertCtrl: AlertController,
-        public translateService: TranslateService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public alertCtrl: AlertController) {
         this.coupon = "";
         this.showPayment = false;
         this.payment= new Payment({});
@@ -81,46 +61,6 @@ export class CheckoutOptionsPayuPage implements OnInit {
         this.requiresDelivery = false;
         console.log("User");
         console.log(JSON.stringify(this.userData._user));
-        this.translateService.get('CHECKOUT_CARD.PAY_CC_ERROR').subscribe((value) => {
-            this.cardErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.COUPON_ERROR').subscribe((value) => {
-            this.couponErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.COUPON_UNUSABLE').subscribe((value) => {
-            this.couponErrorString2 = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.REQUIRES_DELIVERY').subscribe((value) => {
-            this.requiresDeliveryString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.REQUIRES_SHIPPING').subscribe((value) => {
-            this.requiresShippingString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.REQUIRES_ITEM').subscribe((value) => {
-            this.requiresItemString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PAY_IN_BANK_ERROR').subscribe((value) => {
-            this.banksErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PREPARE_ORDER_CREATE').subscribe((value) => {
-            this.prepareOrderCreateString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PREPARE_ORDER_ERROR').subscribe((value) => {
-            this.prepareOrderErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PREPARE_ORDER_STARTING').subscribe((value) => {
-            this.prepareOrderStartingString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.COUPON_SUCCESS').subscribe((value) => {
-            this.couponSuccessString = value;
-        });
-        this.translateService.get('USER.GET_USER_ERROR').subscribe((value) => {
-            this.loginErrorString = value;
-        });
-        this.translateService.get('CART.ITEM_UPDATED').subscribe((value) => {
-            this.cartUpdate = value;
-        })
-
 
     }
 
@@ -151,11 +91,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
             }
 
         }, (err) => {
-            let toast = this.toastCtrl.create({
-                message: this.loginErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('USER.GET_USER_ERROR');
             this.api.handleError(err);
         });
         this.deliveryRule = endDate.toISOString();
@@ -188,23 +124,9 @@ export class CheckoutOptionsPayuPage implements OnInit {
             this.navCtrl.navigateForward(nextPage);
         }
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
 
     quickPay() {
-        this.showLoader();
+        this.api.loader('CHECKOUT_PREPARE.PREPARE_ORDER_STARTING');
 
         let container = {
             quick: true,
@@ -216,13 +138,9 @@ export class CheckoutOptionsPayuPage implements OnInit {
             let transaction = data.response.transactionResponse;
             this.transactionResponse(transaction, null);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cardErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_CARD.PAY_CC_ERROR');
             this.api.handleError(err);
         });
     }
@@ -234,7 +152,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
         this.navCtrl.navigateForward('tabs/settings/addresses/');
     }
     payInBank() {
-        this.showLoader();
+        this.api.loader();
         let payers = [];
         let payersContainer = this.orderData.payers;
         for (let item in payersContainer) {
@@ -264,7 +182,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
         };
         console.log("before payCreditCard token", container);
         this.billing.payInBank(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 console.log("after payInBank");
                 this.orderData.clearOrder();
@@ -275,21 +193,13 @@ export class CheckoutOptionsPayuPage implements OnInit {
                     this.navCtrl.navigateForward('tabs/settings/payments/' + data.payment.id);
                 } else {
                 // Unable to pay in bank
-                let toast = this.toastCtrl.create({
-                    message: this.banksErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('CHECKOUT_PREPARE.PAY_IN_BANK_ERROR');
             }
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cardErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_CARD.PAY_CC_ERROR');
             this.api.handleError(err);
         });
     }
@@ -297,7 +207,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
      * Navigate to the detail page for this item.
      */
     transactionResponse(transaction, paid) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         console.log("after payCreditCard");
         let total = null;
         if(this.orderData.currentOrder){
@@ -323,38 +233,6 @@ export class CheckoutOptionsPayuPage implements OnInit {
         this.navCtrl.navigateForward('tabs/payu/complete');
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.prepareOrderStartingString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.prepareOrderStartingString);
-        }
-    }
-    showLoaderEmpty() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    showLoader2() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.prepareOrderCreateString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.prepareOrderCreateString);
-        }
-    }
 
     ngOnInit() {
     }

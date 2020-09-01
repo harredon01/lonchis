@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ItemsService} from '../../services/items/items.service';
 import {TranslateService} from '@ngx-translate/core';
-import {NavController, LoadingController, ToastController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController} from '@ionic/angular';
 import {Item} from '../../models/item';
 import {Order} from '../../models/order';
 import {ActivatedRoute} from '@angular/router';
@@ -18,7 +17,6 @@ export class ItemsPage implements OnInit {
     private page: any = 0;
     private merchant: any;
     private urlSearch: string = "";
-    private fullfillError: string = "";
     public status: any;
     public queries: any[];
     private loadMore: boolean = false;
@@ -26,11 +24,8 @@ export class ItemsPage implements OnInit {
         public params: ParamsService,
         public activatedRoute: ActivatedRoute,
         public api: ApiService,
-        public toastCtrl: ToastController,
         public translateService: TranslateService,
-        public navCtrl: NavController,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog
+        public navCtrl: NavController
     ) {
         this.queries = [];
         let vm = this;
@@ -41,9 +36,6 @@ export class ItemsPage implements OnInit {
         this.translateService.get('ITEMS.UNFULFILLED').subscribe(function (value) {
             let container = {"name": value, "value": "unfulfilled"};
             vm.queries.push(container);
-        });
-        this.translateService.get('ITEMS.ERROR_FULLFILL').subscribe(function (value) {
-            this.fullfillError = value;
         });
 
         let container = this.params.getParams();
@@ -74,7 +66,7 @@ export class ItemsPage implements OnInit {
     }
 
     getItems() {
-        this.showLoader();
+        this.api.loader();
         this.page++;
         let where = "merchant_id=" + this.merchant + "&fulfillment=" + this.status + "&page=" + this.page + "&paid_status=paid&includes=order.orderAddresses&order_by=id,desc";
         this.itemsServ.getItems(where).subscribe((data: any) => {
@@ -102,37 +94,12 @@ export class ItemsPage implements OnInit {
                     }
                 }
             }
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error getBookings");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
     doInfinite(infiniteScroll) {
@@ -161,7 +128,7 @@ export class ItemsPage implements OnInit {
             "items": order.items
         };
         this.itemsServ.updateItemStatus(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after get Deliveries");
             let results = data.data;
             for (let one in results) {
@@ -169,13 +136,9 @@ export class ItemsPage implements OnInit {
             }
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.fullfillError,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ITEMS.ERROR_FULLFILL');
             this.api.handleError(err);
         });
     }

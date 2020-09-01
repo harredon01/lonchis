@@ -1,9 +1,8 @@
 import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, NavParams, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, NavParams} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {AuthService} from '../../services/auth/auth.service';
+import {ApiService} from '../../services/api/api.service';
 @Component({
     selector: 'app-forgot-pass',
     templateUrl: './forgot-pass.page.html',
@@ -13,33 +12,21 @@ export class ForgotPassPage implements OnInit {
 
     isReadyToSave: boolean;
     item: any;
-    forgotErrorString: any;
-    loading: any;
     submitAttempt: boolean;
     submitAttempt2: boolean;
     passwordError: boolean = false;
     submitEmail: boolean = true;
     form: FormGroup;
     form2: FormGroup;
-    private passwordErrorStringSave: string;
 
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
         formBuilder: FormBuilder,
         private cdr: ChangeDetectorRef,
         private auth: AuthService,
-        public toastCtrl: ToastController,
-        public loadingCtrl: LoadingController,
-        public translateService: TranslateService,
-        public navParams: NavParams,
-        private spinnerDialog: SpinnerDialog) {
+        public api: ApiService,
+        public navParams: NavParams) {
         this.submitAttempt = false;
-        this.translateService.get('FORGOT_PASS.ERROR_SAVE').subscribe((value) => {
-            this.passwordErrorStringSave = value;
-        });
-        this.translateService.get('LOGIN.FORGOT_ERROR').subscribe((value) => {
-            this.forgotErrorString = value;
-        });
         this.form = formBuilder.group({
             email: ['', Validators.compose([Validators.maxLength(100), Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-.]*\.[a-zA-Z]{2,}'), Validators.required])],
             token: ['', Validators.required],
@@ -59,20 +46,6 @@ export class ForgotPassPage implements OnInit {
     ionViewDidLoad() {
 
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     /**
            * Send a POST request to our signup endpoint with the data
            * the user entered on the form.
@@ -85,9 +58,9 @@ export class ForgotPassPage implements OnInit {
         return new Promise((resolve, reject) => {
             console.log("Save Address", passwordData);
             if (passwordData) {
-                this.showLoader();
+                this.api.loader();
                 this.auth.updateForgotPassword(passwordData).subscribe((resp: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("Save Address result", resp);
                     if (resp.status == "success") {
                         resolve(resp.access_token);
@@ -95,7 +68,7 @@ export class ForgotPassPage implements OnInit {
                         resolve(null);
                     }
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     reject(err);
                 });
             } else {
@@ -133,19 +106,11 @@ export class ForgotPassPage implements OnInit {
                 this.modalCtrl.dismiss(value);
             } else {
                 // Unable to log in
-                this.toastCtrl.create({
-                    message: this.passwordErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('FORGOT_PASS.ERROR_SAVE');
             }
         }).catch((error) => {
             console.log('Error saveAddress', error);
-            this.toastCtrl.create({
-                message: this.passwordErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('FORGOT_PASS.ERROR_SAVE');
         });;
 
     }
@@ -159,31 +124,13 @@ export class ForgotPassPage implements OnInit {
                 this.submitEmail = false;
                 this.form.patchValue({email: container.email});
             } else {
-                this.toastCtrl.create({
-                    message: this.forgotErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('LOGIN.FORGOT_ERROR');
             }
             console.log("requestForgotPassword result", resp);
         }, (err) => {
             console.log("requestForgotPassword err", err);
-            this.toastCtrl.create({
-                message: this.forgotErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('LOGIN.FORGOT_ERROR');
         });
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
     ngOnInit() {

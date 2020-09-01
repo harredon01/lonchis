@@ -1,8 +1,7 @@
 import {Component, OnInit, ChangeDetectorRef, ViewChild} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, LoadingController, IonSlides} from '@ionic/angular';
+import {NavController, ModalController, IonSlides} from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {ApiService} from '../../services/api/api.service';
 import {ImagesService} from '../../services/images/images.service';
 import {ParamsService} from '../../services/params/params.service';
 import {LocationsService} from '../../services/locations/locations.service';
@@ -22,7 +21,6 @@ export class CreateMerchantPage implements OnInit {
     MerchantLoaded: boolean = false;
     item: any;
     merchant: Merchant;
-    loading: any;
     type: any;
     galPage: any = 1;
     editYears_experience: boolean = false;
@@ -40,26 +38,19 @@ export class CreateMerchantPage implements OnInit {
     cities: any[] = [];
     submitAttempt: boolean;
     form: FormGroup;
-    private merchantErrorStringSave: string;
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
         formBuilder: FormBuilder,
+        public api: ApiService,
         public imagesServ: ImagesService,
-        public toastCtrl: ToastController,
         public mapData: MapDataService,
         private cdr: ChangeDetectorRef,
         public merchants: MerchantsService,
         public locations: LocationsService,
         public params: ParamsService,
-        public loadingCtrl: LoadingController,
-        public translateService: TranslateService,
-        public userData: UserDataService,
-        private spinnerDialog: SpinnerDialog) {
+        public userData: UserDataService) {
         this.merchant = new Merchant({files: [], availabilities: [], attributes: {}});
         this.submitAttempt = false;
-        this.translateService.get('MERCHANT_CREATE.ERROR_SAVE').subscribe((value) => {
-            this.merchantErrorStringSave = value;
-        });
         this.getCountries();
         this.form = formBuilder.group({
             id: ['', Validators.required],
@@ -174,7 +165,7 @@ export class CreateMerchantPage implements OnInit {
         this.navCtrl.navigateForward("tabs/settings/merchants/" + this.merchant.id + "/products");
     }
     setAvatar() {
-        this.showLoader();
+        this.api.loader();
         let container = {'type': "Merchant_avatar", 'intended_id': this.merchant.id};
         let options = {
             width: 800,
@@ -188,7 +179,7 @@ export class CreateMerchantPage implements OnInit {
             if (results.length > 0) {
                 this.merchant.icon = results[0];
             }
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
     resetEdits(value: boolean) {
@@ -341,20 +332,6 @@ export class CreateMerchantPage implements OnInit {
         this.selectCountry(editingMerchant.region_id, editingMerchant.city_id);
     }
 
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     getCountries() {
         this.locations.getCountries().subscribe((resp: any) => {
             this.countries = resp.data;
@@ -375,10 +352,10 @@ export class CreateMerchantPage implements OnInit {
         if (!city) {
             return;
         }
-        this.showLoader();
+        this.api.loader();
         console.log("selectCountry", this.form.get('country_id').value);
         this.locations.getRegionsCountry(this.form.get('country_id').value).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.regions = resp.data;
             if (region) {
                 this.form.patchValue({region_id: region});
@@ -389,7 +366,7 @@ export class CreateMerchantPage implements OnInit {
             console.log("getRegionsCountry result", resp);
             this.cdr.detectChanges();
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
 
@@ -397,9 +374,9 @@ export class CreateMerchantPage implements OnInit {
         if (!this.MerchantLoaded) {
             return;
         }
-        this.showLoader();
+        this.api.loader();
         this.locations.getCitiesRegion(this.form.get('region_id').value).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("getCitiesRegion result", resp);
             this.cities = resp.data;
             if (city) {
@@ -407,7 +384,7 @@ export class CreateMerchantPage implements OnInit {
             }
             this.cdr.detectChanges();
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
     /**
@@ -418,9 +395,9 @@ export class CreateMerchantPage implements OnInit {
         this.submitAttempt = true;
         console.log("saveMerchant", merchant);
         if (!this.form.valid) {return;}
-        this.showLoader();
+        this.api.loader();
         this.merchants.saveMerchant(merchant).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("Save Address result", resp);
             if (resp.status == "success") {
                 let data = resp.object;
@@ -435,26 +412,18 @@ export class CreateMerchantPage implements OnInit {
                 //                this.params.setParams(container);
                 //                this.navCtrl.back();
             } else {
-                this.toastCtrl.create({
-                    message: this.merchantErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('MERCHANT_CREATE.ERROR_SAVE');
             }
         }, (err) => {
-            this.dismissLoader();
-            this.toastCtrl.create({
-                message: this.merchantErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.dismissLoader();
+            this.api.toast('MERCHANT_CREATE.ERROR_SAVE');
         });
     }
 
     getMerchant(merchant) {
-        this.showLoader();
+        this.api.loader();
         this.merchants.getMerchant(merchant).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("getMerchant result", resp);
             if (resp.status == "success") {
                 let container = resp.merchant;
@@ -464,19 +433,11 @@ export class CreateMerchantPage implements OnInit {
                 this.merchant = new Merchant(container);
                 this.loadMerchant(container);
             } else {
-                this.toastCtrl.create({
-                    message: this.merchantErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('INPUTS.ERROR_GET');
             }
         }, (err) => {
-            this.dismissLoader();
-            this.toastCtrl.create({
-                message: this.merchantErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.dismissLoader();
+            this.api.toast('INPUTS.ERROR_GET');
         });
     }
 
@@ -519,16 +480,6 @@ export class CreateMerchantPage implements OnInit {
         this.resetEdits(false);
         if (!this.form.valid) {this.resetEditsForm(); return;}
         this.saveMerchant(this.form.value);
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
     ngOnInit() {

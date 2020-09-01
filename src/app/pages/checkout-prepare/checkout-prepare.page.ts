@@ -1,10 +1,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, AlertController, LoadingController, IonContent} from '@ionic/angular';
+import {NavController, ModalController, AlertController, IonContent} from '@ionic/angular';
 import {Item} from '../../models/item';
 import {Payment} from '../../models/payment';
 import {ParamsService} from '../../services/params/params.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {OrderService} from '../../services/order/order.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {UserService} from '../../services/user/user.service';
@@ -38,9 +36,6 @@ export class CheckoutPreparePage implements OnInit {
     coupon: any;
     payers: any[] = [];
     // Our translated text strings
-    private cartErrorString: string;
-    private couponErrorString: string;
-    private couponErrorString2: string;
     public totalItems: any;
     public delivery: any;
     public delivery2: any;
@@ -50,19 +45,6 @@ export class CheckoutPreparePage implements OnInit {
     split: any;
     recurring: any;
 
-    private prepareOrderErrorString: string;
-    private prepareOrderStartingString: string;
-    private prepareOrderCreateString: string;
-    private cardErrorString: string;
-    private banksErrorString: string;
-    private couponSuccessString: string;
-    private loginErrorString: string;
-    private cartUpdate: string;
-    private requiresDeliveryString: string;
-    private requiresShippingString: string;
-    private requiresItemString: string;
-    loading: any;
-
     constructor(public navCtrl: NavController,
         public cartProvider: CartService,
         public orderData: OrderDataService,
@@ -71,60 +53,15 @@ export class CheckoutPreparePage implements OnInit {
         public user: UserService,
         public orderProvider: OrderService,
         public modalCtrl: ModalController,
-        public toastCtrl: ToastController,
         public billing: BillingService,
         public params: ParamsService,
-        public alertCtrl: AlertController,
-        public translateService: TranslateService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public alertCtrl: AlertController) {
         this.coupon = "";
         this.showPayment = false;
         this.hasSavedCard = false;
         this.requiresDelivery = false;
         console.log("User");
         console.log(JSON.stringify(this.userData._user));
-        this.translateService.get('CHECKOUT_CARD.PAY_CC_ERROR').subscribe((value) => {
-            this.cardErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.COUPON_ERROR').subscribe((value) => {
-            this.couponErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.COUPON_UNUSABLE').subscribe((value) => {
-            this.couponErrorString2 = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.REQUIRES_DELIVERY').subscribe((value) => {
-            this.requiresDeliveryString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.REQUIRES_SHIPPING').subscribe((value) => {
-            this.requiresShippingString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.REQUIRES_ITEM').subscribe((value) => {
-            this.requiresItemString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PAY_IN_BANK_ERROR').subscribe((value) => {
-            this.banksErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PREPARE_ORDER_CREATE').subscribe((value) => {
-            this.prepareOrderCreateString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PREPARE_ORDER_ERROR').subscribe((value) => {
-            this.prepareOrderErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.PREPARE_ORDER_STARTING').subscribe((value) => {
-            this.prepareOrderStartingString = value;
-        });
-        this.translateService.get('CHECKOUT_PREPARE.COUPON_SUCCESS').subscribe((value) => {
-            this.couponSuccessString = value;
-        });
-        this.translateService.get('USER.GET_USER_ERROR').subscribe((value) => {
-            this.loginErrorString = value;
-        });
-        this.translateService.get('CART.ITEM_UPDATED').subscribe((value) => {
-            this.cartUpdate = value;
-        })
-
-
     }
     getOrder() {
         this.orderProvider.getOrder().subscribe((data: any) => {
@@ -184,24 +121,10 @@ export class CheckoutPreparePage implements OnInit {
         }
     }
 
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     addCoupon() {
         console.log("add coupon", this.coupon);
         if (this.coupon.length > 0) {
-            this.showLoaderEmpty();
+            this.api.loader();
             this.orderProvider.setCoupon(this.coupon).subscribe((resp: any) => {
                 if (resp) {
                     let message = "";
@@ -209,27 +132,18 @@ export class CheckoutPreparePage implements OnInit {
                         this.orderData.cartData = resp.cart;
                         this.updateCartTotals();
                         this.coupon = "";
-                        message = this.couponSuccessString;
+                        this.api.toast('CHECKOUT_PREPARE.COUPON_SUCCESS');
                     } else {
-                        message = this.couponErrorString2;
+                        this.api.toast('CHECKOUT_PREPARE.COUPON_UNUSABLE');
                         // Unable to log in
 
                     }
-                    this.dismissLoader();
-                    let toast = this.toastCtrl.create({
-                        message: message,
-                        duration: 3000,
-                        position: 'top'
-                    }).then(toast => toast.present());
+                    this.api.dismissLoader();
                 }
             }, (err) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 // Unable to log in
-                let toast = this.toastCtrl.create({
-                    message: this.couponErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('CHECKOUT_PREPARE.COUPON_ERROR');
                 this.api.handleError(err);
             });
         }
@@ -258,7 +172,7 @@ export class CheckoutPreparePage implements OnInit {
      * Navigate to the detail page for this item.
      */
     transactionResponse(transaction, paid) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         console.log("after payCreditCard");
         let total = this.orderData.currentOrder.total;
         this.orderData.clearOrder();
@@ -281,7 +195,7 @@ export class CheckoutPreparePage implements OnInit {
         this.navCtrl.navigateForward('tabs/payu/complete');
     }
     prepareOrder() {
-        this.showLoader();
+        this.api.loader('CHECKOUT_PREPARE.PREPARE_ORDER_STARTING');
         this.showPayment = false;
         this.shippingError = false;
         let payers = [];
@@ -309,7 +223,7 @@ export class CheckoutPreparePage implements OnInit {
         this.orderProvider.prepareOrder(container, "Food").subscribe((resp: any) => {
             if (resp) {
                 if (resp.status == "success") {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("orderProvider", resp);
                     this.orderData.payment = resp.payment;
                     this.payment = resp.payment;
@@ -318,7 +232,7 @@ export class CheckoutPreparePage implements OnInit {
                         let container = {
                             "payment_id": this.payment.id
                         }
-                        this.showLoader();
+                        this.api.loader();
                         this.billing.completePaidOrder(container).subscribe((resp: any) => {
                             if (resp.status == "success") {
                                 this.transactionResponse(null, true);
@@ -343,21 +257,17 @@ export class CheckoutPreparePage implements OnInit {
 
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("getCartError", err);
             this.orderData.cartData = null;
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.prepareOrderErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_PREPARE.PREPARE_ORDER_ERROR');
             this.api.handleError(err);
         });
     }
     setDiscounts() {
-        this.showLoader2()
+        this.api.loader('CHECKOUT_PREPARE.PREPARE_ORDER_CREATE');
         this.orderProvider.setDiscounts(this.orderData.currentOrder.id, "Food").subscribe((resp: any) => {
 
             if (resp) {
@@ -368,7 +278,7 @@ export class CheckoutPreparePage implements OnInit {
                 this.checkOrder();
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("getCartError", err);
             this.orderData.cartData = null;
             this.api.handleError(err);
@@ -460,11 +370,7 @@ export class CheckoutPreparePage implements OnInit {
                 //this.navCtrl.push(MainPage);
                 // Unable to log in
                 this.api.handleError(err);
-                let toast = this.toastCtrl.create({
-                    message: this.cartErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('CHECKOUT_PREPARE.PREPARE_ORDER_ERROR');
                 resolve(null);
             });
         });
@@ -473,23 +379,19 @@ export class CheckoutPreparePage implements OnInit {
     setPlatformShipping(platform) {
         return new Promise((resolve, reject) => {
             console.log("Setting shipping condition", platform);
-            this.showLoader();
+            this.api.loader();
             this.orderProvider.setPlatformShippingCondition(this.orderData.currentOrder.id, platform).subscribe((resp: any) => {
                 console.log(JSON.stringify(resp));
                 this.orderData.cartData = resp.cart;
                 this.selectShipping = false;
                 this.updateCartTotals();
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.setDiscounts();
             }, (err) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 //this.navCtrl.push(MainPage);
                 // Unable to log in
-                let toast = this.toastCtrl.create({
-                    message: this.cartErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('CHECKOUT_PREPARE.PREPARE_ORDER_ERROR');
                 this.api.handleError(err);
                 resolve(null);
             });
@@ -505,18 +407,14 @@ export class CheckoutPreparePage implements OnInit {
                     this.shipping.push(container);
                 }
                 this.expectedProviders--;
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.selectShipping = true;
                 console.log(JSON.stringify(resp));
             }, (err) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 //this.navCtrl.push(MainPage);
                 // Unable to log in
-                let toast = this.toastCtrl.create({
-                    message: this.cartErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('CHECKOUT_PREPARE.PREPARE_ORDER_ERROR');
                 this.api.handleError(err);
                 resolve(null);
             });
@@ -526,20 +424,20 @@ export class CheckoutPreparePage implements OnInit {
         let message = "";
         let showalert = true;
         if (resp.type == "credits") {
-            this.dismissLoader();
+            this.api.dismissLoader();
             let missing = parseInt(resp.required_credits);
             console.log("Required credits", missing);
             console.log("creditItem", resp.creditItem);
-            message = this.requiresItemString;
+            this.api.toast('CHECKOUT_PREPARE.REQUIRES_ITEM');
             console.log("creditItemMerchant", resp.creditItemMerchant);
             this.addCartItem(resp.creditItem.id, missing, resp.creditItemMerchant);
         } else if (resp.type == "buyers") {
-            this.dismissLoader();
+            this.api.dismissLoader();
             showalert = false;
             let missing = parseInt(resp.required_buyers);
             this.addPayers(missing);
         } else if (resp.type == "shipping") {
-            message = this.requiresShippingString;
+            this.api.toast('CHECKOUT_PREPARE.REQUIRES_SHIPPING');
             if (this.currentItems.length == 0) {
                 this.getCart();
             }
@@ -551,8 +449,8 @@ export class CheckoutPreparePage implements OnInit {
             }
 
         } else if (resp.type == "delivery") {
-            message = this.requiresDeliveryString;
-            this.dismissLoader();
+            this.api.toast('CHECKOUT_PREPARE.REQUIRES_DELIVERY');
+            this.api.dismissLoader();
             let endDate = new Date();
             if (this.currentItems.length == 0) {
                 this.getCart();
@@ -561,14 +459,6 @@ export class CheckoutPreparePage implements OnInit {
             //this.delivery = endDate.toISOString();
             console.log("delivery", this.delivery);
             this.requiresDelivery = true;
-        }
-        if (showalert) {
-            let toast = this.toastCtrl.create({
-                message: message,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
-
         }
 
     }
@@ -589,13 +479,13 @@ export class CheckoutPreparePage implements OnInit {
                 if (resp.status == "success") {
                     this.getCart();
 
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                 } else {
                     this.handleCheckError(resp);
                 }
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("getCartError", err);
             this.orderData.cartData = null;
             this.api.handleError(err);
@@ -614,39 +504,6 @@ export class CheckoutPreparePage implements OnInit {
             this.orderData.cartData = null;
             this.api.handleError(err);
         });
-    }
-
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.prepareOrderStartingString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.prepareOrderStartingString);
-        }
-    }
-    showLoaderEmpty() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    showLoader2() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.prepareOrderCreateString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.prepareOrderCreateString);
-        }
     }
     updateCartTotals() {
         let cartContainer = this.orderData.cartData;
@@ -706,39 +563,24 @@ export class CheckoutPreparePage implements OnInit {
         item.quantity++;
         this.addCartItem2(item);
     }
-    cartUpdateMessage() {
-        let toast = this.toastCtrl.create({
-            message: this.cartUpdate,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
-    }
     handleCartSuccess(resp: any, item: any) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         this.getCart();
-        this.cartUpdateMessage();
+        this.api.toast('CART.ITEM_UPDATED');
     }
     handleCartError(resp: any, item) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         console.log("Error", resp);
-        let toast = this.toastCtrl.create({
-            message: resp.message,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
+        this.api.toast(resp.message);
     }
     handleServerCartError() {
-        this.dismissLoader();
+        this.api.dismissLoader();
         //this.navCtrl.push(MainPage);
         // Unable to log in
-        let toast = this.toastCtrl.create({
-            message: this.cartErrorString,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
+        this.api.toast('CHECKOUT_PREPARE.PREPARE_ORDER_ERROR');
     }
     addCartItem2(item: any) {
-        this.showLoader();
+        this.api.loader('CHECKOUT_PREPARE.PREPARE_ORDER_STARTING');
         return new Promise((resolve, reject) => {
             let container = null;
             container = {
@@ -791,7 +633,7 @@ export class CheckoutPreparePage implements OnInit {
      * Delete an item from the list of cart.
      */
     deleteItem(item) {
-        this.showLoader();
+        this.api.loader();
         item.quantity = 0;
         this.cartProvider.updateCartItem(item).subscribe((resp: any) => {
             if (resp.status == "success") {

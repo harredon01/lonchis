@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, LoadingController} from '@ionic/angular';
+import {NavController} from '@ionic/angular';
 import {Address} from '../../models/address';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {ParamsService} from '../../services/params/params.service';
 import {AddressesService} from '../../services/addresses/addresses.service';
 import {MapDataService} from '../../services/map-data/map-data.service';
@@ -19,52 +17,31 @@ import {ActivatedRoute} from '@angular/router';
 export class CheckoutShippingPage implements OnInit {
 
     merchant: any;
-    loading: any;
     showAddressCard: boolean;
     selectedAddress: Address;
     currentItems: Address[];
 
-    private addressErrorString: string;
-    private coverageAddressErrorString: string;
-    private addressGetStartString: string;
-    private addressSaveStartString: string;
 
     constructor(public navCtrl: NavController,
         public user: UserService,
         public mapData: MapDataService,
-        public toastCtrl: ToastController,
-        public translateService: TranslateService,
         public addresses: AddressesService,
         public order: OrderService,
         public api: ApiService,
         public orderData: OrderDataService,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog,
         public params: ParamsService,
         private activatedRoute: ActivatedRoute) {
         this.merchant = this.activatedRoute.snapshot.paramMap.get('merchant_id');
         this.showAddressCard = false;
         this.currentItems = [];
-        this.translateService.get('ADDRESS_FIELDS.ERROR_GET').subscribe((value) => {
-            this.addressErrorString = value;
-        });
-        this.translateService.get('ADDRESS_FIELDS.ERROR_COVERAGE').subscribe((value) => {
-            this.coverageAddressErrorString = value;
-        });
-        this.translateService.get('ADDRESS_FIELDS.STARTING_GET').subscribe((value) => {
-            this.addressGetStartString = value;
-        });
-        this.translateService.get('ADDRESS_FIELDS.STARTING_SAVE').subscribe((value) => {
-            this.addressSaveStartString = value;
-        });
     }
 
     saveShipping(item: Address) {
         console.log("SaveShipping", item);
         let container = {"address_id": item.id, "merchant_id": this.merchant};
-        this.showLoaderSave();
+        this.api.loader('ADDRESS_FIELDS.STARTING_GET');
         this.order.setShippingAddress(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after get addresses");
             if (data.status == "success") {
                 this.orderData.shippingAddress = item;
@@ -73,16 +50,12 @@ export class CheckoutShippingPage implements OnInit {
                 this.orderData.currentOrder = data.order;
                 this.prepareOrder();
             } else {
-                let toast = this.toastCtrl.create({
-                    message: this.coverageAddressErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('ADDRESS_FIELDS.ERROR_COVERAGE');
             }
 
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
             // Unable to log in
 
@@ -100,43 +73,7 @@ export class CheckoutShippingPage implements OnInit {
         //        this.orderData.shippingAddress = item;
         //this.navCtrl.push("CheckoutBuyerPage");
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.addressGetStartString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.addressGetStartString);
-        }
-    }
-    showLoaderSave() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.addressSaveStartString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.addressSaveStartString);
-        }
-    }
     /**
        * The view loaded, let's query our items for the list
        */
@@ -178,9 +115,9 @@ export class CheckoutShippingPage implements OnInit {
     getAddresses() {
         this.currentItems = [];
         let result = "type=shipping";
-        this.showLoader();
+        this.api.loader('ADDRESS_FIELDS.STARTING_GET');
         this.addresses.getAddresses(result).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after get addresses");
             let results = data.addresses;
             for (let one in results) {
@@ -190,13 +127,9 @@ export class CheckoutShippingPage implements OnInit {
             //this.createAddress();
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.addressErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ADDRESS_FIELDS.ERROR_GET');
             this.api.handleError(err);
         });
     }

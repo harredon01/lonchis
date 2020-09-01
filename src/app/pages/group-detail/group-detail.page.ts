@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {GroupsService} from '../../services/groups/groups.service';
-import {NavController, LoadingController, ModalController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController} from '@ionic/angular';
 import {Group} from '../../models/group';
 import {ApiService} from '../../services/api/api.service';
 import {ActivatedRoute} from '@angular/router';
@@ -19,9 +18,7 @@ export class GroupDetailPage implements OnInit {
         public params: ParamsService,
         public navCtrl: NavController,
         public modalCtrl: ModalController,
-        public api: ApiService,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog
+        public api: ApiService
     ) {}
 
     ngOnInit() {
@@ -33,13 +30,13 @@ export class GroupDetailPage implements OnInit {
     }
 
     leaveGroup() {
-        this.showLoader();
+        this.api.loader();
         this.groups.leaveGroup(this.mainGroup.id).subscribe((data: any) => {
             this.navCtrl.back();
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error leaveGroup");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -50,39 +47,15 @@ export class GroupDetailPage implements OnInit {
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
         if (data) {
-            this.showLoader();
+            this.api.loader();
             this.groups.inviteUsers(data).subscribe((data: any) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.navCtrl.back();
             }, (err) => {
                 console.log("Error leaveGroup");
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.api.handleError(err);
             });
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
         }
     }
 }

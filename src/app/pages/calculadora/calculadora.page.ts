@@ -1,10 +1,9 @@
 import {Component, OnInit, ViewChild, ElementRef} from "@angular/core";
 import {Chart} from "chart.js";
-import {TranslateService} from '@ngx-translate/core';
 import {ParamsService} from '../../services/params/params.service';
-import {ModalController, NavController, ToastController, AlertController, LoadingController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {ModalController, NavController, AlertController} from '@ionic/angular';
 import {Delivery} from '../../models/delivery';
+import {ApiService} from '../../services/api/api.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {FoodService} from '../../services/food/food.service';
 import {DynamicRouterService} from '../../services/dynamic-router/dynamic-router.service';
@@ -41,29 +40,17 @@ export class CalculadoraPage implements OnInit {
     ideals: any[] = [];
     currentItems: any[] = [];
     totalLabels: any[] = [];
-    private deliveriesErrorString: string;
-    private deliveriesStartingGetString: string;
 
     loadMore: boolean;
-    loading: any;
 
 
     constructor(public navCtrl: NavController, public deliveries: FoodService,
-        public toastCtrl: ToastController,
         public modalCtrl: ModalController,
         public userData: UserDataService,
+        public api: ApiService,
         public alertCtrl: AlertController,
         private params: ParamsService,
-        private drouter:DynamicRouterService,
-        public translateService: TranslateService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
-        this.translateService.get('DELIVERIES.ERROR_GET').subscribe((value) => {
-            this.deliveriesErrorString = value;
-        });
-        this.translateService.get('DELIVERIES.STARTING_GET').subscribe((value) => {
-            this.deliveriesStartingGetString = value;
-        });
+        private drouter:DynamicRouterService) {
         this.currentItems = [];
         this.totalLabels = [];
     }
@@ -83,7 +70,7 @@ export class CalculadoraPage implements OnInit {
         console.log("getItems");
             this.getItems();
         } else {
-            this.showLoader();
+            this.api.loader();
         }
         this.getIndicators();
     }
@@ -183,31 +170,7 @@ export class CalculadoraPage implements OnInit {
         this.getItems();
         
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
     /**
      * Navigate to the detail page for this item.
      */
@@ -221,39 +184,31 @@ export class CalculadoraPage implements OnInit {
         startDate.setDate(startDate.getDate() - 30);
         console.log(startDate);
         let stringStartDate = startDate.getFullYear() + "-" + (startDate.getMonth() + 1) + "-" + startDate.getDate() + " 00:00:00";
-        this.showLoader();
+        this.api.loader();
         let where = `delivery>${stringStartDate}&delivery<${todayString}&order_by=delivery,asc&status=completed&limit=100`;
 
         this.deliveries.getDeliveries(where).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after get Deliveries");
             this.splitResults(data.data);
             //this.buildChart();
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.deliveriesErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('DELIVERIES.ERROR_GET');
         });
     }
     getIndicators() {
         this.deliveries.getIndicators().subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if(data.status == "success"){
                 this.ideals = data.results;
             }
             //this.buildChart();
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.deliveriesErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('DELIVERIES.ERROR_GET');
         });
     }
     splitResults(results: any) {

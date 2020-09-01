@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NavController, ToastController, LoadingController, ModalController, AlertController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {TranslateService} from '@ngx-translate/core';
 import {ApiService} from '../../services/api/api.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
@@ -36,14 +35,11 @@ export class CheckoutBanksPage implements OnInit {
 //            financial_institution_code: ""
 //        };
     option: any;
-    loading: any;
     payerForm: FormGroup;
     submitAttempt: boolean = false;
     v: any;
     currentItems: any[];
 
-    private banksErrorString: string;
-    private bankPaymentErrorString: string;
     private emailPaymentTitle: string;
     private emailPaymentDesc: string;
     private confirmString: string;
@@ -58,11 +54,8 @@ export class CheckoutBanksPage implements OnInit {
         public modalCtrl: ModalController,
         public api: ApiService,
         public alertCtrl: AlertController,
-        public toastCtrl: ToastController,
         public translateService: TranslateService,
-        public formBuilder: FormBuilder,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public formBuilder: FormBuilder) {
         this.payerForm = formBuilder.group({
             financial_institution_code: ['', Validators.required],
             payer_name: ['', Validators.compose([Validators.maxLength(100), Validators.pattern('[a-zA-Z 0-9._%+-]*'), Validators.required])],
@@ -74,12 +67,6 @@ export class CheckoutBanksPage implements OnInit {
         });
         this.currentItems = [];
 
-        this.translateService.get('CHECKOUT_BANKS.BANKS_GET_ERROR').subscribe((value) => {
-            this.banksErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_BANKS.DEBIT_PAY_ERROR').subscribe((value) => {
-            this.bankPaymentErrorString = value;
-        });
         this.translateService.get('INPUTS.ACKNOWLEDGE').subscribe((value) => {
             this.confirmString = value;
         });
@@ -146,25 +133,11 @@ export class CheckoutBanksPage implements OnInit {
             ]
         }).then(toast => toast.present());
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
 
     getBanks() {
-        this.showLoader();
+        this.api.loader();
         this.billing.getBanks().subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after getBanks");
             let results = data.banks;
             for (let one in results) {
@@ -175,40 +148,14 @@ export class CheckoutBanksPage implements OnInit {
             console.log(JSON.stringify(data));
             //this.mockData();
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.banksErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_BANKS.BANKS_GET_ERROR');
             this.api.handleError(err);
         });
     }
 
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.gettingBanks,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.gettingBanks);
-        }
-    }
-    showLoaderPay() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.makingPayment,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.makingPayment);
-        }
-    }
     /**
        * The view loaded, let's query our items for the list
        */
@@ -220,7 +167,7 @@ export class CheckoutBanksPage implements OnInit {
         console.log("payBank valid",this.payerForm.valid);
         if (!this.payerForm.valid) {return;}
         let savedCont = this.payerForm.value
-        this.showLoaderPay();
+        this.api.loader('CHECKOUT_BANKS.MAKING_PAYMENT');
         let container = {
             doc_type: savedCont.doc_type,
             user_type: savedCont.user_type,
@@ -234,7 +181,7 @@ export class CheckoutBanksPage implements OnInit {
             email: true
         };
         this.billing.payDebit(container,"PayU").subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after payDebit");
             console.log(JSON.stringify(data));
             if (data.code == "SUCCESS") {
@@ -246,27 +193,15 @@ export class CheckoutBanksPage implements OnInit {
                         this.navCtrl.navigateRoot("tabs");
                     });
                 } else {
-                    let toast = this.toastCtrl.create({
-                        message: this.bankPaymentErrorString,
-                        duration: 3000,
-                        position: 'top'
-                    }).then(toast => toast.present());
+                    this.api.toast('CHECKOUT_BANKS.DEBIT_PAY_ERROR');
                 }
             } else {
-                let toast = this.toastCtrl.create({
-                    message: this.bankPaymentErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('CHECKOUT_BANKS.DEBIT_PAY_ERROR');
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.bankPaymentErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_BANKS.DEBIT_PAY_ERROR');
             this.api.handleError(err);
         });
     }

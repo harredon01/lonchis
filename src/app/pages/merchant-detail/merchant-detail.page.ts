@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {NavController, ModalController, LoadingController, AlertController, IonSlides} from '@ionic/angular';
+import {NavController, ModalController, AlertController, IonSlides} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {MerchantsService} from '../../services/merchants/merchants.service';
@@ -7,7 +7,6 @@ import {ParamsService} from '../../services/params/params.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {Merchant} from '../../models/merchant';
 import {DynamicRouterService} from '../../services/dynamic-router/dynamic-router.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {CartPage} from '../cart/cart.page';
 import {ApiService} from '../../services/api/api.service';
 import {UserDataService} from '../../services/user-data/user-data.service'
@@ -29,8 +28,6 @@ export class MerchantDetailPage implements OnInit {
     notAvailable: string;
     maxReached: string;
     galPage: any = 1;
-    requiresAuth: string;
-    success: string;
 
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
@@ -41,9 +38,7 @@ export class MerchantDetailPage implements OnInit {
         private drouter: DynamicRouterService,
         public cart: CartService,
         public booking: BookingService,
-        public spinnerDialog: SpinnerDialog,
         public translateService: TranslateService,
-        public loadingCtrl: LoadingController,
         public userData: UserDataService,
         public merchantsServ: MerchantsService,
         public params: ParamsService) {
@@ -57,10 +52,6 @@ export class MerchantDetailPage implements OnInit {
         }
 
         let vm = this
-        this.translateService.get('BOOKING.REQUIRES_AUTH').subscribe(function (value) {
-            console.log("Req", value);
-            vm.requiresAuth = value;
-        });
         this.translateService.get('BOOKING.NOT_AVAILABLE').subscribe(function (value) {
             vm.notAvailable = value;
             console.log("afk", value);
@@ -68,9 +59,6 @@ export class MerchantDetailPage implements OnInit {
         this.translateService.get('BOOKING.MAX_REACHED').subscribe(function (value) {
             vm.maxReached = value;
             console.log("afk", value);
-        });
-        this.translateService.get('BOOKING.SUCCESS').subscribe(function (value) {
-            vm.success = value;
         });
 
         this.merchant = new Merchant({"availabilities": [], "attributes": [], "files": []});
@@ -153,8 +141,8 @@ export class MerchantDetailPage implements OnInit {
         }
         if (document.URL.startsWith('http')) {
             let vm = this;
-            setTimeout(function(){ vm.dismissLoader();console.log("Retrying closing") }, 1000);
-            setTimeout(function(){ vm.dismissLoader();console.log("Retrying closing") }, 2000);
+            setTimeout(function(){ vm.api.dismissLoader();console.log("Retrying closing") }, 1000);
+            setTimeout(function(){ vm.api.dismissLoader();console.log("Retrying closing") }, 2000);
         }
     }
     slidePrev() {
@@ -219,7 +207,7 @@ export class MerchantDetailPage implements OnInit {
         });
     }
     call() {
-        this.showLoader();
+        this.api.loader();
         this.cart.clearCart().subscribe((resp: any) => {
             let attrs = {"virtual_provider": "zoom", "virtual_meeting": true};
             let data = {
@@ -230,7 +218,7 @@ export class MerchantDetailPage implements OnInit {
             };
             if (this.userData._user) {
                 this.booking.immediateBookingObject(data).subscribe((resp: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("addBookingObject", resp);
                     //this.presentAlertConfirm(data);
                     if (resp.status == "success") {
@@ -245,7 +233,7 @@ export class MerchantDetailPage implements OnInit {
                     }
                 }, (err) => {
                     console.log("Error addBookingObject");
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     this.api.handleError(err);
                 });
             } else {
@@ -255,29 +243,6 @@ export class MerchantDetailPage implements OnInit {
             console.log("Error addCustomCartItem");
             this.api.handleError(err);
         });
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
     }
 
     ngOnInit() {

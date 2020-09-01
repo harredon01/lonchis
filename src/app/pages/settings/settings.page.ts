@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {NavController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
 import {UserService} from '../../services/user/user.service';
@@ -13,8 +12,7 @@ export class SettingsPage implements OnInit {
 
   constructor(public navCtrl: NavController,
         public user: UserService,
-        public params: ParamsService,
-        public translate: TranslateService) {
+        public params: ParamsService) {
     }
 ngOnInit() {
   }

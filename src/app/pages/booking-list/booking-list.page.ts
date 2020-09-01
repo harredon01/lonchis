@@ -2,8 +2,7 @@ import {Component, ElementRef, ViewChild, OnInit} from '@angular/core';
 import {IonList} from '@ionic/angular';
 import {TranslateService} from '@ngx-translate/core';
 import {BookingService} from '../../services/booking/booking.service';
-import {NavController, LoadingController, AlertController, ToastController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, AlertController} from '@ionic/angular';
 import {Booking} from '../../models/booking';
 import {ApiService} from '../../services/api/api.service';
 import {ActivatedRoute} from '@angular/router';
@@ -27,7 +26,6 @@ export class BookingListPage implements OnInit {
     public selectedObject: any;
     public typeObj: any;
     public page: any = 0;
-    public updateError: string = "";
     public query: string = "";
     public queryMod: string = "";
     public target: string = "";
@@ -40,12 +38,9 @@ export class BookingListPage implements OnInit {
         public api: ApiService,
         public alertsCtrl: AlertController,
         public orderData: OrderDataService,
-        public toastCtrl: ToastController,
         public cart: CartService,
         public translateService: TranslateService,
-        public navCtrl: NavController,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog
+        public navCtrl: NavController
     ) {
         let paramsObj: any = this.params.getParams();
         this.typeObj = paramsObj.type;
@@ -76,9 +71,6 @@ export class BookingListPage implements OnInit {
         this.translateService.get('BOOKING.ALL').subscribe(function (value) {
             let container = {"name": value, "value": "all"};
             vm.queries.push(container);
-        });
-        this.translateService.get('BOOKING.UPDATE_ERROR').subscribe(function (value) {
-            vm.updateError = value;
         });
         this.queryMod = "all";
     }
@@ -140,7 +132,7 @@ export class BookingListPage implements OnInit {
     }
 
     getBookings() {
-        this.showLoader();
+        this.api.loader();
         this.page++;
         let selectedDate = new Date();
         let strDate = selectedDate.getFullYear() + "-" + (selectedDate.getMonth() + 1) + "-" + selectedDate.getDate();
@@ -169,10 +161,10 @@ export class BookingListPage implements OnInit {
             if (this.queryMod == "all") {
                 this.loadingAll = true;
             }
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error getBookings");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -238,23 +230,19 @@ export class BookingListPage implements OnInit {
     }
 
     changeStatusBooking(item, status) {
-        this.showLoader();
+        this.api.loader();
         let container = {"booking_id": item.id, "status": status};
         this.booking.changeStatusBookingObject(container).subscribe((data: any) => {
             if (data.status == 'success') {
                 item = new Booking(data.booking);
             } else {
-                this.toastCtrl.create({
-                    message: this.updateError,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('BOOKING.UPDATE_ERROR');
             }
 
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error cancelBooking");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -343,35 +331,11 @@ export class BookingListPage implements OnInit {
             }
         }, (err) => {
             console.log("Error cancelBooking");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
     doInfinite(infiniteScroll) {
         console.log('Begin async operation');
         if (this.loadMore) {

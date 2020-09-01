@@ -1,13 +1,12 @@
 import {Component, ChangeDetectorRef, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Router} from '@angular/router';
-import {NavController, ModalController, AlertController, ToastController, MenuController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, AlertController, MenuController} from '@ionic/angular';
 import {FoodService} from '../../services/food/food.service';
 import {CartService} from '../../services/cart/cart.service'
 import {Events} from '../../services/events/events.service';
 import {AlertsService} from '../../services/alerts/alerts.service';
 import {ParamsService} from '../../services/params/params.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {MapDataService} from '../../services/map-data/map-data.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
@@ -16,6 +15,7 @@ import {UserService} from '../../services/user/user.service';
 import {Merchant} from '../../models/merchant';
 import {ConversionPage} from '../conversion/conversion.page';
 import {CartPage} from '../cart/cart.page';
+import {ApiService} from '../../services/api/api.service';
 import {Delivery} from '../../models/delivery';
 import {MerchantsService} from '../../services/merchants/merchants.service';
 
@@ -37,20 +37,17 @@ export class LonchisPage implements OnInit {
     deliveryWaitingDesc: string;
     depositPromptTitle: string;
     depositPromptDesc: string;
-    celTitle: string;
-    celDesc: string;
-    celError: string;
     constructor(
         public navCtrl: NavController,
         public food: FoodService,
         public menu: MenuController,
         public mapData: MapDataService,
         private router: Router,
+        public api: ApiService,
         private drouter: DynamicRouterService,
         public userData: UserDataService,
         public userS: UserService,
         public alertCtrl: AlertController,
-        public toastCtrl: ToastController,
         public alerts: AlertsService,
         private cdr: ChangeDetectorRef,
         public cartProvider: CartService,
@@ -59,14 +56,9 @@ export class LonchisPage implements OnInit {
         public orderData: OrderDataService,
         public events: Events,
         public translateService: TranslateService,
-        public merchants: MerchantsService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public merchants: MerchantsService) {
         this.itemList = [];
         this.notifs = 0;
-        this.translateService.get('HOME.DELIVERIES_GET').subscribe((value) => {
-            this.deliveriesGetString = value;
-        });
         this.translateService.get('HOME.DELIVERY_WAITING_TITLE').subscribe((value) => {
             this.deliveryWaitingTitle = value;
         });
@@ -78,15 +70,6 @@ export class LonchisPage implements OnInit {
         });
         this.translateService.get('HOME.DEPOSIT_PROMPT_DESC').subscribe((value) => {
             this.depositPromptDesc = value;
-        });
-        this.translateService.get('USER.CEL_TITLE').subscribe((value) => {
-            this.celTitle = value;
-        });
-        this.translateService.get('USER.CEL_DESC').subscribe((value) => {
-            this.celDesc = value;
-        });
-        this.translateService.get('USER.CEL_ERROR').subscribe((value) => {
-            this.celError = value;
         });
         events.subscribe('cart:orderFinished', () => {
             this.clearCart();
@@ -222,13 +205,13 @@ export class LonchisPage implements OnInit {
         }
         this.getMerchants();
         let vm = this
-        setTimeout(function () {vm.dismissLoader(); }, 2000);
+        setTimeout(function () {vm.api.dismissLoader(); }, 2000);
         //        console.log("dismiss");
-        //        this.dismissLoader();
+        //        this.api.dismissLoader();
         //        console.log("dismiss");
-        //        this.dismissLoader();
+        //        this.api.dismissLoader();
         //        console.log("dismiss");
-        //        this.dismissLoader();
+        //        this.api.dismissLoader();
     }
     menuOpen() {
         console.log("Menu opened", this.menu.isOpen());
@@ -359,12 +342,12 @@ export class LonchisPage implements OnInit {
     }
     getArticles() {
         this.itemList = [];
-        this.showLoader();
+        this.api.loader();
         let where = this.getWhere("articles");
         let currentDate = new Date();
         let timestamp = currentDate.getTime();
         this.food.getArticles(where).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             let theArticles = resp.data;
             if (theArticles.length > 0) {
                 let containerStart = this.cleanArticle(theArticles[0]);
@@ -399,14 +382,14 @@ export class LonchisPage implements OnInit {
                 }
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
     getPendingArticle(item: any) {
         this.itemList = [];
-        this.showLoader();
+        this.api.loader();
         this.food.getPendingDelivery().subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log('response', resp);
             console.log('item', item);
             if (resp.status == "success") {
@@ -424,7 +407,7 @@ export class LonchisPage implements OnInit {
                 this.navCtrl.navigateForward('tabs/home/programar');
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
         });
     }
     async showPromptDeposit(delivery: any) {
@@ -522,14 +505,14 @@ export class LonchisPage implements OnInit {
     getDeliveries(showLoader: boolean) {
         console.log("Getting deliveries");
         if (showLoader) {
-            this.showLoader();
+            this.api.loader();
         }
 
         let where = this.getWhere("deliveries");
         console.log("get deliveries", where)
         this.food.getDeliveries(where).subscribe((resp: any) => {
             if (showLoader) {
-                this.dismissLoader();
+                this.api.dismissLoader();
             }
             let results = resp.data;
             let itemList1 = [];
@@ -562,7 +545,7 @@ export class LonchisPage implements OnInit {
 
         }, (err) => {
             if (showLoader) {
-                this.dismissLoader();
+                this.api.dismissLoader();
             }
         });
     }
@@ -587,11 +570,7 @@ export class LonchisPage implements OnInit {
                 this.params.setParams({item: resp.delivery});
                 this.navCtrl.navigateForward("tabs/home/programar");
             } else {
-                let toast = this.toastCtrl.create({
-                    message: resp.message,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast(resp.message);
             }
         }, (err) => {
 
@@ -620,31 +599,6 @@ export class LonchisPage implements OnInit {
         }
     }
 
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
     getCountDeliveries() {
         console.log("Get count deliveries");
         let url = "status=pending";

@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
-import {ModalController, NavController, ToastController, LoadingController} from '@ionic/angular';
-import {TranslateService} from '@ngx-translate/core';
+import {ModalController, NavController} from '@ionic/angular';
 import {Events} from '../../services/events/events.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {ApiService} from '../../services/api/api.service';
@@ -13,11 +11,7 @@ import {Item} from '../../models/item';
 })
 export class CartPage implements OnInit {
     currentItems: Item[];
-    loading: any;
     // Our translated text strings
-    private cartErrorString: string;
-    private cartEmptyString: string;
-    private cartUpdate: string;
     public totalItems: any;
     public subtotal: any;
     public total: any;
@@ -25,22 +19,8 @@ export class CartPage implements OnInit {
     constructor(public navCtrl: NavController,
         public events: Events,
         public api: ApiService,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
         public modalCtrl: ModalController,
-        public orderData: OrderDataService,
-        public toastCtrl: ToastController,
-        public translateService: TranslateService) {
-
-        this.translateService.get('CART.ERROR_UPDATE').subscribe((value) => {
-            this.cartErrorString = value;
-        });
-        this.translateService.get('CART.ERROR_EMPTY').subscribe((value) => {
-            this.cartEmptyString = value;
-        });
-        this.translateService.get('CART.ITEM_UPDATED').subscribe((value) => {
-            this.cartUpdate = value;
-        })
+        public orderData: OrderDataService) {
         this.loadCart();
 
 
@@ -50,16 +30,6 @@ export class CartPage implements OnInit {
      * The view loaded, let's query our items for the list
      */
     ionViewDidLoad() {
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
     reduceCartItem(item: any) {
@@ -71,29 +41,8 @@ export class CartPage implements OnInit {
         item.quantity++;
         this.addCartItem(item);
     }
-    cartUpdateMessage() {
-        let toast = this.toastCtrl.create({
-            message: this.cartUpdate,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     handleCartSuccess(resp: any, item: any) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         this.orderData.cartData = resp.cart;
         if (resp.item) {
             item.inCart = true;
@@ -105,29 +54,21 @@ export class CartPage implements OnInit {
             item.amount = 1;
         }
         this.loadCart();
-        this.cartUpdateMessage();
+        this.api.toast('CART.ITEM_UPDATED');
     }
     handleCartError(resp: any, item) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         console.log("Error", resp);
-        let toast = this.toastCtrl.create({
-            message: resp.message,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
+        this.api.toast(resp.message);
     }
     handleServerCartError() {
-        this.dismissLoader();
+        this.api.dismissLoader();
         //this.navCtrl.push(MainPage);
         // Unable to log in
-        let toast = this.toastCtrl.create({
-            message: this.cartErrorString,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
+        this.api.toast('CART.ERROR_UPDATE');
     }
     addCartItem(item: any) {
-        this.showLoader();
+        this.api.loader();
         return new Promise((resolve, reject) => {
             let container = null;
             container = {
@@ -149,7 +90,6 @@ export class CartPage implements OnInit {
                             resolve(null);
                         }
                     } else {
-                        this.dismissLoader();
                         this.handleCartError(resp, item);
                         resolve(null);
                     }
@@ -165,7 +105,6 @@ export class CartPage implements OnInit {
                     if (resp.status == "success") {
                         this.handleCartSuccess(resp, item);
                     } else {
-                        this.dismissLoader();
                         this.handleCartError(resp, item);
                         resolve(null);
                     }
@@ -183,7 +122,7 @@ export class CartPage implements OnInit {
      * Delete an item from the list of cart.
      */
     deleteItem(item) {
-        this.showLoader();
+        this.api.loader();
         item.quantity = 0;
         let seq = this.api.post('/cart/update', item);
         seq.subscribe((resp: any) => {
@@ -193,16 +132,12 @@ export class CartPage implements OnInit {
                 this.events.publish('cart:deleteItem', {item:item, time:Date.now()});
                 //this.navCtrl.push(MainPage);
             }
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             //this.navCtrl.push(MainPage);
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cartErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CART.ERROR_UPDATE');
             this.api.handleError(err);
         });
     }
@@ -238,7 +173,7 @@ export class CartPage implements OnInit {
      * Delete an item from the list of cart.
      */
     clearCart() {
-        this.showLoader();
+        this.api.loader();
         let seq = this.api.post('/cart/clear', {});
         seq.subscribe((resp) => {
             this.orderData.cartData = {};
@@ -248,18 +183,14 @@ export class CartPage implements OnInit {
             this.orderData.cartData.subtotal = 0;
             this.orderData.cartData.totalItems = 0;
             this.loadCart();
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.events.publish('cart:clear',{});
             //this.navCtrl.push(MainPage);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             //this.navCtrl.push(MainPage);
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cartErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CART.ERROR_UPDATE');
             this.api.handleError(err);
         });
     }
@@ -284,11 +215,7 @@ export class CartPage implements OnInit {
             }
             
         } else {
-            let toast = this.toastCtrl.create({
-                message: this.cartEmptyString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CART.ERROR_EMPTY');
         }
     }
 

@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ToastController,ModalController } from '@ionic/angular';
-import {TranslateService} from '@ngx-translate/core';
+import {NavController, ModalController } from '@ionic/angular';
 import {RatingsService} from '../../services/ratings/ratings.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {ApiService} from '../../services/api/api.service';
 import {ParamsService} from '../../services/params/params.service';
 @Component({
@@ -24,23 +22,17 @@ export class CommentsPage implements OnInit {
     };
 
     // Our translated text strings
-    private commentErrorString: string;
     //private objectO: any;
 
     constructor(public navCtrl: NavController,
         public params: ParamsService,
         public api: ApiService,
         public modalCtrl:ModalController,
-        public ratings: RatingsService,
-        public toastCtrl: ToastController,
-        public translateService: TranslateService) {
+        public ratings: RatingsService) {
         //this.objectO = this.navParams.get('objectO');
         let paramsSent = this.params.getParams();
         this.comment.object_id = paramsSent.object_id;
         this.comment.type = paramsSent.type_object;
-        this.translateService.get('COMMENTS.SAVE_RATING_ERROR').subscribe((value) => {
-            this.commentErrorString = value;
-        })
 
 
     }
@@ -53,11 +45,7 @@ export class CommentsPage implements OnInit {
         }, (err) => {
             //this.navCtrl.push(MainPage);
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.commentErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('COMMENTS.SAVE_RATING_ERROR');
             this.api.handleError(err);
         });
     }
@@ -75,11 +63,7 @@ export class CommentsPage implements OnInit {
         }, (err) => {
             //this.navCtrl.push(MainPage);
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.commentErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('COMMENTS.SAVE_RATING_ERROR');
             this.api.handleError(err);
         });
     }

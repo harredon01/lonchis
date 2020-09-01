@@ -2,12 +2,11 @@ import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import {ParamsService} from '../../services/params/params.service';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {TranslateService} from '@ngx-translate/core';
 import {ApiService} from '../../services/api/api.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {MercadoPagoService} from '../../services/mercado-pago/mercado-pago.service';
-import {NavController, ToastController, LoadingController, ModalController, AlertController} from '@ionic/angular';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {Payment} from '../../models/payment';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {BillingService} from '../../services/billing/billing.service';
@@ -48,7 +47,6 @@ export class MercadoPagoOptionsPage implements OnInit {
 //            installmentsSelected: ''
 //        };
     option: any;
-    loading: any;
     payerForm: FormGroup;
     payerForm2: FormGroup;
     payerForm3: FormGroup;
@@ -63,15 +61,10 @@ export class MercadoPagoOptionsPage implements OnInit {
 //    installmentsSelected: any;
     issuerId: any;
 
-    private banksErrorString: string;
-    private bankPaymentErrorString: string;
     private emailPaymentTitle: string;
     private emailPaymentDesc: string;
-    private confirmString: string;
     private gettingBanks: string;
-    private cashErrorString: string;
     private makingPayment: string;
-    private cardPaymentErrorString: string;
     validationErrors = [];
     paymentMethods: any[] = [];
     pse: any = {};
@@ -87,9 +80,6 @@ export class MercadoPagoOptionsPage implements OnInit {
         public billing: BillingService,
         public api: ApiService,
         public alertCtrl: AlertController,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog,
-        public toastCtrl: ToastController,
         public userData: UserDataService,
         public translateService: TranslateService,
         public formBuilder: FormBuilder,
@@ -121,22 +111,7 @@ export class MercadoPagoOptionsPage implements OnInit {
             installmentsSelected: ['', Validators.required],
         });
         this.currentItems = [];
-        this.translateService.get('CHECKOUT_BANKS.BANKS_GET_ERROR').subscribe((value) => {
-            this.cardPaymentErrorString = value;
-        });
 
-        this.translateService.get('CHECKOUT_BANKS.BANKS_GET_ERROR').subscribe((value) => {
-            this.banksErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_CASH.PAY_CASH_ERROR').subscribe((value) => {
-            this.cashErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_BANKS.DEBIT_PAY_ERROR').subscribe((value) => {
-            this.bankPaymentErrorString = value;
-        });
-        this.translateService.get('INPUTS.ACKNOWLEDGE').subscribe((value) => {
-            this.confirmString = value;
-        });
         this.translateService.get('PAYMENT.EMAIL_PAYMENT_CONFIRM_TITLE').subscribe((value) => {
             this.emailPaymentTitle = value;
         });
@@ -202,13 +177,6 @@ export class MercadoPagoOptionsPage implements OnInit {
     cancelSelection() {
         this.paymentsSelected = false;
     }
-    showMessage(message) {
-        let toast = this.toastCtrl.create({
-            message: message,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
-    }
     ngOnInit() {
 
     }
@@ -241,7 +209,7 @@ export class MercadoPagoOptionsPage implements OnInit {
         this.submitAttempt = true;
         console.log("payBank valid", this.payerForm.valid);
         if (!this.payerForm.valid) {return;}
-        this.showLoader();
+        this.api.loader();
         let container = {
             doc_type: this.payerForm.get('doc_type').value,
             entity_type: this.payerForm.get('entity_type').value ,
@@ -252,7 +220,7 @@ export class MercadoPagoOptionsPage implements OnInit {
             platform: "Food"
         }; 
         this.billing.payDebit(container, "MercadoPagoService").subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after payDebit");
             console.log(JSON.stringify(data));
             if (data.status == "success") {
@@ -274,40 +242,16 @@ export class MercadoPagoOptionsPage implements OnInit {
                 this.showAlertTranslation("MERCADOPAGO." + data.status_detail);
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            this.showMessage(this.bankPaymentErrorString);
+            this.api.toast('CHECKOUT_BANKS.DEBIT_PAY_ERROR');
             this.api.handleError(err);
         });
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.gettingBanks);
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
     }
     submitPaymentCash() {
         this.submitAttempt2 = true;
         if (!this.payerForm2.valid) {return;}
-        this.showLoader();
+        this.api.loader();
         let container = {
             payment_method_id: this.payerForm2.get('payment_method_id').value,
             email: this.payerForm2.get('email').value,
@@ -315,7 +259,7 @@ export class MercadoPagoOptionsPage implements OnInit {
             platform: "Food"
         };
         this.billing.payCash(container, "MercadoPagoService").subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after payCash");
             console.log(JSON.stringify(data));
             if (data.status == "success") {
@@ -336,8 +280,8 @@ export class MercadoPagoOptionsPage implements OnInit {
                 this.showAlertTranslation("MERCADOPAGO." + data.status_detail);
             }
         }, (err) => {
-            this.dismissLoader();
-            this.showMessage(this.cashErrorString);
+            this.api.dismissLoader();
+            this.api.toast('CHECKOUT_CASH.PAY_CASH_ERROR');
             // Unable to log in
             this.api.handleError(err);
         });
@@ -406,12 +350,12 @@ export class MercadoPagoOptionsPage implements OnInit {
                 if (value.includes("MERCADO")) {
                     this.translateService.get('MERCADOPAGO.DEFAULT').subscribe(
                         value2 => {
-                            this.showMessage(value2);
+                            this.api.toast(value2);
                         }
                     )
                 } else {
                     this.validationErrors.push(value);
-                    this.showMessage(value)
+                    this.api.toast(value)
                 }
             }
         )
@@ -421,13 +365,13 @@ export class MercadoPagoOptionsPage implements OnInit {
         this.submitAttempt3 = true;
 
         if (!this.payerForm3.valid) {return;}
-        this.showLoader();
+        this.api.loader();
         var $form = document.querySelector('#pay');
 
         Mercadopago.createToken($form, (status, response) => {
             Mercadopago.clearSession();
             if (status !== 200) {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 console.log("Error", response)
                 this.validationErrors = [];
                 let errors = response.cause;
@@ -445,7 +389,7 @@ export class MercadoPagoOptionsPage implements OnInit {
                     issuer_id: this.issuerId
                 };
                 this.billing.payCreditCard(container, "MercadoPagoService").subscribe((data: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("after payCredit");
                     console.log(JSON.stringify(data));
                     if (data.status == "success") {
@@ -464,9 +408,9 @@ export class MercadoPagoOptionsPage implements OnInit {
                         this.showAlertTranslation("MERCADOPAGO." + data.status_detail);
                     }
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     // Unable to log in
-                    this.showMessage(this.cardPaymentErrorString);
+                    this.api.toast('CHECKOUT_BANKS.BANKS_GET_ERROR');
                     this.api.handleError(err);
                 });
             }

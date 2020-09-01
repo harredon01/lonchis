@@ -1,12 +1,10 @@
 import {Component,OnInit} from '@angular/core';
-import { NavController, ToastController, ModalController, AlertController, LoadingController} from '@ionic/angular';
+import { NavController, ModalController, AlertController} from '@ionic/angular';
 import {UserDataService} from '../../services/user-data/user-data.service';
-import {TranslateService} from '@ngx-translate/core';
 import {CartService} from '../../services/cart/cart.service';
 import {Facebook} from '@ionic-native/facebook/ngx';
 import {OrderDataService} from '../../services/order-data/order-data.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
-
+import {ApiService} from '../../services/api/api.service';
 @Component({
   selector: 'app-conversion',
   templateUrl: './conversion.page.html',
@@ -20,22 +18,15 @@ variant: any;
     merchant: any = 1299;
     price: any = 1299;
     subtotal: any;
-    cartErrorString: any;
     unitPrice: any;
     constructor(public navCtrl: NavController,
-        public toastCtrl: ToastController,
         public modalCtrl: ModalController,
         public alertCtrl: AlertController,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
         public cart: CartService,
         public fb: Facebook,
+        public api: ApiService,
         public userData: UserDataService,
-        public orderData: OrderDataService,
-        public translateService: TranslateService) {
-        this.translateService.get('CART.ERROR_UPDATE').subscribe((value) => {
-            this.cartErrorString = value;
-        })
+        public orderData: OrderDataService) {
     }
 
     ionViewDidLoad() {
@@ -58,10 +49,10 @@ variant: any;
                 item_id: null,
                 merchant_id: this.merchant
             };
-            this.showLoader();
+            this.api.loader();
             this.cart.clearCart().subscribe((resp: any) => {
                 this.cart.addCartItem(container).subscribe((resp: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     if (resp.status == "success") {
                         this.fb.logEvent("Add cart item", {"name": resp.item.name, "total": resp.item.priceSumConditions}, resp.item.priceSumConditions)
                         this.modalCtrl.dismiss("Checkout");
@@ -72,13 +63,13 @@ variant: any;
                     }
                     //this.navCtrl.push(MainPage);
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     this.handleServerCartError();
                     resolve(null);
                 });
                 //this.navCtrl.push(MainPage);
             }, (err) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.handleServerCartError();
                 resolve(null);
             });
@@ -105,24 +96,15 @@ variant: any;
         this.modalCtrl.dismiss("Done");
     }
     handleServerCartError() {
-        this.dismissLoader();
+        this.api.dismissLoader();
         //this.navCtrl.push(MainPage);
         // Unable to log in
-        let toast = this.toastCtrl.create({
-            message: this.cartErrorString,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
+        this.api.toast('CART.ERROR_UPDATE');
     }
 
     handleCartError(resp: any) {
         console.log("Error", resp);
-
-        let toast = this.toastCtrl.create({
-            message: resp.message,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
+        this.api.toast(resp.message);
     }
     calculateTotalsProduct() {
         if (this.amount > 0 && this.amount < 10) {
@@ -134,31 +116,6 @@ variant: any;
             this.unitPrice = this.subtotal / (this.amount);
         }
         console.log("calculateTotals", this.subtotal, this.unitPrice);
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
   ngOnInit() {

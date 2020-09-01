@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup } from '@angular/forms';
-import {NavController, ToastController, LoadingController,ModalController } from '@ionic/angular';
+import {NavController,ModalController } from '@ionic/angular';
 import {OrderDataService} from '../../services/order-data/order-data.service';
-import {TranslateService} from '@ngx-translate/core'; 
 import {ParamsService} from '../../services/params/params.service';
 import {ApiService} from '../../services/api/api.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {UserService} from '../../services/user/user.service';
 @Component({
   selector: 'app-buyer-select',
@@ -16,12 +14,8 @@ export class BuyerSelectPage implements OnInit {
 
   payers: any[];
     item: any;
-    loading: any;
     candidate: any;
     merchant: any;
-    private checkError: string;
-    private checkSuccess: string;
-    private missingPayers: string;
     totalNecessary: any;
     limitActive: boolean;
     candidateFound: boolean;
@@ -31,26 +25,13 @@ export class BuyerSelectPage implements OnInit {
 
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
-        public toastCtrl: ToastController,
         public user: UserService,
         public fb: FormBuilder,
         public api: ApiService,
         public orderData: OrderDataService,
-        public translateService: TranslateService,
-        public params: ParamsService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public params: ParamsService) {
         this.candidateFound = false;
         this.payers = [];
-        this.translateService.get('BUYER_SELECT.CHECK_ERROR').subscribe((value) => {
-            this.checkError = value;
-        });
-        this.translateService.get('BUYER_SELECT.MISSING_PAYERS').subscribe((value) => {
-            this.missingPayers = value;
-        });
-        this.translateService.get('BUYER_SELECT.CHECK_SUCCESS').subscribe((value) => {
-            this.checkSuccess = value;
-        });
         let paramsSent = this.params.getParams();
         this.totalNecessary = paramsSent.necessary;
         this.merchant = paramsSent.merchant;
@@ -100,20 +81,6 @@ export class BuyerSelectPage implements OnInit {
         }
         console.log(this.orderData.payers);
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     /**
            * Send a POST request to our signup endpoint with the data
            * the user entered on the form.
@@ -122,13 +89,13 @@ export class BuyerSelectPage implements OnInit {
         this.submitted = true;
         this.candidateFound = false;
         console.log("checkPayer", this.candidate);
-        this.showLoader();
+        this.api.loader();
         let container = {
             "email": this.candidate,
             "platform": "Food"
         }
         this.user.checkCredits(container).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("checkCredits result", resp);
             if (resp.status == "success") {
                 this.candidateFound = true;
@@ -154,22 +121,14 @@ export class BuyerSelectPage implements OnInit {
                     console.log("formGet", formGet);
                     formGet.setValue(true);
                 }
-                let toast = this.toastCtrl.create({
-                    message: this.checkSuccess,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('BUYER_SELECT.CHECK_SUCCESS');
                 this.candidate = "";
             } else {
                 // Unable to log in
-                let toast = this.toastCtrl.create({
-                    message: this.checkError,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('BUYER_SELECT.CHECK_ERROR');
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
 
@@ -212,24 +171,10 @@ export class BuyerSelectPage implements OnInit {
         if (this.totalNecessary < 1) {
             this.modalCtrl.dismiss("done");
         } else {
-            let toast = this.toastCtrl.create({
-                message: this.missingPayers,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('BUYER_SELECT.MISSING_PAYERS');
         }
 
 
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
   ngOnInit() {

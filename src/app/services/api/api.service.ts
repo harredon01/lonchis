@@ -1,22 +1,78 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {UserDataService} from '../user-data/user-data.service';
-import { NavController } from '@ionic/angular';
-import { Observable, of } from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
+import {NavController, LoadingController, ToastController} from '@ionic/angular';
+import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {Observable, of} from 'rxjs';
 import {Router} from '@angular/router';
 @Injectable({
     providedIn: 'root'
 })
 export class ApiService {
+    loading:any;
     url: string = 'https://www.lonchis.com.co/api';
     urlsite: string = 'https://www.lonchis.com.co';
     constructor(public http: HttpClient,
+        private toastCtrl: ToastController,
         private router: Router,
-        private navCtrl:NavController,
+        private translateService: TranslateService,
+        private loadingCtrl: LoadingController,
+        private navCtrl: NavController,
+        private spinnerDialog: SpinnerDialog,
         public userData: UserDataService) {
     }
+    toast(message: string) {
+        this.translateService.get(message).subscribe((value) => {
+            this.toastCtrl.create({
+                message: value,
+                duration: 1300,
+                position: 'top'
+            }).then(toast => toast.present());
+        })
+    }
+    async dismissLoader() {
+        if (document.URL.startsWith('http')) {
+            let topLoader = await this.loadingCtrl.getTop();
+            while (topLoader) {
+                if (!(await topLoader.dismiss())) {
+                    console.log('Could not dismiss the topmost loader. Aborting...');
+                    return;
+                }
+                topLoader = await this.loadingCtrl.getTop();
+            }
+        } else {
+            this.spinnerDialog.hide();
+        }
+    }
 
-    get(endpoint: string, params?: any, reqOpts?: any) : Observable<any>  {
+    loader(message?: string) {
+        if (message) {
+            this.translateService.get(message).subscribe((value) => {
+                if (document.URL.startsWith('http')) {
+                    this.loadingCtrl.create({
+                    spinner: 'crescent',
+                    message:value,
+                    backdropDismiss: true
+                }).then(toast => toast.present());
+                } else {
+                    this.spinnerDialog.show(null, value);
+                }
+            });
+        } else {
+            if (document.URL.startsWith('http')) {
+                this.loadingCtrl.create({
+                    spinner: 'crescent',
+                    backdropDismiss: true
+                }).then(toast => toast.present());
+            } else {
+                this.spinnerDialog.show();
+            }
+        }
+
+    }
+
+    get(endpoint: string, params?: any, reqOpts?: any): Observable<any> {
         if (!reqOpts) {
             reqOpts = {
                 params: new HttpParams()
@@ -46,7 +102,7 @@ export class ApiService {
         //return this.http.post(this.url + '/' + endpoint, body, reqOpts);
     }
 
-    post(endpoint: string, body: any, reqOpts?: any) : Observable<any> {
+    post(endpoint: string, body: any, reqOpts?: any): Observable<any> {
         console.log("body", body);
 
         console.log("Endopoint", endpoint);
@@ -65,7 +121,7 @@ export class ApiService {
         return this.http.put(this.url + endpoint, body, reqOpts);
     }
 
-    delete(endpoint: string, params?: any,  reqOpts?: any) {
+    delete(endpoint: string, params?: any, reqOpts?: any) {
         if (!reqOpts) {
             reqOpts = {
                 params: new HttpParams()

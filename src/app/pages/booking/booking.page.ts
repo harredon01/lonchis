@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, LoadingController, AlertController, ModalController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, AlertController, ModalController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
 import {CartService} from '../../services/cart/cart.service';
 import {ApiService} from '../../services/api/api.service';
@@ -33,11 +32,8 @@ export class BookingPage implements OnInit {
     weekday2: any[] = [];
     typeObj: string;
     bookingObj: Booking = null;
-    notAvailable: string;
-    maxReached: string;
     requiresAuth: string;
     dayName: string;
-    success: string;
     atributesCont: any;
     product_variant_id: any = null;
     quantity: any = null;
@@ -54,8 +50,6 @@ export class BookingPage implements OnInit {
     submitted: boolean = false;
 
     constructor(public params: ParamsService, public booking: BookingService,
-        public toastCtrl: ToastController,
-        public loadingCtrl: LoadingController,
         public navCtrl: NavController,
         public api: ApiService,
         private drouter: DynamicRouterService,
@@ -64,8 +58,7 @@ export class BookingPage implements OnInit {
         public cart: CartService,
         public userData: UserDataService,
         public alertsCtrl: AlertController,
-        public translateService: TranslateService,
-        private spinnerDialog: SpinnerDialog) {
+        public translateService: TranslateService) {
         this.atributesCont = {};
         this.weekday = new Array(7);
         this.weekday[0] = "sunday";
@@ -89,15 +82,6 @@ export class BookingPage implements OnInit {
         let vm = this
         this.translateService.get('BOOKING.REQUIRES_AUTH').subscribe(function (value) {
             vm.requiresAuth = value;
-        });
-        this.translateService.get('BOOKING.NOT_AVAILABLE').subscribe(function (value) {
-            vm.notAvailable = value;
-        });
-        this.translateService.get('BOOKING.MAX_REACHED').subscribe(function (value) {
-            vm.maxReached = value;
-        });
-        this.translateService.get('BOOKING.SUCCESS').subscribe(function (value) {
-            vm.success = value;
         });
 
         console.log("Get availableDates", this.availableDates);
@@ -205,10 +189,10 @@ export class BookingPage implements OnInit {
 
     getItems() {
         let availabilities: any[] = [];
-        //        this.showLoader();
+        //        this.api.loader();
         let where = {"type": "Merchant", "object_id": this.objectId};
         this.booking.getAvailabilitiesObject(where).subscribe((data: any) => {
-            //            this.dismissLoader();
+            //            this.api.dismissLoader();
             console.log("after getItems", data);
             let results = data.data;
             for (let one in results) {
@@ -228,13 +212,9 @@ export class BookingPage implements OnInit {
             console.log("Get availableDays", this.availableDays);
             console.log(JSON.stringify(data));
         }, (err) => {
-            //            this.dismissLoader();
+            //            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: "ERROR",
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('BOOKING.ERROR_GET_AVAILABILITIES');
             this.api.handleError(err);
         });
     }
@@ -320,7 +300,7 @@ export class BookingPage implements OnInit {
             return true;
         }
         this.submitted = true;
-        this.showLoader();
+        this.api.loader();
         let startDate = new Date(this.startDate.getTime() - this.startDate.getTimezoneOffset() * 60000);
         let strDate = startDate.toISOString();
         let endDate = new Date(this.endDate.getTime() - this.endDate.getTimezoneOffset() * 60000);
@@ -343,7 +323,7 @@ export class BookingPage implements OnInit {
         console.log("Start", this.startDate);
         console.log("data", data);
         this.booking.addBookingObject(data).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("addBookingObject", resp);
             this.submitted = false;
             //this.presentAlertConfirm(data);
@@ -359,7 +339,7 @@ export class BookingPage implements OnInit {
         }, (err) => {
             this.submitted = false;
             console.log("Error addBookingObject");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -376,7 +356,7 @@ export class BookingPage implements OnInit {
         //            return true;
         //        }
         //        this.submitted = true; 
-        this.showLoader();
+        this.api.loader();
         console.log("offset", this.startDate.getTimezoneOffset() * 60000);
         let startDate = new Date(this.startDate.getTime() - this.startDate.getTimezoneOffset() * 60000);
         let strDate = startDate.toISOString();
@@ -400,7 +380,7 @@ export class BookingPage implements OnInit {
         console.log("Start", this.startDate);
         console.log("data", data);
         this.booking.editBookingObject(data).subscribe((resp: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("editBookingObject", resp);
             this.submitted = false;
             //this.presentAlertConfirm(data);
@@ -414,7 +394,7 @@ export class BookingPage implements OnInit {
             }
         }, (err) => {
             console.log("Error editBookingObject");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -542,7 +522,7 @@ export class BookingPage implements OnInit {
                 this.selectedSpots.push(bookitem);
             }
             this.buildSlots();
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error getBookingsObject");
             this.api.handleError(err);
@@ -556,7 +536,7 @@ export class BookingPage implements OnInit {
             this.dateSelected = true;
             this.timeSelected = false;
             console.log("select date", selectedDate);
-            this.showLoader();
+            this.api.loader();
             this.dayName = this.weekday2[day];
             this.startDate = selectedDate;
             this.startDateS = selectedDate.toISOString();
@@ -564,11 +544,7 @@ export class BookingPage implements OnInit {
             this.getBookingsDay(selectedDate);
             console.log("Availabilities", this.availabilitiesDate);
         } else {
-            let toast = this.toastCtrl.create({
-                message: this.notAvailable,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('BOOKING.NOT_AVAILABLE');
         }
 
     }
@@ -616,30 +592,6 @@ export class BookingPage implements OnInit {
         }
         return false;
 
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
     }
     changeDate() {
         this.dateSelected = false;

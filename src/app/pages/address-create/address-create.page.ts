@@ -1,10 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, ModalController, NavParams, LoadingController } from '@ionic/angular';
+import {NavController, ModalController, NavParams } from '@ionic/angular';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {AddressesService} from '../../services/addresses/addresses.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
+import {ApiService} from '../../services/api/api.service';
 @Component({
   selector: 'app-address-create',
   templateUrl: './address-create.page.html',
@@ -14,26 +13,18 @@ export class AddressCreatePage implements OnInit {
 
   isReadyToSave: boolean;
     item: any;
-    loading: any;
     submitAttempt: boolean;
     form: FormGroup;
-    private addressErrorStringSave: string;
 
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
         formBuilder: FormBuilder,
         private cdr: ChangeDetectorRef,
         private userData: UserDataService,
-        public toastCtrl: ToastController,
+        public api: ApiService,
         public addresses: AddressesService,
-        public loadingCtrl: LoadingController,
-        public translateService: TranslateService,
-        public navParams: NavParams,
-        private spinnerDialog: SpinnerDialog) {
+        public navParams: NavParams) {
         this.submitAttempt = false;
-        this.translateService.get('ADDRESS_FIELDS.ERROR_SAVE').subscribe((value) => {
-            this.addressErrorStringSave = value;
-        });
         this.form = formBuilder.group({
             address: ['', Validators.required],
             notes: ['', Validators.required],
@@ -118,20 +109,6 @@ export class AddressCreatePage implements OnInit {
     ionViewDidLoad() {
 
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     /**
            * Send a POST request to our signup endpoint with the data
            * the user entered on the form.
@@ -140,9 +117,9 @@ export class AddressCreatePage implements OnInit {
         return new Promise((resolve, reject) => {
             console.log("Save Address", address);
             if (address) {
-                this.showLoader();
+                this.api.loader();
                 this.addresses.saveAddress(address).subscribe((resp: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("Save Address result", resp);
                     if (resp.status == "success") {
                         resolve(resp.address);
@@ -150,7 +127,7 @@ export class AddressCreatePage implements OnInit {
                         resolve(null);
                     }
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     reject(err);
                 });
             } else {
@@ -183,31 +160,13 @@ export class AddressCreatePage implements OnInit {
                 this.modalCtrl.dismiss(value);
             } else {
                 // Unable to log in
-                this.toastCtrl.create({
-                    message: this.addressErrorStringSave,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('ADDRESS_FIELDS.ERROR_SAVE');
             }
         }).catch((error) => {
             console.log('Error saveAddress', error);
-            this.toastCtrl.create({
-                message: this.addressErrorStringSave,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('ADDRESS_FIELDS.ERROR_SAVE');
         });;
 
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
   ngOnInit() {

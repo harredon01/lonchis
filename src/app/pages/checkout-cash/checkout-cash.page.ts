@@ -1,8 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {NavController, ToastController, LoadingController, ModalController, AlertController, IonContent} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController, AlertController, IonContent} from '@ionic/angular';
 import {ApiService} from '../../services/api/api.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
@@ -31,12 +30,9 @@ export class CheckoutCashPage implements OnInit {
 //            payer_email: '',
 //        };
 
-    private cashErrorString: string;
-    private cashStartingString: string;
     private emailPaymentTitle: string;
     private emailPaymentDesc: string;
     private confirmString: string;
-    loading: any;
 
     constructor(public navCtrl: NavController,
         public orderData: OrderDataService,
@@ -47,22 +43,13 @@ export class CheckoutCashPage implements OnInit {
         public modalCtrl: ModalController,
         public alertCtrl: AlertController,
         public formBuilder: FormBuilder,
-        public toastCtrl: ToastController,
-        public translateService: TranslateService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public translateService: TranslateService) {
 
         this.payerForm = formBuilder.group({
             payment_method: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z 0-9._%+-]*'), Validators.required])],
             payer_email: ['', Validators.compose([Validators.maxLength(100), Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-.]*\.[a-zA-Z]{2,}'), Validators.required])]
         });
 
-        this.translateService.get('CHECKOUT_CASH.PAY_CASH_ERROR').subscribe((value) => {
-            this.cashErrorString = value;
-        });
-        this.translateService.get('CHECKOUT_CASH.PAY_CASH_STARTING').subscribe((value) => {
-            this.cashStartingString = value;
-        });
         this.translateService.get('INPUTS.ACKNOWLEDGE').subscribe((value) => {
             this.confirmString = value;
         });
@@ -113,17 +100,6 @@ export class CheckoutCashPage implements OnInit {
         this.payerForm.setValue(container);
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.cashStartingString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.cashStartingString);
-        }
-    }
     /**
        * The view loaded, let's query our items for the list
        */
@@ -131,24 +107,10 @@ export class CheckoutCashPage implements OnInit {
         this.scrollToBottom();
         this.payerForm.patchValue({payment_method: option });
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     payCash() {
         this.submitAttempt = true;
         if (!this.payerForm.valid) {return;} 
-        this.showLoader();
+        this.api.loader('CHECKOUT_CASH.PAY_CASH_STARTING');
         let container = {
             payment_method: this.payerForm.get('payment_method').value,
             payer_email: this.payerForm.get('payer_email').value,
@@ -157,7 +119,7 @@ export class CheckoutCashPage implements OnInit {
             platform: "Food"
         };
         this.billing.payCash(container,"PayU").subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after payCash");
             console.log(JSON.stringify(data));
             if (data.code == "SUCCESS") {
@@ -171,13 +133,9 @@ export class CheckoutCashPage implements OnInit {
                 }
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.cashErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('CHECKOUT_CASH.PAY_CASH_ERROR');
             this.api.handleError(err);
         });
     }

@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ToastController, ModalController, AlertController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {Address} from '../../models/address';
-import {TranslateService} from '@ngx-translate/core';
 import {ParamsService} from '../../services/params/params.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {BillingService} from '../../services/billing/billing.service';
@@ -32,7 +30,6 @@ export class CheckoutPayerPage implements OnInit {
 //            payer_id: '',
 //        };
     payerForm: FormGroup;
-    loading: any;
     submitAttempt: boolean = false;
     v: any;
     showAddressCard: boolean;
@@ -47,12 +44,8 @@ export class CheckoutPayerPage implements OnInit {
         public params: ParamsService,
         public orderData: OrderDataService,
         public modalCtrl: ModalController,
-        public toastCtrl: ToastController,
-        public translateService: TranslateService,
         public addresses: AddressesService,
-        public formBuilder: FormBuilder,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog) {
+        public formBuilder: FormBuilder) {
         this.showAddressCard = false;
         this.v = false;
         this.currentItems = [];
@@ -178,30 +171,6 @@ export class CheckoutPayerPage implements OnInit {
         }
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     /**
        * The view loaded, let's query our items for the list
        */

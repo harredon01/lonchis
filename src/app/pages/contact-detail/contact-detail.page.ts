@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ContactsService} from '../../services/contacts/contacts.service';
-import {NavController, LoadingController, ModalController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController} from '@ionic/angular';
 import {Contact} from '../../models/contact';
 import {ApiService} from '../../services/api/api.service';
 import {ActivatedRoute} from '@angular/router';
@@ -19,8 +18,6 @@ public mainContact: Contact;
         public navCtrl: NavController,
         public modalCtrl: ModalController,
         public api: ApiService,
-        public loadingCtrl: LoadingController,
-        public spinnerDialog: SpinnerDialog
     ) {}
 
     ngOnInit() {
@@ -42,61 +39,37 @@ public mainContact: Contact;
             "status":status,
             "contact_id": this.mainContact.id
         };
-        this.showLoader();
+        this.api.loader();
         this.contacts.updateBlockStatus(data).subscribe((data: any) => {
             this.mainContact.status = status;
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error updateblockStatus");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
     deleteContact() {
-        this.showLoader();
+        this.api.loader();
         this.contacts.deleteContact(this.mainContact.id).subscribe((data: any) => {
             this.navCtrl.back();
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error deleteContact");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
     getContact() {
-        this.showLoader();
+        this.api.loader();
         let contactId = this.activatedRoute.snapshot.paramMap.get('objectId');
         this.contacts.getContact(contactId).subscribe((data: any) => {
             this.mainContact = data;
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             console.log("Error getContact");
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 }

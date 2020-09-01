@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
-import {NavController, ModalController, ToastController, LoadingController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, ModalController} from '@ionic/angular';
 import {ActivatedRoute} from '@angular/router';
 import {BillingService} from '../../services/billing/billing.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
@@ -19,16 +17,10 @@ import {ApiService} from '../../services/api/api.service';
 export class PaymentDetailPage implements OnInit {
 
     item: Payment;
-    private paymentsErrorString: string;
-    private paymentsErrorPayString: string;
-    private paymentsGetStartString: string;
-    private paymentsErrorChangeString: string;
-    private paymentsChangeStartString: string;
     hasSavedCard: boolean;
     backButton: boolean;
     recurring: boolean;
     newPayment: boolean;
-    loading: any;
 
     constructor(public navCtrl: NavController,
         public orderData: OrderDataService,
@@ -37,11 +29,7 @@ export class PaymentDetailPage implements OnInit {
         public api: ApiService,
         public orderProvider: OrderService,
         private activatedRoute: ActivatedRoute,
-        public toastCtrl: ToastController,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
         public modalCtrl: ModalController,
-        public translateService: TranslateService,
         public billing: BillingService) {
         this.backButton = true;
         let order = new Order({"items": []});
@@ -54,21 +42,6 @@ export class PaymentDetailPage implements OnInit {
             "order_id": "",
             "attributes": "",
             "order": order
-        });
-        this.translateService.get('PAYMENTS.ERROR_GET').subscribe(function (value) {
-            this.paymentsErrorString = value;
-        });
-        this.translateService.get('PAYMENTS.ERROR_PAY').subscribe(function (value) {
-            this.paymentsErrorPayString = value;
-        });
-        this.translateService.get('PAYMENTS.ERROR_CHANGE').subscribe(function (value) {
-            this.paymentsErrorChangeString = value;
-        });
-        this.translateService.get('PAYMENTS.GET_START').subscribe(function (value) {
-            this.paymentsGetStartString = value;
-        });
-        this.translateService.get('PAYMENTS.CHANGE_START').subscribe(function (value) {
-            this.paymentsChangeStartString = value;
         });
         console.log("backButton", this.backButton);
         let paramSent = this.params.getParams();
@@ -88,20 +61,6 @@ export class PaymentDetailPage implements OnInit {
     ionViewDidEnter() {
         this.loadPayment();
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     loadPayment() {
         let paramSent = this.params.getParams();
         var result = paramSent.item;
@@ -117,10 +76,10 @@ export class PaymentDetailPage implements OnInit {
                 if (paramSent.newPayment) {
                     this.newPayment = paramSent.newPayment;
                 }
-                this.showLoader();
+                this.api.loader('PAYMENTS.GET_START');
                 let query = "id=" + paymentId + "&includes=order.items,order.orderConditions";
                 this.billing.getPayments(query).subscribe((data: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("after get Deliveries");
                     let results = data.data;
                     for (let one in results) {
@@ -131,13 +90,9 @@ export class PaymentDetailPage implements OnInit {
                     }
                     console.log(JSON.stringify(data));
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     // Unable to log in
-                    let toast = this.toastCtrl.create({
-                        message: this.paymentsErrorString,
-                        duration: 3000,
-                        position: 'top'
-                    }).then(toast => toast.present());
+                    this.api.toast('PAYMENTS.ERROR_GET');
                     this.api.handleError(err);
                 });
             }
@@ -157,48 +112,36 @@ export class PaymentDetailPage implements OnInit {
             recurring_type: recurring_type,
             recurring_value: recurring_value
         }
-        this.showLoader2()
+        this.api.loader('PAYMENTS.CHANGE_START');
         this.orderProvider.setOrderRecurringType(this.item.order.id, container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("after setOrderRecurringType");
             let result = data.order;
             this.item.order = <Order> result;
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.paymentsErrorChangeString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('PAYMENTS.ERROR_CHANGE');
             this.api.handleError(err);
         });
     }
     addTransactionCosts(paymentId) {
-        this.showLoader2()
+        this.api.loader('PAYMENTS.CHANGE_START');
         this.billing.addTransactionCosts(paymentId).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 console.log("after addTransactionCosts");
                 this.item = new Payment(data.payment);
             } else {
-                let toast = this.toastCtrl.create({
-                    message: this.paymentsErrorChangeString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('PAYMENTS.ERROR_CHANGE');
             }
 
             console.log(JSON.stringify(data));
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.paymentsErrorChangeString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('PAYMENTS.ERROR_CHANGE');
             this.api.handleError(err);
         });
     }
@@ -208,31 +151,23 @@ export class PaymentDetailPage implements OnInit {
         this.navCtrl.navigateForward("tabs/settings/payments/"+this.item.id+"/payu/options");
     }
     retryPayment(item: Payment) {
-        this.showLoader();
+        this.api.loader('PAYMENTS.GET_START');
         this.billing.retryPayment(item.id).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
                 this.orderData.payment = data.payment;
                 this.retryPaymentRedirect();
                 console.log(JSON.stringify(data));
             }
             else {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 // Unable to log in
-                var toast = this.toastCtrl.create({
-                    message: this.paymentsErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('PAYMENTS.ERROR_GET');
             }
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            var toast = this.toastCtrl.create({
-                message: this.paymentsErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('PAYMENTS.ERROR_GET');
             this.api.handleError(err);
         });
     };
@@ -240,7 +175,7 @@ export class PaymentDetailPage implements OnInit {
      * Navigate to the detail page for this item.
      */
     transactionResponse(transaction) {
-        this.dismissLoader();
+        this.api.dismissLoader();
         console.log("after payCreditCard");
         this.orderData.clearOrder();
         this.params.setParams({
@@ -249,7 +184,7 @@ export class PaymentDetailPage implements OnInit {
         this.navCtrl.navigateForward('tabs/payu/complete');
     }
     quickPay() {
-        this.showLoader();
+        this.api.loader('PAYMENTS.GET_START');
 
         let container = {
             quick: true,
@@ -261,35 +196,20 @@ export class PaymentDetailPage implements OnInit {
             let transaction = data.response.transactionResponse;
             this.transactionResponse(transaction);
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.paymentsErrorPayString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('PAYMENTS.ERROR_PAY');
             this.api.handleError(err);
         });
     };
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.paymentsGetStartString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.paymentsGetStartString);
-        }
-    };
     payInBank() {
-        this.showLoader();
+        this.api.loader('PAYMENTS.GET_START');
         let container = {
             "payment_id": this.orderData.payment.id
         };
         console.log("before payCreditCard token", container);
         this.billing.payInBank(container).subscribe((data: any) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (data.status == "success") {
 
                 console.log("after payInBank");
@@ -301,35 +221,16 @@ export class PaymentDetailPage implements OnInit {
                 this.navCtrl.navigateForward('tabs/settings/payments/' + data.payment.id);
             } else {
                 // Unable to log in
-                let toast = this.toastCtrl.create({
-                    message: this.paymentsErrorPayString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('PAYMENTS.ERROR_PAY');
             }
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.paymentsErrorPayString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('PAYMENTS.ERROR_PAY');
             this.api.handleError(err);
         });
     }
-    showLoader2() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.paymentsChangeStartString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.paymentsChangeStartString);
-        }
-    };
     /**
        * The view loaded, let's query our items for the list
        */

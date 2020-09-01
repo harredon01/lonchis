@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController, ToastController, ModalController, AlertController, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {ParamsService} from '../../services/params/params.service';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {Events} from '../../services/events/events.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
@@ -49,13 +48,10 @@ export class MerchantProductsPage implements OnInit {
     constructor(public navCtrl: NavController,
         public activatedRoute: ActivatedRoute,
         public productsServ: ProductsService,
-        public toastCtrl: ToastController,
         public api: ApiService,
         private drouter: DynamicRouterService,
         public modalCtrl: ModalController,
         public alertCtrl: AlertController,
-        private spinnerDialog: SpinnerDialog,
-        public loadingCtrl: LoadingController,
         public cart: CartService,
         public events: Events,
         public params: ParamsService,
@@ -105,7 +101,7 @@ export class MerchantProductsPage implements OnInit {
             this.urlSearch = 'tabs/home/categories/' + category + '/merchant/' + this.merchant;
         }
         this.possibleAmounts = [];
-        this.showLoader();
+        this.api.loader();
         this.loadProducts();
         this.loadOptions();
         if (!this.orderData.cartData) {
@@ -124,13 +120,13 @@ export class MerchantProductsPage implements OnInit {
     }
     ionViewDidEnter() {
         this.possibleAmounts = [];
-        this.showLoader();
+        this.api.loader();
         this.loadProducts();
         this.loadOptions();
         if (document.URL.startsWith('http')) {
             let vm = this;
-            setTimeout(function () {vm.dismissLoader(); console.log("Retrying closing")}, 1000);
-            setTimeout(function () {vm.dismissLoader(); console.log("Retrying closing")}, 2000);
+            setTimeout(function () {vm.api.dismissLoader(); console.log("Retrying closing")}, 1000);
+            setTimeout(function () {vm.api.dismissLoader(); console.log("Retrying closing")}, 2000);
         }
     }
     addCart(item: any) {
@@ -242,16 +238,6 @@ export class MerchantProductsPage implements OnInit {
             ]
         }).then(toast => toast.present());
     }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
     showMore(item: any) {
         console.log("showMore");
         if (item.description_more) {
@@ -324,20 +310,6 @@ export class MerchantProductsPage implements OnInit {
             this.presentAlertPay(resp.item);
         }
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     addCartItem(item: any) {
         this.cart.addCart(item).then((resp: any) => {
             console.log("updateCartItem", resp);
@@ -347,7 +319,7 @@ export class MerchantProductsPage implements OnInit {
                     return resp.item;
                 }
             } else {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.cart.handleCartError(resp, item);
             }
         });
@@ -424,7 +396,7 @@ export class MerchantProductsPage implements OnInit {
                 this.productsServ.calculateTotals("load products", this.categories);
                 //this.createSlides();
             } 
-            this.dismissLoader();
+            this.api.dismissLoader();
         }, (err) => {
             this.api.handleError(err);
             // Unable to log in

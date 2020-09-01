@@ -1,7 +1,6 @@
 import {Component, OnInit, ChangeDetectorRef, ViewChild} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
-import {NavController, ModalController, AlertController, Platform, LoadingController} from '@ionic/angular';
+import {NavController, ModalController, AlertController, Platform} from '@ionic/angular';
 import {MapService} from '../../services/map/map.service';
 import {Events} from '../../services/events/events.service';
 import {MapDataService} from '../../services/map-data/map-data.service';
@@ -36,8 +35,6 @@ export class MapPage implements OnInit {
         public mapData: MapDataService,
         public translateService: TranslateService,
         public params: ParamsService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog,
         public events: Events,
         public locations: LocationsService) {
         this.sharedLocationsFetched = false;
@@ -52,7 +49,7 @@ export class MapPage implements OnInit {
         });
         events.subscribe('map:checkingShippingAddressCoverage', (resp:any) => {
             console.log("Checking Shipping address coverage");
-            this.showLoader();
+            this.api.loader();
         });
         events.subscribe('map:loaded', (resp:any) => {
             console.log("Map Loaded");
@@ -65,33 +62,19 @@ export class MapPage implements OnInit {
 
             console.log("Shipping address in coverage event triggered");
             this.shippingAddressInCoverage = true;
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.cdr.detectChanges();
         });
         events.subscribe('map:shippingAddressNotInCoverage', (resp:any) => {
             this.shippingAddressInCoverage = false;
             console.log("Event Address not in coverage");
             this.loadingComplete = true;
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.cdr.detectChanges();
         });
-        this.showLoader()
+        this.api.loader();
         console.log("ionViewDidLoad map page");
         this.mapData.map = this.map.createMap();
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
     }
     ionViewDidLeave() {
         this.mapActive = false;
@@ -113,16 +96,6 @@ export class MapPage implements OnInit {
             this.getSharedLocationsPage(page);
         }
 
-    }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
     }
     showPrompt() {
         const prompt = this.alertCtrl.create({
@@ -209,15 +182,15 @@ export class MapPage implements OnInit {
                 console.log("container", container);
                 this.mapData.routeMarker = this.map.createMarker(container, "routemarker");
                 this.mapData.map.setCameraZoom(12);
-                this.dismissLoader();
+                this.api.dismissLoader();
             } else {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.showPrompt();
             }
             this.mapData.map.setVisible(true);
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
         });
     }
@@ -270,19 +243,19 @@ export class MapPage implements OnInit {
         if (typeof this[funcname] === "function") {
             this[funcname]();
         } else {
-            this.dismissLoader();
+            this.api.dismissLoader();
             console.log("Type not supported", funcname);
         }
     }
     handleMeActive() {
-        this.dismissLoader();
+        this.api.dismissLoader();
     }
     handleDeliveryActive() {
         console.log("Delivery active", this.mapData.activeDelivery);
         if (this.mapData.activeDelivery) {
             this.getRouteInfo(this.mapData.activeDelivery);
         } else {
-            this.dismissLoader();
+            this.api.dismissLoader();
         }
     }
 
@@ -314,23 +287,23 @@ export class MapPage implements OnInit {
                     this.mapData.newAddressMarker.setVisible(true);
                     let routes = data.data;
                     this.map.createPolygons(routes);
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     this.getMyLocationAddressPostal();
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     this.mapData.map.setVisible(true);
                     console.log("getActiveRoutes Error", err);
                     this.api.handleError(err);
                 });
             } else {
                 this.mapData.newAddressMarker.setVisible(true);
-                this.dismissLoader();
+                this.api.dismissLoader();
                 this.getMyLocationAddressPostal();
             }
         } else if (this.mapData.activeId == "1") {
             this.map.setMarkerPosition(this.mapData.address.lat, this.mapData.address.long, this.mapData.newAddressMarker);
             this.map.setCenterMap(this.mapData.address.lat, this.mapData.address.long);
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.map.triggerDragend(this.mapData.newAddressMarker);
         }
     }
@@ -338,7 +311,7 @@ export class MapPage implements OnInit {
         console.log("handleAddressActive", this.mapData.activeId);
         this.mapData.newAddressMarker.setDraggable(true);
         this.mapData.newAddressMarker.setVisible(true);
-        this.dismissLoader();
+        this.api.dismissLoader();
         this.getMyLocationAddressPostal();
     }
     async completeAddressData() {
@@ -412,13 +385,13 @@ export class MapPage implements OnInit {
         let container = this.mapData.getItemUser(this.mapData.activeId, "Shared");
         if (container) {
             this.map.click(container);
-            this.dismissLoader();
+            this.api.dismissLoader();
         } else {
             let holders = this.mapData.shared;
             if (holders.length > 0) {
                 console.log("Setting map center");
                 this.map.click(holders[0]);
-                this.dismissLoader();
+                this.api.dismissLoader();
             } else {
                 console.log("No user data defaulting to me active");
                 this.mapData.activeId = -1 + "";

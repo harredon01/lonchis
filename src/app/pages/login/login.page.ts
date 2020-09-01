@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {TranslateService} from '@ngx-translate/core';
 import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
 import {GooglePlus} from '@ionic-native/google-plus/ngx';
 import {SignInWithApple, AppleSignInResponse, AppleSignInErrorResponse, ASAuthorizationAppleIDRequest} from '@ionic-native/sign-in-with-apple/ngx';
-import {NavController, ToastController, LoadingController, AlertController, ModalController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController, AlertController, ModalController} from '@ionic/angular';
 import {Events} from '../../services/events/events.service';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {UserService} from '../../services/user/user.service';
@@ -34,19 +32,10 @@ export class LoginPage implements OnInit {
         client_id: 1
     };
     public downloadProgress = 0;
-    loading: any;
 
     // Our translated text strings
-    private loginErrorString: string;
-    private loginStartString: string;
-    // Our translated text strings
-    private updateErrorString: string;
-    private updateStartString: string;
-    private forgotErrorString: string;
-    private forgotString: string;
     private isUpdating: boolean;
-    constructor(public spinnerDialog: SpinnerDialog,
-        public navCtrl: NavController,
+    constructor(public navCtrl: NavController,
         private googlePlus: GooglePlus,
         private fb: Facebook,
         private params: ParamsService,
@@ -59,31 +48,9 @@ export class LoginPage implements OnInit {
         private modalCtrl: ModalController,
         public auth: AuthService,
         public events: Events,
-        public loadingCtrl: LoadingController,
         public userData: UserDataService,
-        public iab: InAppBrowser,
-        public toastCtrl: ToastController,
-        public translateService: TranslateService) {
+        public iab: InAppBrowser) {
         this.isUpdating = false;
-
-        this.translateService.get('LOGIN.LOGIN_ERROR').subscribe((value) => {
-            this.loginErrorString = value;
-        });
-        this.translateService.get('LOGIN.FORGOT').subscribe((value) => {
-            this.forgotString = value;
-        });
-        this.translateService.get('LOGIN.FORGOT_ERROR').subscribe((value) => {
-            this.forgotErrorString = value;
-        });
-        this.translateService.get('LOGIN.LOGIN_START').subscribe((value) => {
-            this.loginStartString = value;
-        });
-        this.translateService.get('LOGIN.UPDATE_ERROR').subscribe((value) => {
-            this.updateErrorString = value;
-        });
-        this.translateService.get('LOGIN.UPDATE_START').subscribe((value) => {
-            this.updateStartString = value;
-        });
         this.events.subscribe('storageInitialized', (data: any) => {
             this.checkLogIn();
             // user and time are the same arguments passed in `events.publish(user, time)`
@@ -93,20 +60,6 @@ export class LoginPage implements OnInit {
     ionViewDidEnter() {
         if (this.userData.storageLoaded) {
             this.checkLogIn();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
         }
     }
 
@@ -183,36 +136,24 @@ export class LoginPage implements OnInit {
             if (resp.status == "success") {
                 this.postTokenAuth(resp.token);
             } else {
-                let toast = this.toastCtrl.create({
-                    message: this.loginErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('LOGIN.LOGIN_ERROR');
             }
             console.log("checkSocialToken result", resp);
         }, (err) => {
             console.log("checkSocialToken err", err);
-            let toast = this.toastCtrl.create({
-                message: this.loginErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('LOGIN.LOGIN_ERROR');
         });
     }
     postTokenAuth(token) {
         this.userData.setToken(token);
         this.user.postLogin().then((value) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.navCtrl.navigateRoot("tabs");
             this.events.publish("authenticated", {});
         }, (err) => {
             this._loadUserData();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.loginErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('LOGIN.LOGIN_ERROR');
         });
     }
 
@@ -229,7 +170,7 @@ export class LoginPage implements OnInit {
     ngOnInit() {
     }
     checkLogIn() {
-        this.showLoaderEmpty();
+        this.api.loader();
         this.userData.getToken().then((value) => {
             console.log("getToken");
             console.log(value);
@@ -244,24 +185,24 @@ export class LoginPage implements OnInit {
                 this._loadUserData();
             }
             let vm = this
-            setTimeout(function () {vm.dismissLoader();}, 1000);
+            setTimeout(function () {vm.api.dismissLoader();}, 1000);
         }, (err) => {
             this._loadUserData();
             let vm = this
-            setTimeout(function () {vm.dismissLoader();}, 1000);
+            setTimeout(function () {vm.api.dismissLoader();}, 1000);
         });
     }
 
     // Attempt to login in through our User service
     doLogin() {
         console.log("doLogin");
-        this.showLoaderEmpty();
+        this.api.loader();
         this.user.login(this.account).subscribe((data) => {
             if (data.access_token) {
                 this.user._loggedIn(data, this.account);
             }
             this.user.postLogin().then((value) => {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 console.log("Post login complete");
                 this.navCtrl.navigateRoot("tabs");
                 this.events.publish("authenticated", {});
@@ -269,13 +210,9 @@ export class LoginPage implements OnInit {
                 console.log("Post login error on registration");
             });
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             // Unable to log in
-            let toast = this.toastCtrl.create({
-                message: this.loginErrorString,
-                duration: 3000,
-                position: 'top'
-            }).then(toast => toast.present());
+            this.api.toast('LOGIN.LOGIN_ERROR');
             this.api.handleError(err);
         });
     }
@@ -286,7 +223,7 @@ export class LoginPage implements OnInit {
     }
     // Attempt to login in through our User service
     _loadUserData() {
-        this.dismissLoader();
+        this.api.dismissLoader();
         this.userData.getUsername().then((value) => {
             console.log("getUsername", value);
             if (value) {
@@ -320,32 +257,6 @@ export class LoginPage implements OnInit {
     singup() {
         console.log("Signup")
         this.navCtrl.navigateForward("signup");
-    }
-
-    async showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = await this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.loginStartString,
-                backdropDismiss: true
-            });
-            await this.loading.present();
-        } else {
-            this.spinnerDialog.show(null, this.loginStartString);
-        }
-    }
-    async showLoaderEmpty() {
-        console.log("showloaderempty");
-        this.isUpdating = true;
-        if (document.URL.startsWith('http')) {
-            this.loading = await this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            });
-            await this.loading.present();
-        } else {
-            this.spinnerDialog.show();
-        }
     }
 
 }

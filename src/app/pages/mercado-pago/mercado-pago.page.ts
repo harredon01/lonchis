@@ -2,10 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Payment} from '../../models/payment';
 import {TranslateService} from '@ngx-translate/core';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
 import {ApiService} from '../../services/api/api.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
-import {NavController, ToastController, LoadingController, ModalController, AlertController} from '@ionic/angular';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {ParamsService} from '../../services/params/params.service';
 import {MercadoPagoService} from '../../services/mercado-pago/mercado-pago.service';
@@ -24,8 +23,6 @@ export class MercadoPagoPage implements OnInit {
 
     payment: Payment;
     cardBranch: any = "";
-    loading: any;
-    private cardPaymentErrorString: string;
     logo: any = "";
     installmentsSelected: any;
     issuerId: any;
@@ -45,13 +42,7 @@ export class MercadoPagoPage implements OnInit {
         public billing: BillingService,
         public navCtrl:NavController,
         public translateService: TranslateService,
-        public loadingCtrl: LoadingController,
-        private spinnerDialog: SpinnerDialog,
-        public toastCtrl: ToastController,
         private mercadoServ: MercadoPagoService) {
-        this.translateService.get('CHECKOUT_BANKS.BANKS_GET_ERROR').subscribe((value) => {
-            this.cardPaymentErrorString = value;
-        });
         let paramsCont = this.params.getParams();
         if (paramsCont) {
             if (paramsCont.paymentMethod) {
@@ -132,36 +123,8 @@ export class MercadoPagoPage implements OnInit {
         console.log("Setting form values: ", container);
         this.payerForm.setValue(container);
     }
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show();
-        }
-    }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
     showAlert(alert) {
-        let toast = this.toastCtrl.create({
-            message: alert,
-            duration: 3000,
-            position: 'top'
-        }).then(toast => toast.present());
+       this.api.toast(alert);
     }
     showAlertTranslation(alert) {
         this.translateService.get(alert).subscribe(
@@ -194,13 +157,13 @@ export class MercadoPagoPage implements OnInit {
             this.dateError = true;
             return;
         }
-        this.showLoader();
+        this.api.loader();
         var $form = document.querySelector('#pay');
 
         Mercadopago.createToken($form, (status, response) => {
             Mercadopago.clearSession();
             if (status !== 200) {
-                this.dismissLoader();
+                this.api.dismissLoader();
                 console.log("Error", response)
                 this.validationErrors = [];
                 let errors = response.cause;
@@ -221,7 +184,7 @@ export class MercadoPagoPage implements OnInit {
                     issuer_id: this.issuerId
                 };
                 this.billing.payCreditCard(container, "MercadoPagoService").subscribe((data: any) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     console.log("after payCredit");
                     console.log(JSON.stringify(data));
                     if (data.status == "success") {
@@ -240,14 +203,14 @@ export class MercadoPagoPage implements OnInit {
                         if(data.status_detail){
                             this.showAlertTranslation("MERCADOPAGO." + data.status_detail);
                         } else {
-                            this.showAlert(this.cardPaymentErrorString);
+                            this.api.toast('CHECKOUT_BANKS.BANKS_GET_ERROR');
                         }
                         
                     }
                 }, (err) => {
-                    this.dismissLoader();
+                    this.api.dismissLoader();
                     // Unable to log in
-                    this.showAlert(this.cardPaymentErrorString);
+                    this.api.toast('CHECKOUT_BANKS.BANKS_GET_ERROR');
                     this.api.handleError(err);
                 });
             }

@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
-import {NavController, ToastController, LoadingController} from '@ionic/angular';
-import {SpinnerDialog} from '@ionic-native/spinner-dialog/ngx';
+import {NavController} from '@ionic/angular';
 import {ApiService} from '../../services/api/api.service';
 import {UserService} from '../../services/user/user.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
@@ -22,28 +21,15 @@ export class MyAccountPage implements OnInit {
     language: any;
 
     // Our translated text strings
-    private updateErrorString: string;
     private updateStartString: string;
-    private loginErrorString: string;
     loading: any;
     constructor(public navCtrl: NavController,
         public user: UserService,
         public userData: UserDataService,
-        public toastCtrl: ToastController,
         public api: ApiService,
-        public loadingCtrl: LoadingController,
         public translateService: TranslateService,
-        public formBuilder: FormBuilder, private spinnerDialog: SpinnerDialog) {
+        public formBuilder: FormBuilder) {
 
-        this.translateService.get('MY_ACCOUNT.UPDATE_ERROR').subscribe((value) => {
-            this.updateErrorString = value;
-        });
-        this.translateService.get('MY_ACCOUNT.UPDATE_START').subscribe((value) => {
-            this.updateStartString = value;
-        });
-        this.translateService.get('USER.GET_USER_ERROR').subscribe((value) => {
-            this.loginErrorString = value;
-        });
         this.translateService.onLangChange.subscribe((event: any) => {
             //window.location.reload();
         });
@@ -79,11 +65,7 @@ export class MyAccountPage implements OnInit {
                 }
 
             }, (err) => {
-                let toast = this.toastCtrl.create({
-                    message: this.loginErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('USER.GET_USER_ERROR');
                 this.api.handleError(err);
             });
         }
@@ -101,72 +83,36 @@ export class MyAccountPage implements OnInit {
             }, 1000);
         });
     }
-    async dismissLoader() {
-        if (document.URL.startsWith('http')) {
-            let topLoader = await this.loadingCtrl.getTop();
-            while (topLoader) {
-                if (!(await topLoader.dismiss())) {
-                    console.log('Could not dismiss the topmost loader. Aborting...');
-                    return;
-                }
-                topLoader = await this.loadingCtrl.getTop();
-            }
-        } else {
-            this.spinnerDialog.hide();
-        }
-    }
 
     ngOnInit() {
     }
 
     doUpdate() {
-        this.showLoader();
+        this.api.loader('MY_ACCOUNT.UPDATE_START');
         // Attempt to login in through our User service
         this.user.myAccount(this.registrationForm.value).subscribe((resp: any) => {
             console.log("Response my account", resp);
-            this.dismissLoader();
+            this.api.dismissLoader();
             if (resp.status == "success") {
                 this.userData._user = resp.user;
 
                 this.navCtrl.navigateRoot('tabs');
             } else {
-                let toast = this.toastCtrl.create({
-                    message: this.updateErrorString,
-                    duration: 3000,
-                    position: 'top'
-                }).then(toast => toast.present());
+                this.api.toast('MY_ACCOUNT.UPDATE_ERROR');
             }
 
         }, (err) => {
-            this.dismissLoader();
+            this.api.dismissLoader();
             this.api.handleError(err);
             // Unable to sign up
 
         });
     }
 
-    showLoader() {
-        if (document.URL.startsWith('http')) {
-            this.loading = this.loadingCtrl.create({
-                spinner: 'crescent',
-                message: this.updateStartString,
-                backdropDismiss: true
-            }).then(toast => toast.present());
-        } else {
-            this.spinnerDialog.show(null, this.updateStartString);
-        }
-    }
     changeLanguage() {
         if (this.languageLoaded) {
             console.log("Change language", this.language);
-            if (document.URL.startsWith('http')) {
-                this.loading = this.loadingCtrl.create({
-                    spinner: 'crescent',
-                    backdropDismiss: true
-                }).then(toast => toast.present());
-            } else {
-                this.spinnerDialog.show();
-            }
+            this.api.loader();
             this.userData.setLanguage(this.language);
             let vm = this;
             setTimeout(function () {
