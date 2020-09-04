@@ -486,6 +486,36 @@
         "SLIDE_TITLE": "Selecciona el menú del día",
         "SLIDE_DESC": "Vegetariano:Reemplazamos la proteína animal por una vegetal y balanceamos tu plato con granos, verduras y harinas.<br/>Light: En esta opción nos aseguramos que tu plato esté bien balanceado, bajo en grasas y harinas.<br/>Completo: Un plato generoso pero balanceado con proteína, verduras y harinas. "
     },
+    "DOCUMENT_DETAIL": {
+        "NAME": "Documento",
+        "TITLE": "Titulo",
+        "INDEX":"Indice de campos",
+        "ADD_FIELD":"Agregar campo",
+        "ADD_FIELD_CODE":"Código (igual que el nombre sin espacios ni tildes y ñ)",
+        "ADD_FIELD_NAME":"Nombre",
+        "ADD_FIELD_TYPE":"Tipo",
+        "ADD_FIELD_TEXT":"Texto Corto",
+        "USER":"Paciente",
+        "AUTHOR":"Autor",
+        "TYPE_SELECTOR_TITLE":"Tipo de doc",
+        "ADD_FIELD_NUM":"Numerico",
+        "ADD_FIELD_TEXTAREA":"Texto largo",
+        "SIGNATURES":"Firmas",
+        "SIGNER_NAME":"Nombre",
+        "SIGN_DATE":"Fecha de firma",
+        "SIGN":"Firmar",
+        "VERIFY_SIGNATURES":"Verificar Firmas",
+        "CREATED_AT":"Creado",
+        "UPDATED_AT":"Ultima modificación",
+        "BODY":"Detalles",
+        "DESCRIPTION":"Descripción",
+        "ASSIGN_OWNER":"Seleccionar paciente"
+    },
+    "DOCUMENT_LISTING": {
+        "TITLE": "Documento",
+        "USER": "Para mí",
+        "AUTHOR": "Escritos por mi"
+    },
     "EDIT_PRODUCTS": {
         "TITLE": "Editar",
         "SUBTITLE": "Tu producto",
@@ -916,6 +946,7 @@
         "ADDRESSES": "Mis Direcciones",
         "PAYMENTS": "Mis Pagos",
         "MERCHANTS": "Mis negocios",
+        "DOCUMENTS": "Mis resultados y documentos",
         "ORDERS": "Mis Ordenes",
         "DELIVERIES": "Mis Entregas",
         "MY_ACCOUNT": "Mi cuenta",
@@ -926,6 +957,7 @@
         "MEDICAL":"Mi perfil médico",
         "CODES":"Mis códigos de seguridad",
         "BOOKINGS":"Reservas",
+        "FAQ":"Preguntas frecuentes",
         "CHAT":"Servicio al cliente"
     },
     "SUPPORT": {
@@ -956,9 +988,11 @@
     "INPUTS": {
         "SUBMIT": "Enviar",
         "UPDATE": "Actualizar",
+        "SAVE": "Guardar",
         "DELETE": "Eliminar",
         "EDIT": "Editar",
         "CANCEL": "Cancelar",
+        "CLEAR": "Limpiar",
         "CART_OPEN": "Pedidos abiertos",
         "NO_RESULTS": "No resultados",
         "REMEMBER": "Recordarme",
@@ -971,7 +1005,10 @@
         "SHOW_LESS": "Esconder",
         "PASSWORD":"Clave",
         "BACK":"Volver",
-        "CHECK":"Verificar"
+        "CHECK":"Verificar",
+        "ERROR_GET":"Error buscando",
+        "ERROR_SAVE":"Error guardando",
+        "SUCCESS_SAVE":"Guardado correctamente"
     },
     "USER": {
         "NAME": "Nombre",

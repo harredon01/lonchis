@@ -4,6 +4,7 @@ import {ParamsService} from '../../services/params/params.service';
 import {Events} from '../../services/events/events.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ActivatedRoute} from '@angular/router';
+import {Router} from '@angular/router';
 import {ProductsService} from '../../services/products/products.service';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
@@ -53,6 +54,7 @@ export class MerchantProductsPage implements OnInit {
         public modalCtrl: ModalController,
         public alertCtrl: AlertController,
         public cart: CartService,
+        public route:Router,
         public events: Events,
         public params: ParamsService,
         public userData: UserDataService,
@@ -142,14 +144,14 @@ export class MerchantProductsPage implements OnInit {
         let questions = [];
         let category_id = null;
         let container = null;
-        console.log("variants",item.variants)
-        for(let i in item.variants){
-            if(item.variant_id == item.variants[i].id){
+        console.log("variants", item.variants)
+        for (let i in item.variants) {
+            if (item.variant_id == item.variants[i].id) {
                 container = item.variants[i];
                 break;
             }
         }
-        console.log("Container",container);
+        console.log("Container", container);
         if (container.attributes) {
             if (container.attributes.questions) {
                 questions = container.attributes.questions;
@@ -169,15 +171,15 @@ export class MerchantProductsPage implements OnInit {
             "questions": questions,
             "product_variant_id": item.variant_id,
             "quantity": item.amount,
-            "purpose":"external_book"
+            "purpose": "external_book"
         }
         console.log(params);
         this.params.setParams(params);
         if (category_id) {
             if (this.userData._user) {
-                this.navCtrl.navigateForward("tabs/home/categories/"+category_id);
+                this.navCtrl.navigateForward("tabs/home/categories/" + category_id);
             } else {
-                this.drouter.addPages("tabs/home/categories/"+category_id);
+                this.drouter.addPages("tabs/home/categories/" + category_id);
                 this.navCtrl.navigateForward('login');
             }
         } else {
@@ -368,8 +370,16 @@ export class MerchantProductsPage implements OnInit {
     }
 
     loadProducts() {
-        let container = {"includes":"categories,files,merchant","merchant_id":this.merchant,"page":this.page};
-        this.productsServ.getProductsMerchant(container).subscribe((resp) => {
+        let container = {"includes": "categories,files,merchant", "merchant_id": this.merchant, "page": this.page};
+        let activeView = this.route.url;
+        console.log("getActive", activeView);
+        let query = null;
+        if (activeView.includes("settings")) {
+            query = this.productsServ.getProductsMerchantPrivate(container);
+        } else {
+            query = this.productsServ.getProductsMerchant(container);
+        }
+        query.subscribe((resp: any) => {
             if (resp.products_total > 0) {
                 this.categories = this.productsServ.buildProductInformation(resp, this.merchant);
                 console.log("Result build product", this.categories);
@@ -395,7 +405,7 @@ export class MerchantProductsPage implements OnInit {
                 }
                 this.productsServ.calculateTotals("load products", this.categories);
                 //this.createSlides();
-            } 
+            }
             this.api.dismissLoader();
         }, (err) => {
             this.api.handleError(err);

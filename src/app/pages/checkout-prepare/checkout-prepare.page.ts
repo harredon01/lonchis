@@ -289,6 +289,7 @@ export class CheckoutPreparePage implements OnInit {
             "necessary": missing,
             "merchant": this.merchant
         };
+        this.params.setParams(container);
         this.split = true;
         console.log("BuyerSelectPage", container);
 
@@ -298,7 +299,8 @@ export class CheckoutPreparePage implements OnInit {
         });
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
-        if (data == "done") {
+        if (data.status == "success") {
+            this.orderData.payers = data.users;
             this.payers = this.orderData.payers;
             this.showPayers = true;
             this.split = true;

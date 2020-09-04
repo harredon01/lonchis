@@ -16,14 +16,20 @@ export class ProductsService {
         return seq;
 
     }
+    getProductsMerchantPrivate(data: any) {
+        let endpoint = '/private/merchants/products';
+        let seq = this.api.get(endpoint, data);
+        return seq;
+
+    }
     getProductSimple(product: string) {
         let endpoint = '/products/' + product;
         let seq = this.api.get(endpoint);
         return seq;
     }
-    getProductCategories(merchant_id: string, typeS: string) {
-        let endpoint = '/merchants/' + merchant_id + '/categories/' + typeS;
-        let seq = this.api.get(endpoint);
+    getProductCategories(params: any) {
+        let endpoint = '/categories';
+        let seq = this.api.get(endpoint,params);
         return seq;
     }
     saveOrCreateProduct(product: any) {
@@ -182,7 +188,7 @@ export class ProductsService {
         //        console.log("Update Prod Vis3", productInfo);
         return productInfo;
     }
-    updateVisualWithCart(categories,items) {
+    updateVisualWithCart(categories, items) {
         for (let key in items) {
             let contItem = items[key].attributes;
             if (true) {
@@ -304,7 +310,9 @@ export class ProductsService {
                 if (variant.price < productInfo.price) {
                     productInfo = this.updateProductVisual(variant, productInfo);
                 }
-                resultsVariant.push(variant);
+                if (!this.containsObject(variant, resultsVariant)) {
+                    resultsVariant.push(variant);
+                }
                 if ((i + 1) >= items['products_variants'].length) {
                     productInfo.variants = resultsVariant;
                     if (activeCategory.id) {
@@ -341,5 +349,14 @@ export class ProductsService {
             return resultsCategory;
         }
         return null;
+    }
+    containsObject(obj, list) {
+        var x;
+        for (x in list) {
+            if (list[x].id == obj.id) {
+                return true;
+            }
+        }
+        return false;
     }
 }
