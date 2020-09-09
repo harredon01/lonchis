@@ -197,7 +197,7 @@ export class MercadoPagoPage implements OnInit {
                         }
                         let container = {"payment":this.payment,"status":data.status,"response":data.response,"status_detail":data.status_detail};
                         this.params.setParams(container);
-                        this.navCtrl.navigateRoot("tabs/mercado-pago-options/thankyou");
+                        this.navCtrl.navigateRoot("shop/mercado-pago-options/thankyou");
                         
                     } else {
                         if(data.status_detail){

@@ -269,10 +269,10 @@ export class ProgramarPage implements OnInit {
             console.log("User: ", this.userData._user);
             if (this.userData._user) {
                 this.params.setParams({"merchant_id": 1299});
-                this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + 1299);
+                this.navCtrl.navigateForward('shop/home/checkout/shipping/' + 1299);
             } else {
                 this.params.setParams({"merchant_id": 1299});
-                this.drouter.addPages('tabs/home/checkout/shipping/' + 1299);
+                this.drouter.addPages('shop/home/checkout/shipping/' + 1299);
                 console.log("Pushing login");
                 this.navCtrl.navigateForward('login');
             }
@@ -409,7 +409,7 @@ export class ProgramarPage implements OnInit {
         if (this.userData._user) {
             this.navCtrl.navigateForward('home/tutorials');
         } else {
-            this.navCtrl.navigateForward('tabs/home/tutorials');
+            this.navCtrl.navigateForward('shop/home/tutorials');
         }
 
     }
@@ -417,7 +417,7 @@ export class ProgramarPage implements OnInit {
         this.params.setParams({
             delivery: this.deliveryParams
         });
-        this.navCtrl.navigateForward('tabs/home/programar/complete');
+        this.navCtrl.navigateForward('shop/home/programar/complete');
     }
 
     autoSelectSingles() {

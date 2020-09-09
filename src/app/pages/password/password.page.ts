@@ -48,7 +48,7 @@ export class PasswordPage implements OnInit {
             console.log("savePassword result", resp);
             if (resp.status == "success") {
                 this.api.toast('PASSWORD_UPDATE.SUCCESS_UPDATE');
-                this.navCtrl.navigateRoot('tabs');
+                this.navCtrl.navigateRoot('shop');
             } else {
                 this.api.toast('PASSWORD_UPDATE.ERROR_UPDATE');
             }

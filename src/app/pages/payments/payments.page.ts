@@ -83,6 +83,6 @@ export class PaymentsPage implements OnInit {
      */
     openItem(item: Payment) {
         this.params.setParams({"item":item})
-        this.navCtrl.navigateForward('tabs/settings/payments/'+item.id);
+        this.navCtrl.navigateForward('shop/settings/payments/'+item.id);
     }
 }

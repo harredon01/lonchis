@@ -128,7 +128,7 @@ export class CheckoutCashPage implements OnInit {
                     const browser = this.iab.create(data.transactionResponse.extraParameters.URL_PAYMENT_RECEIPT_HTML);
                     browser.on('exit').subscribe(event => {
                         this.orderData.clearOrder();
-                        this.navCtrl.navigateRoot("tabs");
+                        this.navCtrl.navigateRoot("shop");
                     });
                 }
             }

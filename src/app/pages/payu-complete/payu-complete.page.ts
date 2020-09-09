@@ -50,8 +50,8 @@ export class PayuCompletePage implements OnInit {
        * The view loaded, let's query our items for the list
        */
     returnHome() {
-        this.navCtrl.navigateRoot('tabs/settings');
-        this.navCtrl.navigateRoot('tabs');
+        this.navCtrl.navigateRoot('shop/settings');
+        this.navCtrl.navigateRoot('shop');
         this.orderData.currentOrder = null;
     }
 

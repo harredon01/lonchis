@@ -97,10 +97,10 @@ export class ContactsPage implements OnInit {
     openItem(item: Contact) {
         this.params.setParams({"item":item });
         console.log("Entering Contact",item.id);
-        this.navCtrl.navigateForward('tabs/contacts/'+item.id); 
+        this.navCtrl.navigateForward('shop/contacts/'+item.id); 
     }
     importContacts() {
-        this.navCtrl.navigateForward('tabs/contacts/import');
+        this.navCtrl.navigateForward('shop/contacts/import');
     }
     ionViewDidEnter(){
         this.getContacts(null);

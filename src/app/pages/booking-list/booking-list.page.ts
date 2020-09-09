@@ -46,7 +46,7 @@ export class BookingListPage implements OnInit {
         this.typeObj = paramsObj.type;
         this.target = paramsObj.target;
         this.objectId = paramsObj.objectId;
-        this.urlSearch = "tabs/settings/merchants/" + paramsObj.objectId;
+        this.urlSearch = "shop/settings/merchants/" + paramsObj.objectId;
         this.selectedObject = {"id": paramsObj.objectId, "name": paramsObj.name};
         this.bookingObjects.push(this.selectedObject);
         this.query = this.target + "_all";
@@ -217,7 +217,7 @@ export class BookingListPage implements OnInit {
         console.log("Open booking", booking);
         let param = {"booking": booking};
         this.params.setParams(param);
-        this.navCtrl.navigateForward('tabs/settings/bookings/' + booking.id);
+        this.navCtrl.navigateForward('shop/settings/bookings/' + booking.id);
     }
     selectObj() {
         for (let item in this.bookingObjects) {
@@ -265,7 +265,7 @@ export class BookingListPage implements OnInit {
             this.cart.addCustomCartItem(item).subscribe((data: any) => {
                 this.orderData.cartData = data.cart;
                 this.params.setParams({"merchant_id": booking.bookable.id});
-                this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+                this.navCtrl.navigateForward('shop/home/checkout/prepare');
             }, (err) => {
                 console.log("Error addCustomCartItem");
                 this.api.handleError(err);
@@ -302,7 +302,7 @@ export class BookingListPage implements OnInit {
         }
         console.log(params);
         this.params.setParams(params);
-        this.navCtrl.navigateForward('tabs/settings/bookings/' + booking.id + "/edit");
+        this.navCtrl.navigateForward('shop/settings/bookings/' + booking.id + "/edit");
     }
 
     addToCart(booking: any) {
@@ -314,7 +314,7 @@ export class BookingListPage implements OnInit {
                 if (container.type == "Booking") {
                     if (container.id == booking.id) {
                         this.params.setParams({"merchant_id": booking.bookable_id});
-                        this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+                        this.navCtrl.navigateForward('shop/home/checkout/prepare');
                         return;
                     }
                 }

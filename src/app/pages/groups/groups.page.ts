@@ -86,7 +86,7 @@ export class GroupsPage implements OnInit {
     openItem(item: Group) {
         this.params.setParams({"item": item});
         console.log("Entering Contact", item.id);
-        this.navCtrl.navigateForward('tabs/groups/' + item.id);
+        this.navCtrl.navigateForward('shop/groups/' + item.id);
     }
 
     ngOnInit() {

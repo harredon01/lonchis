@@ -410,10 +410,10 @@ export class BookingPage implements OnInit {
         const {data} = await addModal.onDidDismiss();
         if (data == "Shipping") {
             this.params.setParams({"merchant_id": this.objectId});
-            this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + this.objectId);
+            this.navCtrl.navigateForward('shop/home/checkout/shipping/' + this.objectId);
         } else if (data == "Prepare") {
             this.params.setParams({"merchant_id": this.objectId});
-            this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+            this.navCtrl.navigateForward('shop/home/checkout/prepare');
         }
     }
     showAlertTranslation(alert) {

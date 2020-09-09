@@ -96,7 +96,7 @@ export class MyAccountPage implements OnInit {
             if (resp.status == "success") {
                 this.userData._user = resp.user;
 
-                this.navCtrl.navigateRoot('tabs');
+                this.navCtrl.navigateRoot('shop');
             } else {
                 this.api.toast('MY_ACCOUNT.UPDATE_ERROR');
             }

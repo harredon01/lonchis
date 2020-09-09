@@ -124,7 +124,7 @@ export class CheckoutPayerPage implements OnInit {
         this.showAddressCard = false;
         this.selectedAddress = item;
         this.params.setParams({"token": source.source, "method": extras.method});
-        this.navCtrl.navigateForward('tabs/payu/credit/card');
+        this.navCtrl.navigateForward('shop/payu/credit/card');
     }
     useUser() {
         console.log("prefil", this.v);
@@ -167,7 +167,7 @@ export class CheckoutPayerPage implements OnInit {
      */
     checkAdvance() {
         if (this.orderData.payerAddress && this.orderData.payerInfo) {
-            this.navCtrl.navigateForward('tabs/payu/credit/card');
+            this.navCtrl.navigateForward('shop/payu/credit/card');
         }
     }
 

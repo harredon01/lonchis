@@ -195,11 +195,7 @@ export class LonchisPage implements OnInit {
             this.drouter.pages = null;
             this.events.publish("authenticated", {});
             this.getDeliveries(false);
-        } else {
-            if (this.router.url.includes("tabs")) {
-                this.navCtrl.navigateBack("home");
-            }
-        }
+        } 
         if (this.userData.deviceSet){
             this.getCart();
         }
@@ -404,7 +400,7 @@ export class LonchisPage implements OnInit {
                 this.params.setParams({
                     item: item
                 });
-                this.navCtrl.navigateForward('tabs/home/programar');
+                this.navCtrl.navigateForward('shop/home/programar');
             }
         }, (err) => {
             this.api.dismissLoader();
@@ -458,11 +454,7 @@ export class LonchisPage implements OnInit {
         this.params.setParams({
             objectId: item.id
         });
-        if (this.userData._user) {
-            this.navCtrl.navigateForward('tabs/home/products/' + item.id);
-        } else {
-            this.navCtrl.navigateForward('home/products/' + item.id);
-        }
+        this.navCtrl.navigateForward('shop/home/products/' + item.id);
     }
     showProducts(item: Merchant) {
         let params = {
@@ -471,11 +463,7 @@ export class LonchisPage implements OnInit {
             "owner": false
         };
         this.params.setParams(params);
-        if (this.userData._user) {
-            this.navCtrl.navigateForward('tabs/home/products/' + item.id);
-        } else {
-            this.navCtrl.navigateForward('home/products/' + item.id);
-        }
+        this.navCtrl.navigateForward('shop/home/products/' + item.id);
     }
     openMenuOption(item: any) {
         if (this.userData._user) {
@@ -494,11 +482,7 @@ export class LonchisPage implements OnInit {
      */
     openCalc() {
         console.log("Opening calc");
-        if (this.userData._user) {
-            this.navCtrl.navigateForward('tabs/home/calculadora');
-        } else {
-            this.navCtrl.navigateForward('home/calculadora');
-        }
+        this.navCtrl.navigateForward('shop/home/calculadora');
 
     }
 
@@ -551,11 +535,7 @@ export class LonchisPage implements OnInit {
     }
     openNutricion() {
         console.log("Opening menu");
-        if (this.userData._user) {
-            this.navCtrl.navigateForward('tabs/home/categories/' + 10);
-        } else {
-            this.navCtrl.navigateForward('home/' + 10);
-        }
+        this.navCtrl.navigateForward('shop/home/categories/' + 10);
     }
 
     programAnother(delivery: any) {
@@ -568,7 +548,7 @@ export class LonchisPage implements OnInit {
             if (resp.status == "success") {
                 resp.delivery.delivery = resp.delivery.delivery.replace(/-/g, '/');
                 this.params.setParams({item: resp.delivery});
-                this.navCtrl.navigateForward("tabs/home/programar");
+                this.navCtrl.navigateForward("shop/home/programar");
             } else {
                 this.api.toast(resp.message);
             }
@@ -586,10 +566,10 @@ export class LonchisPage implements OnInit {
             console.log("User: ", this.userData._user);
             if (this.userData._user) {
                 this.params.setParams({"merchant_id": 1299});
-                this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + 1299);
+                this.navCtrl.navigateForward('shop/home/checkout/shipping/' + 1299);
             } else {
                 this.params.setParams({"merchant_id": 1299});
-                this.drouter.addPages('tabs/home/checkout/shipping/' + 1299);
+                this.drouter.addPages('shop/home/checkout/shipping/' + 1299);
                 console.log("Pushing login");
                 this.navCtrl.navigateForward('login');
             }
@@ -638,15 +618,15 @@ export class LonchisPage implements OnInit {
         if (item.status == "pending" || item.status == "enqueue" || item.status == "deposit") {
             console.log("Select delivery", item);
             this.params.setParams({item: item});
-            this.navCtrl.navigateForward("tabs/home/programar");
+            this.navCtrl.navigateForward("shop/home/programar");
         } else if (item.status == "transit") {
             this.mapData.hideAll();
             this.mapData.activeDelivery = item.id;
             this.mapData.activeType = "Delivery";
-            this.navCtrl.navigateForward("tabs/map");
+            this.navCtrl.navigateForward("shop/map");
         } else if (item.status == "completed") {
             this.params.setParams({objectJson: item, type_object: "Delivery", object_id: item.id});
-            this.navCtrl.navigateForward("tabs/home/comments");
+            this.navCtrl.navigateForward("shop/home/comments");
         } else if (item.status == "enqueue" || item.status == "preparing") {
             this.showPrompt()
         } else if (!item.status) {
@@ -658,7 +638,7 @@ export class LonchisPage implements OnInit {
                 }
             };
             this.params.setParams({item: container});
-            this.navCtrl.navigateForward("tabs/home/programar");
+            this.navCtrl.navigateForward("shop/home/programar");
         }
     }
     showPrompt() {
@@ -687,7 +667,7 @@ export class LonchisPage implements OnInit {
         console.log("Cart closing", data);
         if (data == "Prepare") {
             this.params.setParams({"merchant_id": 1});
-            this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+            this.navCtrl.navigateForward('shop/home/checkout/prepare');
         }*/
     }
 }

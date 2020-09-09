@@ -196,7 +196,7 @@ export class NewMerchantPage implements OnInit {
                 let container = {type:"Merchant",objectId:resp.object.id};
                 this.params.setParams(container);
                 this.navCtrl.back();
-                this.navCtrl.navigateForward("tabs/settings/merchants/"+resp.object.id);
+                this.navCtrl.navigateForward("shop/settings/merchants/"+resp.object.id);
             } else {
                 this.api.toast('MERCHANT_CREATE.ERROR_SAVE');
             }

@@ -24,7 +24,7 @@ export class DynamicRouterService {
                 objectId: notification.payload.payment_id
             };
             this.params.setParams(parms);
-            destinyUrl = 'tabs/settings/payments/' + notification.payload.payment_id;
+            destinyUrl = 'shop/settings/payments/' + notification.payload.payment_id;
         } else if (notification.type == "user_message") {
             let friend = new Friend({
                 "id": notification.trigger_id,
@@ -34,7 +34,7 @@ export class DynamicRouterService {
             });
             console.log("Chat room container", friend);
             this.params.setParams({friend});
-            destinyUrl = 'tabs/chat-room';
+            destinyUrl = 'shop/chat-room';
         } else if (notification.type == "support_message" || notification.type == "program_reminder") {
             destinyUrl = notification.payload.utl;
             let destinyPayload = notification.payload.page_payload;
@@ -48,27 +48,27 @@ export class DynamicRouterService {
             if (destinyPayload.booking.options.virtual_meeting) {
                 if (destinyPayload.booking.options.virtual_provider == "zoom") {
                     this.browser(destinyPayload.url);
-                    destinyUrl = 'tabs';
+                    destinyUrl = 'shop';
                 } else {
                     this.params.setParams(destinyPayload);
-                    destinyUrl = 'tabs/opentok';
+                    destinyUrl = 'shop/opentok';
                 }
             } else {
                 let parms = {
                     booking_id: notification.payload.booking_id
                 };
                 this.params.setParams(parms);
-                destinyUrl = 'tabs/settings/bookings/' + notification.payload.booking_id;
+                destinyUrl = 'shop/settings/bookings/' + notification.payload.booking_id;
             }
         } else if (notification.type == "booking_bookable_approved" || notification.type == "booking_bookable_denied" || notification.type == "booking_created_bookable_pending" || notification.type == "booking_updated_bookable_pending") {
             let parms = {
                 booking_id: notification.payload.booking_id
             };
             this.params.setParams(parms);
-            destinyUrl = 'tabs/settings/bookings/' + notification.payload.booking_id;
+            destinyUrl = 'shop/settings/bookings/' + notification.payload.booking_id;
         } else if (notification.type == "mercadopago" ) {
             this.browser(notification.payload.url);
-            destinyUrl = 'tabs';
+            destinyUrl = 'shop';
         } else if(notification.type == "order_status_Merchant"){
             let params = {
                 "objectId": notification.payload.merchant_id,
@@ -77,7 +77,7 @@ export class DynamicRouterService {
                 "settings": true
             };
             this.params.setParams(params);
-            destinyUrl = "tabs/settings/merchants/" + notification.payload.merchant_id + "/items";
+            destinyUrl = "shop/settings/merchants/" + notification.payload.merchant_id + "/items";
         }
         console.log("Destiny", destinyUrl);
         return destinyUrl;

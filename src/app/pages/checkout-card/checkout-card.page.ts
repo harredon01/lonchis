@@ -155,7 +155,7 @@ export class CheckoutCardPage implements OnInit {
         this.params.setParams({
             transaction: transaction
         });
-        this.navCtrl.navigateForward('tabs/payu/complete');
+        this.navCtrl.navigateForward('shop/payu/complete');
     }
     payCreditCard() {
         this.submitAttempt = true;

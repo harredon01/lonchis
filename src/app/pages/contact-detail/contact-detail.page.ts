@@ -32,7 +32,7 @@ public mainContact: Contact;
     chat() {
         let friend = {"friend":{"id":this.mainContact.id,"name":this.mainContact.firstName}};
         this.params.setParams(friend);
-        this.navCtrl.navigateForward('tabs/contacts/'+this.mainContact.id+'/chat'); 
+        this.navCtrl.navigateForward('shop/contacts/'+this.mainContact.id+'/chat'); 
     }
     updateblockStatus(status:any) {
         let data = {

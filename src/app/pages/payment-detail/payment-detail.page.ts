@@ -148,7 +148,7 @@ export class PaymentDetailPage implements OnInit {
     retryPaymentRedirect() {
         let container = {"payment": this.item};
         this.params.setParams(container);
-        this.navCtrl.navigateForward("tabs/settings/payments/"+this.item.id+"/payu/options");
+        this.navCtrl.navigateForward("shop/settings/payments/"+this.item.id+"/payu/options");
     }
     retryPayment(item: Payment) {
         this.api.loader('PAYMENTS.GET_START');
@@ -181,7 +181,7 @@ export class PaymentDetailPage implements OnInit {
         this.params.setParams({
             transaction: transaction
         });
-        this.navCtrl.navigateForward('tabs/payu/complete');
+        this.navCtrl.navigateForward('shop/payu/complete');
     }
     quickPay() {
         this.api.loader('PAYMENTS.GET_START');
@@ -218,7 +218,7 @@ export class PaymentDetailPage implements OnInit {
                     objectId: data.payment.id,
                     newPayment: true
                 });
-                this.navCtrl.navigateForward('tabs/settings/payments/' + data.payment.id);
+                this.navCtrl.navigateForward('shop/settings/payments/' + data.payment.id);
             } else {
                 // Unable to log in
                 this.api.toast('PAYMENTS.ERROR_PAY');
@@ -235,8 +235,8 @@ export class PaymentDetailPage implements OnInit {
        * The view loaded, let's query our items for the list
        */
     returnHome() {
-        this.navCtrl.navigateRoot('tabs/settings');
-        this.navCtrl.navigateRoot('tabs');
+        this.navCtrl.navigateRoot('shop/settings');
+        this.navCtrl.navigateRoot('shop');
     }
 
     ngOnInit() {

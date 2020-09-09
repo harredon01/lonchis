@@ -77,7 +77,7 @@ export class CalculadoraPage implements OnInit {
     openConversion() {
         this.navCtrl.pop();
         if (this.userData._user){
-            this.navCtrl.navigateForward('tabs/home/conversion');
+            this.navCtrl.navigateForward('shop/home/conversion');
         } else {
             this.navCtrl.navigateForward('home/conversion');
         }
@@ -93,10 +93,10 @@ export class CalculadoraPage implements OnInit {
             console.log("User: ", this.userData._user);
             if (this.userData._user) {
                 this.params.setParams({"merchant_id": 1299});
-                this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + 1299);
+                this.navCtrl.navigateForward('shop/home/checkout/shipping/' + 1299);
             } else {
                 this.params.setParams({"merchant_id": 1299});
-                this.drouter.addPages('tabs/home/checkout/shipping/' + 1299);
+                this.drouter.addPages('shop/home/checkout/shipping/' + 1299);
                 console.log("Pushing login");
                 this.navCtrl.navigateForward('login');
             }

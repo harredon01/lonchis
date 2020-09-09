@@ -190,7 +190,7 @@ export class CheckoutBanksPage implements OnInit {
                     const browser = this.iab.create(data.transactionResponse.extraParameters.BANK_URL);
                     browser.on('exit').subscribe(event => {
                         this.orderData.clearOrder();
-                        this.navCtrl.navigateRoot("tabs");
+                        this.navCtrl.navigateRoot("shop");
                     });
                 } else {
                     this.api.toast('CHECKOUT_BANKS.DEBIT_PAY_ERROR');

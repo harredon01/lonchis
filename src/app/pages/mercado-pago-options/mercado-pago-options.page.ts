@@ -232,7 +232,7 @@ export class MercadoPagoOptionsPage implements OnInit {
                         this.orderData.clearOrder();
                         let container = {"payment": this.payment, "status": data.status, "response": "pending", "status_detail": 'pending_contingency'};
                         this.params.setParams(container);
-                        this.navCtrl.navigateRoot("tabs/mercado-pago-options/thankyou");
+                        this.navCtrl.navigateRoot("shop/mercado-pago-options/thankyou");
                     });
 
                 } else {
@@ -270,7 +270,7 @@ export class MercadoPagoOptionsPage implements OnInit {
                         this.orderData.clearOrder();
                         let container = {"payment": this.payment, "status": data.status, "response": "pending", "status_detail": 'pending_cash', 'paymentMethod': "IN_BANK"};
                         this.params.setParams(container);
-                        this.navCtrl.navigateRoot("tabs/mercado-pago-options/thankyou");
+                        this.navCtrl.navigateRoot("shop/mercado-pago-options/thankyou");
                     });
 
                 } else {
@@ -334,7 +334,7 @@ export class MercadoPagoOptionsPage implements OnInit {
             }
             container.paymentMethod = item.id;
             this.params.setParams(container);
-            this.navCtrl.navigateForward('tabs/mercado-pago-options/card');
+            this.navCtrl.navigateForward('shop/mercado-pago-options/card');
         } else if (item.payment_type_id == "bank_transfer") {
             this.paymentM = 'pse';
             console.log("Item", item);
@@ -403,7 +403,7 @@ export class MercadoPagoOptionsPage implements OnInit {
                         }
                         let container = {"payment": this.payment, "status": data.status, "response": data.response, "status_detail": data.status_detail};
                         this.params.setParams(container);
-                        this.navCtrl.navigateRoot("tabs/mercado-pago-options/thankyou");
+                        this.navCtrl.navigateRoot("shop/mercado-pago-options/thankyou");
                     } else {
                         this.showAlertTranslation("MERCADOPAGO." + data.status_detail);
                     }

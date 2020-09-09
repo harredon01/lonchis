@@ -17,15 +17,15 @@ export class SettingsPage implements OnInit {
 ngOnInit() {
   }
     openItem(item: any) {
-        if(item=="/tabs/settings/bookings"){
+        if(item=="/shop/settings/bookings"){
             let params ={"type":"Merchant","objectId":-1,"target":"customer","name":"personal"};
             this.params.setParams(params);
         }
-        if(item=="/tabs/settings/chat"){
+        if(item=="/shop/settings/chat"){
             let params ={"type":"platform","objectId":"food","target":"customer","name":"Support"};
             this.params.setParams(params);
         }
-        if(item=="/tabs/settings/merchants"){
+        if(item=="/shop/settings/merchants"){
             let params ={"owner":true};
             this.params.setParams(params);
         }

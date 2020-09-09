@@ -40,7 +40,7 @@ export class ItemsPage implements OnInit {
 
         let container = this.params.getParams();
         this.merchant = container.objectId;
-        this.urlSearch = "tabs/settings/merchants/" + this.merchant;
+        this.urlSearch = "shop/settings/merchants/" + this.merchant;
         this.status = "unfulfilled"
     }
     ngOnInit() {

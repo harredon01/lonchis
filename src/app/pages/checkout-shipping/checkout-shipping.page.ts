@@ -112,7 +112,7 @@ export class CheckoutShippingPage implements OnInit {
         this.mapData.activeId = "-1";
         this.mapData.createdAddress = null;
         this.mapData.merchantId = this.merchant;
-        this.navCtrl.navigateForward('tabs/map');
+        this.navCtrl.navigateForward('shop/map');
         console.log("createAddress");
     }
     prepareOrder() {
@@ -124,7 +124,7 @@ export class CheckoutShippingPage implements OnInit {
         let params = {"is_meal": isMeal, "merchant_id": this.merchant};
         console.log("Prepare order", params);
         this.params.setParams(params)
-        this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+        this.navCtrl.navigateForward('shop/home/checkout/prepare');
     }
     getAddresses() {
         this.currentItems = [];

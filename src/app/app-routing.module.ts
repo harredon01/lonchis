@@ -3,10 +3,11 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 
 const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
+    {path: 'home', redirectTo: 'shop/home', pathMatch: 'full'},
     {path: 'merchant-products', loadChildren: () => import('./pages/merchant-products/merchant-products.module').then(m => m.MerchantProductsPageModule)},
     {path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule)},
     {path: 'signup', loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupPageModule)},
-    {path: 'tabs', loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule)},
+    {path: 'shop', loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule)},
   /*{ path: 'checkout-buyer', loadChildren: () => import('./pages/checkout-buyer/checkout-buyer.module').then(m => m.CheckoutBuyerPageModule) },
   { path: 'checkout-cash', loadChildren: () => import('./pages/checkout-cash/checkout-cash.module').then(m => m.CheckoutCashPageModule) },
   { path: 'checkout-banks', loadChildren: () => import('./pages/checkout-banks/checkout-banks.module').then(m => m.CheckoutBanksPageModule) },

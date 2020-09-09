@@ -208,7 +208,7 @@ export class HomePage implements OnInit {
     openItem(item: any, purpose: any, showAddress: any) {
         this.params.setParams({"item": item, "purpose": purpose, 'showAddress': showAddress});
         if (this.userData._user) {
-            this.navCtrl.navigateForward('tabs/home/categories/' + item.id);
+            this.navCtrl.navigateForward('shop/home/categories/' + item.id);
         } else {
             this.navCtrl.navigateForward('home/' + item.id);
         }
@@ -216,7 +216,7 @@ export class HomePage implements OnInit {
     openArticle(item: any) {
         this.params.setParams({"item": item});
         if (this.userData._user) {
-            this.navCtrl.navigateForward('tabs/home/articles/' + item.id);
+            this.navCtrl.navigateForward('shop/home/articles/' + item.id);
         } else {
             this.navCtrl.navigateForward('home/articles/' + item.id);
         }
@@ -226,7 +226,7 @@ export class HomePage implements OnInit {
             objectId: item.id
         });
         if (this.userData._user) {
-            this.navCtrl.navigateForward('tabs/home/categories/' + category + "/merchant/" + item.id + "/products");
+            this.navCtrl.navigateForward('shop/home/categories/' + category + "/merchant/" + item.id + "/products");
         } else {
             this.navCtrl.navigateForward('home/' + category + "/merchant/" + item.id + "/products");
         }
@@ -347,15 +347,15 @@ export class HomePage implements OnInit {
         if (data == "Shipping" || data == 'Prepare') {
             if (this.userData._user) {
                 if (data == "Shipping") {
-                    this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + 1299);
+                    this.navCtrl.navigateForward('shop/home/checkout/shipping/' + 1299);
                 } else {
-                    this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+                    this.navCtrl.navigateForward('shop/home/checkout/prepare');
                 }
             } else {
                 if (data == "Shipping") {
-                    this.drouter.addPages('tabs/home/checkout/shipping/' + 1299);
+                    this.drouter.addPages('shop/home/checkout/shipping/' + 1299);
                 } else {
-                    this.drouter.addPages('tabs/home/checkout/prepare');
+                    this.drouter.addPages('shop/home/checkout/prepare');
                 }
                 this.navCtrl.navigateForward('login');
             }
@@ -419,9 +419,9 @@ export class HomePage implements OnInit {
         this.params.setParams(params);
         if (category_id) {
             if (this.userData._user) {
-                this.navCtrl.navigateForward("tabs/home/categories/" + category_id);
+                this.navCtrl.navigateForward("shop/home/categories/" + category_id);
             } else {
-                this.drouter.addPages("tabs/home/categories/" + category_id);
+                this.drouter.addPages("shop/home/categories/" + category_id);
                 this.navCtrl.navigateForward('login');
             }
         } else {
@@ -498,15 +498,15 @@ export class HomePage implements OnInit {
                         this.params.setParams({"merchant_id": 1299});
                         if (this.userData._user) {
                             if (item.attributes.is_shippable == true) {
-                                this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + 1299);
+                                this.navCtrl.navigateForward('shop/home/checkout/shipping/' + 1299);
                             } else {
-                                this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+                                this.navCtrl.navigateForward('shop/home/checkout/prepare');
                             }
                         } else {
                             if (item.attributes.is_shippable == true) {
-                                this.drouter.addPages('tabs/home/checkout/shipping/' + 1299);
+                                this.drouter.addPages('shop/home/checkout/shipping/' + 1299);
                             } else {
-                                this.drouter.addPages('tabs/home/checkout/prepare');
+                                this.drouter.addPages('shop/home/checkout/prepare');
                             }
                             this.navCtrl.navigateForward('login');
                         }

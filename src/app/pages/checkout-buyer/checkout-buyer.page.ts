@@ -117,7 +117,7 @@ export class CheckoutBuyerPage implements OnInit {
                         this.params.setParams({
                             items: this.currentItems
                         });
-                        this.navCtrl.navigateForward('tabs/payu/credit/payer');
+                        this.navCtrl.navigateForward('shop/payu/credit/payer');
                     }
                 },
                 {
@@ -126,7 +126,7 @@ export class CheckoutBuyerPage implements OnInit {
                         this.params.setParams({
                             items: this.currentItems
                         })
-                        this.navCtrl.navigateForward('tabs/payu/credit/payer');
+                        this.navCtrl.navigateForward('shop/payu/credit/payer');
                     }
                 }
             ]
@@ -154,7 +154,7 @@ export class CheckoutBuyerPage implements OnInit {
         this.params.setParams({
             items: this.currentItems
         })
-        this.navCtrl.navigateForward('tabs/payu/credit/payer');
+        this.navCtrl.navigateForward('shop/payu/credit/payer');
     }
     changeAddress() {
         if (this.currentItems.length == 0) {

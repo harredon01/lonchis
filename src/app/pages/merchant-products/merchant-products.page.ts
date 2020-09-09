@@ -93,14 +93,14 @@ export class MerchantProductsPage implements OnInit {
         let loadedSettings = false;
         if (paramsSent) {
             if (paramsSent.settings) {
-                this.urlSearch = "tabs/settings/merchants/" + this.merchant;
+                this.urlSearch = "shop/settings/merchants/" + this.merchant;
                 loadedSettings = true;
             }
 
         }
         if (!loadedSettings) {
             let category = this.activatedRoute.snapshot.paramMap.get('categoryId');
-            this.urlSearch = 'tabs/home/categories/' + category + '/merchant/' + this.merchant;
+            this.urlSearch = 'shop/home/categories/' + category + '/merchant/' + this.merchant;
         }
         this.possibleAmounts = [];
         this.api.loader();
@@ -178,9 +178,9 @@ export class MerchantProductsPage implements OnInit {
         this.params.setParams(params);
         if (category_id) {
             if (this.userData._user) {
-                this.navCtrl.navigateForward("tabs/home/categories/" + category_id);
+                this.navCtrl.navigateForward("shop/home/categories/" + category_id);
             } else {
-                this.drouter.addPages("tabs/home/categories/" + category_id);
+                this.drouter.addPages("shop/home/categories/" + category_id);
                 this.navCtrl.navigateForward('login');
             }
         } else {
@@ -224,15 +224,15 @@ export class MerchantProductsPage implements OnInit {
                         this.params.setParams({"merchant_id": this.merchant});
                         if (this.userData._user) {
                             if (item.attributes.is_shippable == true || item.attributes.shipping > 0) {
-                                this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + this.merchant);
+                                this.navCtrl.navigateForward('shop/home/checkout/shipping/' + this.merchant);
                             } else {
-                                this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+                                this.navCtrl.navigateForward('shop/home/checkout/prepare');
                             }
                         } else {
                             if (item.attributes.is_shippable == true || item.attributes.shipping > 0) {
-                                this.drouter.addPages('tabs/home/checkout/shipping/' + this.merchant);
+                                this.drouter.addPages('shop/home/checkout/shipping/' + this.merchant);
                             } else {
-                                this.drouter.addPages('tabs/home/checkout/prepare');
+                                this.drouter.addPages('shop/home/checkout/prepare');
                             }
                             this.navCtrl.navigateForward('login');
                         }
@@ -426,15 +426,15 @@ export class MerchantProductsPage implements OnInit {
         if (data == "Shipping" || data == 'Prepare') {
             if (this.userData._user) {
                 if (data == "Shipping") {
-                    this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + this.merchant);
+                    this.navCtrl.navigateForward('shop/home/checkout/shipping/' + this.merchant);
                 } else {
-                    this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+                    this.navCtrl.navigateForward('shop/home/checkout/prepare');
                 }
             } else {
                 if (data == "Shipping") {
-                    this.drouter.addPages('tabs/home/checkout/shipping/' + this.merchant);
+                    this.drouter.addPages('shop/home/checkout/shipping/' + this.merchant);
                 } else {
-                    this.drouter.addPages('tabs/home/checkout/prepare');
+                    this.drouter.addPages('shop/home/checkout/prepare');
                 }
                 this.navCtrl.navigateForward('login');
             }

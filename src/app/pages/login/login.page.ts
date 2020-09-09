@@ -149,7 +149,7 @@ export class LoginPage implements OnInit {
         this.user.postLogin().then((value) => {
             this.api.dismissLoader();
             this.api.hideMenu();
-            this.navCtrl.navigateRoot("tabs");
+            this.navCtrl.navigateRoot("shop");
             this.events.publish("authenticated", {});
         }, (err) => {
             this._loadUserData();
@@ -205,7 +205,7 @@ export class LoginPage implements OnInit {
             this.user.postLogin().then((value) => {
                 this.api.dismissLoader();
                 console.log("Post login complete");
-                this.navCtrl.navigateRoot("tabs");
+                this.navCtrl.navigateRoot("shop");
                 this.events.publish("authenticated", {});
             }, (err) => {
                 console.log("Post login error on registration");

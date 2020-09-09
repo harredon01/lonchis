@@ -117,7 +117,7 @@ export class AddressesPage implements OnInit {
         this.mapData.activeId = "-1";
         this.mapData.merchantId = null;
         this.mapData.address.id = null;
-        this.navCtrl.navigateForward('tabs/map');
+        this.navCtrl.navigateForward('shop/map');
     }
 
 
@@ -148,7 +148,7 @@ export class AddressesPage implements OnInit {
         this.params.setParams({
             address: address
         })
-        this.navCtrl.navigateForward('tabs/settings/addresses/' + address.id);
+        this.navCtrl.navigateForward('shop/settings/addresses/' + address.id);
     }
     /**
      * Navigate to the detail page for this item.
@@ -163,7 +163,7 @@ export class AddressesPage implements OnInit {
             this.mapData.activeType = "Address";
             this.mapData.activeId = "1";
             this.mapData.address = address;
-            this.navCtrl.navigateForward('tabs/map');
+            this.navCtrl.navigateForward('shop/map');
         } else {
             console.log("completeAddressData", this.mapData.address);
             let container;

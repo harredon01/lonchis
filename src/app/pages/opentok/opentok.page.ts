@@ -141,10 +141,10 @@ export class OpentokPage implements OnInit {
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
         console.log("Modal Closed");
-        this.navCtrl.navigateRoot("tabs/categories");
+        this.navCtrl.navigateRoot("shop/categories");
     }
     done() {
-        this.navCtrl.navigateRoot("tabs/categories");
+        this.navCtrl.navigateRoot("shop/categories");
     }
 
     startCall() {

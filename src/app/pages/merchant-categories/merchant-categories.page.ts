@@ -72,7 +72,7 @@ export class MerchantCategoriesPage implements OnInit {
      */
     openItem(item: any) {
         this.params.setParams({"item": item});
-        this.navCtrl.navigateForward('tabs/home/categories/' + item.id);
+        this.navCtrl.navigateForward('shop/home/categories/' + item.id);
     }
     openMenu() {
         this.menu.enable(true, 'end');

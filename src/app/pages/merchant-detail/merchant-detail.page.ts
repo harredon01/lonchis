@@ -45,11 +45,7 @@ export class MerchantDetailPage implements OnInit {
         let merchantId = this.activatedRoute.snapshot.paramMap.get('objectId');
         let theParams = this.params.getParams();
         let category = this.activatedRoute.snapshot.paramMap.get('categoryId');
-        if (this.userData._user) {
-            this.urlSearch = 'tabs/home/categories/' + category + '/merchant/' + merchantId;
-        } else {
-            this.urlSearch = 'home/' + category + '/merchant/' + merchantId;
-        }
+        this.urlSearch = 'shop/home/categories/' + category + '/merchant/' + merchantId;
 
         let vm = this
         this.translateService.get('BOOKING.NOT_AVAILABLE').subscribe(function (value) {
@@ -93,15 +89,15 @@ export class MerchantDetailPage implements OnInit {
             this.params.setParams({"merchant_id": this.merchant.id});
             if (this.userData._user) {
                 if (data == "Shipping") {
-                    this.navCtrl.navigateForward('tabs/home/checkout/shipping/' + this.merchant.id);
+                    this.navCtrl.navigateForward('shop/home/checkout/shipping/' + this.merchant.id);
                 } else {
-                    this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+                    this.navCtrl.navigateForward('shop/home/checkout/prepare');
                 }
             } else {
                 if (data == "Shipping") {
-                    this.drouter.addPages('tabs/home/checkout/shipping/' + this.merchant.id);
+                    this.drouter.addPages('shop/home/checkout/shipping/' + this.merchant.id);
                 } else {
-                    this.drouter.addPages('tabs/home/checkout/prepare');
+                    this.drouter.addPages('shop/home/checkout/prepare');
                 }
                 this.navCtrl.navigateForward('login');
             }

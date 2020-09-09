@@ -23,7 +23,7 @@ export class RoutesPage implements OnInit {
      */
     openItem(item: Route) {
         this.params.setParams({"item":item})
-        this.navCtrl.navigateForward('tabs/routes/'+item.id);
+        this.navCtrl.navigateForward('shop/routes/'+item.id);
     }
     /**
      * The view loaded, let's query our items for the list

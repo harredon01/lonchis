@@ -165,7 +165,7 @@ export class CheckoutPreparePage implements OnInit {
             type: "platform",
             objectId: "food"
         })
-        this.navCtrl.navigateForward('tabs/settings/addresses/');
+        this.navCtrl.navigateForward('shop/settings/addresses/');
     }
 
     /**
@@ -192,7 +192,7 @@ export class CheckoutPreparePage implements OnInit {
             };
         }
         this.params.setParams(container);
-        this.navCtrl.navigateForward('tabs/payu/complete');
+        this.navCtrl.navigateForward('shop/payu/complete');
     }
     prepareOrder() {
         this.api.loader('CHECKOUT_PREPARE.PREPARE_ORDER_STARTING');
@@ -248,8 +248,8 @@ export class CheckoutPreparePage implements OnInit {
                     } else {
                         let container = {"payment": this.payment};
                         this.params.setParams(container);
-                        //this.navCtrl.navigateForward("tabs/mercado-pago-options");
-                        this.navCtrl.navigateForward("tabs/payu/options");
+                        //this.navCtrl.navigateForward("shop/mercado-pago-options");
+                        this.navCtrl.navigateForward("shop/payu/options");
                     }
                 } else {
                     this.handleCheckError(resp);

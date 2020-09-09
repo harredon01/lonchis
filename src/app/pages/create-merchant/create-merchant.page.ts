@@ -115,7 +115,7 @@ export class CreateMerchantPage implements OnInit {
             "settings": true
         };
         this.params.setParams(params);
-        this.navCtrl.navigateForward("tabs/settings/merchants/" + this.merchant.id + "/images");
+        this.navCtrl.navigateForward("shop/settings/merchants/" + this.merchant.id + "/images");
     }
     myAvailabilities() {
         let params = {
@@ -125,7 +125,7 @@ export class CreateMerchantPage implements OnInit {
             "settings": true
         };
         this.params.setParams(params);
-        this.navCtrl.navigateForward("tabs/settings/merchants/" + this.merchant.id + "/availabilities");
+        this.navCtrl.navigateForward("shop/settings/merchants/" + this.merchant.id + "/availabilities");
     }
     myItems() {
         let params = {
@@ -135,7 +135,7 @@ export class CreateMerchantPage implements OnInit {
             "settings": true
         };
         this.params.setParams(params);
-        this.navCtrl.navigateForward("tabs/settings/merchants/" + this.merchant.id + "/items");
+        this.navCtrl.navigateForward("shop/settings/merchants/" + this.merchant.id + "/items");
     }
     addLocation() {
         console.log("Adding location");
@@ -143,7 +143,7 @@ export class CreateMerchantPage implements OnInit {
         this.mapData.activeType = "Location";
         this.mapData.activeId = "-1";
         this.mapData.merchantId = null;
-        this.navCtrl.navigateForward('tabs/map');
+        this.navCtrl.navigateForward('shop/map');
     }
     slidePrev() {
         this.galPage--;
@@ -162,7 +162,7 @@ export class CreateMerchantPage implements OnInit {
             "settings": true
         };
         this.params.setParams(params);
-        this.navCtrl.navigateForward("tabs/settings/merchants/" + this.merchant.id + "/products");
+        this.navCtrl.navigateForward("shop/settings/merchants/" + this.merchant.id + "/products");
     }
     setAvatar() {
         this.api.loader();

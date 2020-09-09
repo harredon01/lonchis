@@ -62,7 +62,7 @@ export class SignupPage implements OnInit {
             console.log("Post login", resp);
             this.user.postLogin().then((value) => {
                 console.log("Post login complete");
-                this.navCtrl.navigateForward('tabs');
+                this.navCtrl.navigateForward('shop');
             }, (err) => {
                 console.log("Post login error on registration");
             });

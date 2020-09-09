@@ -21,7 +21,7 @@ export class ProgramCompletePage implements OnInit {
     ngOnInit() {
     }
     returnHome() {
-        this.navCtrl.navigateRoot('tabs/home');
+        this.navCtrl.navigateRoot('shop/home');
     }
     programAnother() {
         console.log("Program another")
@@ -34,7 +34,7 @@ export class ProgramCompletePage implements OnInit {
             if (resp.status == "success") {
                 resp.delivery.delivery = resp.delivery.delivery.replace(/-/g, '/');
                 this.params.setParams({item: resp.delivery});
-                this.navCtrl.navigateForward('tabs/home/programar');
+                this.navCtrl.navigateForward('shop/home/programar');
             } else {
                 this.api.toast(resp.message);
             }

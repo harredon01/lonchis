@@ -58,19 +58,14 @@ export class MerchantListingPage implements OnInit {
                 this.showAddress = container.showAddress;
             }
         }
-        if (this.userData._user) {
-            let activeView = this.router.url;
+        let activeView = this.router.url;
             console.log("getActive", activeView);
             if (activeView.includes("settings")) {
                 this.typeSearch = "own";
-                this.urlSearch = 'tabs/settings/merchants/';
+                this.urlSearch = 'shop/settings/merchants/';
             } else {
-                this.urlSearch = 'tabs/home/categories/' + this.category + '/merchant/';
+                this.urlSearch = 'shop/home/categories/' + this.category + '/merchant/';
             }
-
-        } else {
-            this.urlSearch = 'home/' + this.category + '/merchant/';
-        }
     }
     ionViewDidEnter() {
         this.api.hideMenu();
@@ -196,7 +191,7 @@ export class MerchantListingPage implements OnInit {
         this.mapData.activeType = "Location";
         this.mapData.activeId = "-1";
         this.mapData.merchantId = null;
-        this.navCtrl.navigateForward('tabs/map');
+        this.navCtrl.navigateForward('shop/map');
     }
     /**
      * Navigate to the detail page for this item.

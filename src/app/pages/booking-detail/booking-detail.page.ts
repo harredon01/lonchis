@@ -107,7 +107,7 @@ export class BookingDetailPage implements OnInit {
             console.log("building booking");
             this.mainBooking = new Booking(result);
         } else if (data.status == "denied") {
-            this.navCtrl.navigateBack("tabs/settings/bookings");
+            this.navCtrl.navigateBack("shop/settings/bookings");
         }
 
     }
@@ -150,7 +150,7 @@ export class BookingDetailPage implements OnInit {
         }
         console.log(params);
         this.params.setParams(params);
-        this.navCtrl.navigateForward('tabs/settings/bookings/' + this.mainBooking.id + "/edit");
+        this.navCtrl.navigateForward('shop/settings/bookings/' + this.mainBooking.id + "/edit");
     }
 
     addToCart() {
@@ -276,8 +276,8 @@ export class BookingDetailPage implements OnInit {
         console.log("Cart closing", data);
         if (data == "Prepare") {
             this.params.setParams({"merchant_id": 1});
-            this.navCtrl.navigateRoot('tabs/settings');
-            this.navCtrl.navigateForward('tabs/home/checkout/prepare');
+            this.navCtrl.navigateRoot('shop/settings');
+            this.navCtrl.navigateForward('shop/home/checkout/prepare');
         }
     }
 

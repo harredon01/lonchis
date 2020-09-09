@@ -149,7 +149,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
             type: "platform",
             objectId: "food"
         })
-        this.navCtrl.navigateForward('tabs/settings/addresses/');
+        this.navCtrl.navigateForward('shop/settings/addresses/');
     }
     payInBank() {
         this.api.loader();
@@ -190,7 +190,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
                     objectId: data.payment.id,
                     newPayment: true
                 });
-                    this.navCtrl.navigateForward('tabs/settings/payments/' + data.payment.id);
+                    this.navCtrl.navigateForward('shop/settings/payments/' + data.payment.id);
                 } else {
                 // Unable to pay in bank
                 this.api.toast('CHECKOUT_PREPARE.PAY_IN_BANK_ERROR');
@@ -230,7 +230,7 @@ export class CheckoutOptionsPayuPage implements OnInit {
             };
         }
         this.params.setParams(container);
-        this.navCtrl.navigateForward('tabs/payu/complete');
+        this.navCtrl.navigateForward('shop/payu/complete');
     }
 
 
