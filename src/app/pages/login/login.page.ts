@@ -148,6 +148,7 @@ export class LoginPage implements OnInit {
         this.userData.setToken(token);
         this.user.postLogin().then((value) => {
             this.api.dismissLoader();
+            this.api.hideMenu();
             this.navCtrl.navigateRoot("tabs");
             this.events.publish("authenticated", {});
         }, (err) => {

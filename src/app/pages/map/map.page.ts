@@ -47,17 +47,17 @@ export class MapPage implements OnInit {
         this.translateService.get('MAP.DELIVERY_NO_ROUTE_DESC').subscribe((value) => {
             this.deliveryNoRouteDesc = value;
         });
-        events.subscribe('map:checkingShippingAddressCoverage', (resp:any) => {
+        events.subscribe('map:checkingShippingAddressCoverage', (resp: any) => {
             console.log("Checking Shipping address coverage");
             this.api.loader();
         });
-        events.subscribe('map:loaded', (resp:any) => {
+        events.subscribe('map:loaded', (resp: any) => {
             console.log("Map Loaded");
             this.mapLoaded = true;
             this.mapActive = true;
             this.buildMapStatus();
         });
-        events.subscribe('map:shippingAddressInCoverage', (resp:any) => {
+        events.subscribe('map:shippingAddressInCoverage', (resp: any) => {
             this.loadingComplete = true;
 
             console.log("Shipping address in coverage event triggered");
@@ -65,7 +65,7 @@ export class MapPage implements OnInit {
             this.api.dismissLoader();
             this.cdr.detectChanges();
         });
-        events.subscribe('map:shippingAddressNotInCoverage', (resp:any) => {
+        events.subscribe('map:shippingAddressNotInCoverage', (resp: any) => {
             this.shippingAddressInCoverage = false;
             console.log("Event Address not in coverage");
             this.loadingComplete = true;
@@ -198,7 +198,7 @@ export class MapPage implements OnInit {
 
     getSharedLocationsPage(page: any) {
         if (this.mapActive) {
-            this.locations.getSharedLocationsExternal(page).then((data:any) => {
+            this.locations.getSharedLocationsExternal(page).then((data: any) => {
                 console.log("getSharedResults", data);
                 if (data['last_page'] > page) {
                     console.log("Not last page");
@@ -264,6 +264,7 @@ export class MapPage implements OnInit {
             console.log("Get location response", resp);
             this.map.setMarkerPosition(resp.coords.latitude, resp.coords.longitude, this.mapData.newAddressMarker);
             this.map.setCenterMap(resp.coords.latitude, resp.coords.longitude);
+            this.mapData.address.id = null;
             this.mapData.address.lat = resp.coords.latitude;
             this.mapData.address.long = resp.coords.longitude;
             this.mapData.newAddressMarker.setVisible(true);
@@ -279,27 +280,11 @@ export class MapPage implements OnInit {
         console.log("handleAddressActive", this.mapData.activeId);
         this.mapData.newAddressMarker.setDraggable(true);
         this.mapData.newAddressMarker.setVisible(true);
-        if (this.mapData.activeId == "-1" || this.mapData.activeId == "0"|| this.mapData.activeId == "2"|| this.mapData.activeId == "-2") {
+        if (this.mapData.activeId == "-1") {
             console.log("Fetching poligons for merchant", this.mapData.merchantId);
-            if (this.mapData.merchantId) {
-                this.locations.getActivePolygons(this.mapData.merchantId).subscribe((data: any) => {
-                    console.log("Active routes", data);
-                    this.mapData.newAddressMarker.setVisible(true);
-                    let routes = data.data;
-                    this.map.createPolygons(routes);
-                    this.api.dismissLoader();
-                    this.getMyLocationAddressPostal();
-                }, (err) => {
-                    this.api.dismissLoader();
-                    this.mapData.map.setVisible(true);
-                    console.log("getActiveRoutes Error", err);
-                    this.api.handleError(err);
-                });
-            } else {
-                this.mapData.newAddressMarker.setVisible(true);
-                this.api.dismissLoader();
-                this.getMyLocationAddressPostal();
-            }
+            this.mapData.newAddressMarker.setVisible(true);
+            this.api.dismissLoader();
+            this.getMyLocationAddressPostal();
         } else if (this.mapData.activeId == "1") {
             this.map.setMarkerPosition(this.mapData.address.lat, this.mapData.address.long, this.mapData.newAddressMarker);
             this.map.setCenterMap(this.mapData.address.lat, this.mapData.address.long);
@@ -317,16 +302,7 @@ export class MapPage implements OnInit {
     async completeAddressData() {
         console.log("completeAddressData", this.mapData.address);
         let container;
-        if (this.mapData.activeId == "-1" || this.mapData.activeId == "0") {
-            container = {
-                lat: this.mapData.address.lat,
-                long: this.mapData.address.long,
-                address: this.mapData.address.address,
-                notes: "",
-                postal: this.mapData.address.postal,
-                type: "shipping"
-            }
-        } else {
+        if (this.mapData.address.id) {
             container = {
                 lat: this.mapData.address.lat,
                 long: this.mapData.address.long,
@@ -338,6 +314,15 @@ export class MapPage implements OnInit {
                 postal: this.mapData.address.postal,
                 type: "shipping"
             }
+        } else {
+            container = {
+                lat: this.mapData.address.lat,
+                long: this.mapData.address.long,
+                address: this.mapData.address.address,
+                notes: "",
+                postal: this.mapData.address.postal,
+                type: "shipping"
+            }
         }
         var addModal = await this.modalCtrl.create({
             component: AddressCreatePage,
@@ -346,9 +331,13 @@ export class MapPage implements OnInit {
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
         if (data) {
+            let container = this.params.getParams();
+            container.mapLocation = true;
+            this.params.setParams(container);
             this.navCtrl.back();
             this.clearMap();
             console.log("Process complete, address created", data);
+            this.mapData.address = data;
         }
     }
     returnAddressData() {
@@ -358,7 +347,7 @@ export class MapPage implements OnInit {
         this.params.setParams(container);
         this.navCtrl.back();
         this.clearMap();
-        console.log("Process complete, location saved to data object" );
+        console.log("Process complete, location saved to data object");
     }
     locationConfirmed() {
         let params = this.params.getParams();

@@ -133,6 +133,7 @@ export class MerchantDetailPage implements OnInit {
         this.navCtrl.navigateForward(this.urlSearch + "/chat");
     }
     ionViewDidEnter() {
+        this.api.hideMenu();
         let container = this.params.getParams();
         if(container){
             if (container.hasChanged) {

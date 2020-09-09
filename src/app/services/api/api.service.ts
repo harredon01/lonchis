@@ -31,6 +31,20 @@ export class ApiService {
             }).then(toast => toast.present());
         })
     }
+    hideMenu() {
+        console.log("Hiding menu")
+        if (this.userData._user) {
+            const tabBar = document.getElementById("tab-button-chat-room");
+            tabBar.style.display = "block";
+            const tabBar2 = document.getElementById("tab-button-settings");
+            tabBar2.style.display = "block";
+        } else {
+            const tabBar = document.getElementById("tab-button-chat-room");
+            tabBar.style.display = "none";
+            const tabBar2 = document.getElementById("tab-button-settings");
+            tabBar2.style.display = "none";
+        }
+    }
     async dismissLoader() {
         if (document.URL.startsWith('http')) {
             let topLoader = await this.loadingCtrl.getTop();

@@ -73,6 +73,7 @@ export class MerchantListingPage implements OnInit {
         }
     }
     ionViewDidEnter() {
+        this.api.hideMenu();
         if (document.URL.startsWith('http')) {
             let vm = this;
             setTimeout(function () {vm.api.dismissLoader(); console.log("Retrying closing")}, 1000);

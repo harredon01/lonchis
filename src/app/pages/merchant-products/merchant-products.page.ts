@@ -121,6 +121,7 @@ export class MerchantProductsPage implements OnInit {
         });
     }
     ionViewDidEnter() {
+        this.api.hideMenu();
         this.possibleAmounts = [];
         this.api.loader();
         this.loadProducts();

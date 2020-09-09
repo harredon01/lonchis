@@ -7,9 +7,9 @@ export class CategoriesService {
 
     constructor(public api: ApiService) {}
 
-    getCategories(typeCategory: any) {
-        let url = "/categories/" + typeCategory;
-        let seq = this.api.get(url);
+    getCategories(data: any) {
+        let url = "/categories";
+        let seq = this.api.get(url,data);
         return seq;
     }
     

@@ -116,6 +116,7 @@ export class AddressesPage implements OnInit {
         this.mapData.activeType = "Address";
         this.mapData.activeId = "-1";
         this.mapData.merchantId = null;
+        this.mapData.address.id = null;
         this.navCtrl.navigateForward('tabs/map');
     }
 

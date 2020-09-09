@@ -300,6 +300,8 @@ export class ProductsService {
                             };
                             activeCategory.products.push(productInfo);
                         }
+                    } else {
+                        activeCategory.products.push(productInfo);
                     }
                     results.push(productInfo);
                     productInfo = this.buildProduct(items['products_variants'][i], items['merchant_products'][0], merchant_id);
@@ -331,6 +333,9 @@ export class ProductsService {
                             activeCategory.products.push(productInfo);
                             resultsCategory.push(activeCategory);
                         }
+                    }else {
+                        activeCategory.products.push(productInfo);
+                        resultsCategory.push(activeCategory);
                     }
                     results.push(productInfo);
                 }

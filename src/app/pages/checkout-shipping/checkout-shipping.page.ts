@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NavController} from '@ionic/angular';
+import {NavController, ModalController} from '@ionic/angular';
 import {Address} from '../../models/address';
 import {ParamsService} from '../../services/params/params.service';
 import {AddressesService} from '../../services/addresses/addresses.service';
@@ -9,6 +9,7 @@ import {OrderDataService} from '../../services/order-data/order-data.service';
 import {UserService} from '../../services/user/user.service';
 import {ApiService} from '../../services/api/api.service';
 import {ActivatedRoute} from '@angular/router';
+import {AddressCreatePage} from '../address-create/address-create.page'
 @Component({
     selector: 'app-checkout-shipping',
     templateUrl: './checkout-shipping.page.html',
@@ -28,6 +29,7 @@ export class CheckoutShippingPage implements OnInit {
         public addresses: AddressesService,
         public order: OrderService,
         public api: ApiService,
+        public modalCtrl: ModalController,
         public orderData: OrderDataService,
         public params: ParamsService,
         private activatedRoute: ActivatedRoute) {
@@ -84,18 +86,30 @@ export class CheckoutShippingPage implements OnInit {
             this.selectedAddress = this.orderData.shippingAddress;
         } else {
             this.showAddressCard = false;
-            if (this.mapData.createdAddress) {
-                let container = new Address(this.mapData.createdAddress);
-                this.mapData.createdAddress = null;
-                this.saveShipping(container);
-            } else {
+            let container: any = this.params.getParams();
+            console.log("Params entering", container);
+            let newAddress = false;
+            if (container) {
+                let mapLocation = container.mapLocation;
+                if (mapLocation) {
+                    newAddress = true;
+                    if (this.mapData.address.id) {
+                        let container = new Address(this.mapData.address);
+                        this.saveShipping(container);
+                    } else {
+                        this.completeAddressData();
+                    }
+
+                }
+            }
+            if (!newAddress) {
                 this.getAddresses();
             }
         }
     }
     createAddress() {
         this.mapData.activeType = "Address";
-        this.mapData.activeId = "0";
+        this.mapData.activeId = "-1";
         this.mapData.createdAddress = null;
         this.mapData.merchantId = this.merchant;
         this.navCtrl.navigateForward('tabs/map');
@@ -138,6 +152,30 @@ export class CheckoutShippingPage implements OnInit {
             this.getAddresses();
         }
         this.showAddressCard = false;
+    }
+
+    async completeAddressData() {
+        console.log("completeAddressData", this.mapData.address);
+        let container;
+        container = {
+            lat: this.mapData.address.lat,
+            long: this.mapData.address.long,
+            address: this.mapData.address.address,
+            notes: "",
+            postal: this.mapData.address.postal,
+            type: "shipping"
+        }
+        var addModal = await this.modalCtrl.create({
+            component: AddressCreatePage,
+            componentProps: container
+        });
+        await addModal.present();
+        const {data} = await addModal.onDidDismiss();
+        if (data) {
+            console.log("Process complete, address created", data);
+            let container = new Address(data);
+            this.saveShipping(container);
+        }
     }
 
     ngOnInit() {

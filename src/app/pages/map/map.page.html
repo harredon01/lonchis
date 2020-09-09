@@ -20,13 +20,7 @@
                 <p *ngIf="!shippingAddressInCoverage">{{'MAP.SHIPPING_ADDRESS_NOT_IN_COVERAGE'| translate }}</p>
                 <div  *ngIf="shippingAddressInCoverage">
                     <p>{{ 'MAP.SHIPPING_ADDRESS_IN_COVERAGE' |translate }}</p>
-                    <ion-button *ngIf="this.mapData.activeId !='-2'" class='save-address' (click)="completeAddressData()" strong>
-                        <span color="primary">
-                            {{ 'MAP.DONE_SHIPPING' | translate }}
-                        </span>
-                        <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
-                    </ion-button>
-                    <ion-button *ngIf="this.mapData.activeId =='-2'" class='save-address' (click)="returnAddressData()" strong>
+                    <ion-button class='save-address' (click)="completeAddressData()" strong>
                         <span color="primary">
                             {{ 'MAP.DONE_SHIPPING' | translate }}
                         </span>
@@ -35,7 +29,7 @@
                 </div>
             </div>
             <div *ngIf="!this.mapData.merchantId">
-                <div *ngIf="this.mapData.activeId !='2'">
+                <div *ngIf="this.mapData.activeType =='Address'">
                     <ion-button class='save-address' (click)="completeAddressData()" strong>
                         <span color="primary">
                             {{ 'MAP.DONE_SHIPPING' | translate }}
@@ -43,7 +37,7 @@
                         <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
                     </ion-button>
                 </div>
-                <div *ngIf="this.mapData.activeId =='2'">
+                <div *ngIf="this.mapData.activeType =='Location'">
                     <ion-button class='save-address' (click)="returnAddressData()" strong>
                         <span color="primary">
                             {{ 'MAP.DONE_SHIPPING' | translate }}

@@ -60,7 +60,7 @@ export class MerchantsService {
         return seq;
     }
     getNearbyMerchants(data: any) {
-        let url = "/merchants/nearby";
+        let url = "/merchants/coverage";
         let seq = this.api.get(url, data);
         return seq;
     }

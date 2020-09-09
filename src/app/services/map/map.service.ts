@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {MapDataService} from '../map-data/map-data.service';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {Events} from '../events/events.service';
+import {ApiService} from '../api/api.service';
 import {
     GoogleMaps,
     Environment,
@@ -23,6 +24,7 @@ export class MapService {
     infoWindow: HtmlInfoWindow;
     constructor(public mapData: MapDataService,
         private geolocation: Geolocation,
+        private api: ApiService,
         public events: Events) {
         this.infoWindow = new HtmlInfoWindow();
     }
@@ -108,6 +110,24 @@ export class MapService {
             this.mapData.routePolyline = polyline;
         });
     }
+    
+    checkCoverage(data: any) {
+        let url = "/merchants/coverage";
+        this.api.post(url, data).subscribe((resp: any) => {
+            this.api.dismissLoader();
+            console.log("checkCoverage result", resp);
+            if (resp.status == "success") {
+                data.lng = data.long;
+                this.shippingAddressInCoverage(data);
+            } else {
+                this.events.publish('map:shippingAddressNotInCoverage',{});
+                console.log("Address not in coverage");
+            }
+        }, (err) => {
+            this.api.dismissLoader();
+            this.api.toast('MERCHANT_CREATE.ERROR_SAVE');
+        });
+    }
 
     /**
      * Creates google maps object
@@ -185,16 +205,12 @@ export class MapService {
         container.on(GoogleMapsEvent.MARKER_DRAG_END)
             .subscribe(() => {
                 let markerlatlong = container.getPosition();
-                console.log("address marker being dragged", markerlatlong);
                 if (this.mapData.activeType == "Address") {
                     if (this.mapData.merchantId) {
-                        let result = this.checkIfInRoute(markerlatlong.lat, markerlatlong.lng);
-                        if (result) {
-                            this.shippingAddressInCoverage(markerlatlong);
-                        } else {
-                            this.events.publish('map:shippingAddressNotInCoverage',{});
-                            console.log("Address not in coverage");
-                        }
+                        let container = {
+                            "lat": markerlatlong.lat, "long": markerlatlong.lng, "merchant_id": this.mapData.merchantId
+                        };
+                        this.checkCoverage(container);
                     } else {
                         this.shippingAddressInCoverage(markerlatlong);
                     }
@@ -413,9 +429,6 @@ export class MapService {
         console.log("Object clean", markerData);
         return markerData;
     }
-
-
-
 
     /**
      * Send a POST request to our signup endpoint with the data
