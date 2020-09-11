@@ -1,4 +1,5 @@
 <ion-header class="section__header">
+
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-back-button defaultHref="shop/home/checkout/prepare"></ion-back-button>
@@ -14,9 +15,8 @@
                     <p>{{ 'CHECKOUT_BANKS.DESCRIPTION' | translate }}</p>
                 </ion-item>
                 <ion-item >
-                    <img src="http://www.payulatam.com/logos/logo.php?l=133&c=5c6e19348baf9" alt="PayU Latam" border="0" />
+                    <img class="w20" src="assets/logos/payu.png" alt="PayU Latam" border="0" />
                 </ion-item>
-
                 <ion-item >
                     <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
                     <ion-checkbox [(ngModel)]="v" (click)="useUser()"></ion-checkbox>

@@ -4,7 +4,6 @@
             <ion-back-button defaultHref="shop/home"></ion-back-button>
         </ion-buttons>
         <ion-title>
-
             <!--span class="location"><small margin-right>Location</small>
             <ion-select [(ngModel)]="location" interface="popover" class="location">
                 <ion-select-option value="b1">Wallington</ion-select-option>
@@ -12,14 +11,12 @@
                 <ion-select-option value="b3">Central Park</ion-select-option>
             </ion-select>
         </span-->
-
         </ion-title>
         <ion-buttons class="my-addresses__button my-addresses__button--right" *ngIf="typeSearch=='own'" slot="primary">
             <ion-button icon-only (click)="createItem()">
                         <ion-icon class="add-button" name="add"></ion-icon>
             </ion-button>
         </ion-buttons>
-
     </ion-toolbar>
 </ion-header>
 
@@ -38,7 +35,6 @@
             </div>
             <div style="clear:both"></div>  
         </div>
-
         <div class="merchant-list__wrapper">
             <p *ngIf="merchants.length ==0">{{ 'INPUTS.NO_RESULTS' | translate }}</p>
             <ion-list style="padding-top: 0">
@@ -75,7 +71,7 @@
                                             {{ 'MERCHANT_LISTING.ADDRESS' | translate }}:
                                         </strong>
                                         {{item.address}}
-                                    </div>
+                                    </div> 
                                 </ion-col>
                                 <ion-col *ngIf="item.rating"><div class="card-component__stats-item">
                                         <strong>
@@ -83,11 +79,11 @@
                                         </strong>
                                         <div class="rating-container">
                                             <div class="rating-box" [style.width]="(item.rating*20)+'%'">
-                                                <ion-icon name="md-star"></ion-icon>
-                                                <ion-icon name="md-star"></ion-icon>
-                                                <ion-icon name="md-star"></ion-icon>
-                                                <ion-icon name="md-star"></ion-icon>
-                                                <ion-icon name="md-star"></ion-icon>
+                                                <ion-icon name="star-outline"></ion-icon>
+                                                <ion-icon name="star-outline"></ion-icon>
+                                                <ion-icon name="star-outline"></ion-icon>
+                                                <ion-icon name="star-outline"></ion-icon>
+                                                <ion-icon name="star-outline"></ion-icon>
                                             </div>
                                         </div>
                                         <span>{{item.rating }} de ({{item.rating_count }})</span>

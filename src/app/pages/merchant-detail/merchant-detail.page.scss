@@ -345,7 +345,7 @@ ion-card {
 
                 span {
                     font-weight: 300;
-                    color: var(--ion-color-light-shade);
+                    color: var(--ion-color-primary);
                 }
             }
 
@@ -358,7 +358,7 @@ ion-card {
 
                 span {
                     font-weight: 200;
-                    color: var(--ion-color-light-shade);
+                    color: var(--ion-color-primary);
                 }
             }
 
@@ -385,7 +385,7 @@ ion-card {
 
                 span {
                     display: block;
-                    color: var(--ion-color-light-shade);
+                    color: var(--ion-color-primary);
                     font-size: .9rem;
                     text-align: right;
                 }
@@ -439,7 +439,7 @@ ion-card {
     }
 
     span {
-        color: var(--ion-color-light-shade);
+        color: var(--ion-color-primary);
         font-size: 1rem;
     }
 }

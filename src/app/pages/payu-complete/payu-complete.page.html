@@ -9,11 +9,7 @@
         <ion-card>
 
             <ion-item *ngIf="!is_paid">
-                <h2 *ngIf="transaction.state == 'APPROVED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.APPROVED' | translate }}</h2>
-                <h2 *ngIf="transaction.state == 'DECLINED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.DENIED' | translate }}</h2>
-                <h2 *ngIf="transaction.state == 'PENDING'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.PENDING' | translate }}</h2>
-                <h2 *ngIf="transaction.state == 'ERROR'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.ERROR' | translate }}</h2>
-                <h2 *ngIf="transaction.state == 'EXPIRED'">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.EXPIRED' | translate }}</h2>
+                <h2 class="pl15">{{ 'PAYU_COMPLETE.TRANSACTION_STATE' | translate }}: {{ 'PAYMENT.'+transaction.state | translate }}</h2>
             </ion-item>
 
             <ion-card-content *ngIf="!is_paid">

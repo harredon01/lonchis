@@ -333,7 +333,7 @@
         "PAY_CASH_SUCCESS": "Pago exitoso",
         "PAY_CASH_STARTING": "Iniciando proceso de compra",
         "OPTIONS": "Selecciona una opción",
-        "OTHERS": "Haz tu pago en cualquier punto."
+        "OTHERS": "Haz click en el logo que quieres usar para pagar. Haz tu pago en cualquier punto."
     },
     "CHECKOUT_PAYER": {
         "TITLE": "Datos de la tarjeta",
@@ -883,6 +883,7 @@
         "SUBTOTAL": "Subtotal",
         "PAYMENT_IN_BANK": "Esperando consignación",
         "DENIED": "Rechazada",
+        "DECLINED":"Rechazado",
         "DENIED2": "Rechazado",
         "ERROR": "Error",
         "ERROR_DESC": "Hubo un error procesando tu transacción. Toma nota de estos datos y comunícate con nosotros por el chat de soporte si tienes algún problema.",

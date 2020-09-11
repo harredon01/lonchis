@@ -47,7 +47,7 @@ export class MerchantCategoriesPage implements OnInit {
        */
     
     activateMerchant(){
-        const browser = this.iab.create("https://auth.mercadopago.com.co/authorization?client_id=7257598100783047&response_type=code&platform_id=mp&redirect_uri=https%3A%2F%2Fdev.lonchis.com.co/mercado/return?user_id=" + this.userData._user.id);
+        const browser = this.iab.create("https://auth.mercadopago.com.co/authorization?client_id=7257598100783047&response_type=code&platform_id=mp&redirect_uri=https%3A%2F%2F" + this.api.urlraw+"/mercado/return?user_id=" + this.userData._user.id);
         browser.on('exit').subscribe(event => {
         });
     }

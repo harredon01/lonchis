@@ -12,6 +12,7 @@ import {Router} from '@angular/router';
 export class ApiService {
     loading:any;
     url: string = 'https://www.lonchis.com.co/api';
+    urlraw: string = 'www.lonchis.com.co';
     urlsite: string = 'https://www.lonchis.com.co';
     constructor(public http: HttpClient,
         private toastCtrl: ToastController,

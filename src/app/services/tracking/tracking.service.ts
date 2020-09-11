@@ -70,7 +70,7 @@ export class TrackingService {
 //                    logLevel: BackgroundGeolocation.LOG_LEVEL_VERBOSE,
 //                    desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
 //                    distanceFilter: 10,
-//                    url: 'https://dev.lonchis.com.co/api/locations/user',
+//                    url: this.api.url+'/locations/user',
 //                    autoSync: true,
 //                    stopOnTerminate: false,
 //                    startOnBoot: true

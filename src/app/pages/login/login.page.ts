@@ -4,7 +4,6 @@ import {GooglePlus} from '@ionic-native/google-plus/ngx';
 import {SignInWithApple, AppleSignInResponse, AppleSignInErrorResponse, ASAuthorizationAppleIDRequest} from '@ionic-native/sign-in-with-apple/ngx';
 import {NavController, AlertController, ModalController} from '@ionic/angular';
 import {Events} from '../../services/events/events.service';
-import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {UserService} from '../../services/user/user.service';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {AuthService} from '../../services/auth/auth.service';
@@ -48,8 +47,7 @@ export class LoginPage implements OnInit {
         private modalCtrl: ModalController,
         public auth: AuthService,
         public events: Events,
-        public userData: UserDataService,
-        public iab: InAppBrowser) {
+        public userData: UserDataService) {
         this.isUpdating = false;
         this.events.subscribe('storageInitialized', (data: any) => {
             this.checkLogIn();
@@ -215,11 +213,6 @@ export class LoginPage implements OnInit {
             // Unable to log in
             this.api.toast('LOGIN.LOGIN_ERROR');
             this.api.handleError(err);
-        });
-    }
-    forgotPass() {
-        const browser = this.iab.create("https://dev.lonchis.com.co/password/reset");
-        browser.on('exit').subscribe(event => {
         });
     }
     // Attempt to login in through our User service

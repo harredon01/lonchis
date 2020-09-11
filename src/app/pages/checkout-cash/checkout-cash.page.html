@@ -1,46 +1,51 @@
 <ion-header class="section__header">
+
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-back-button defaultHref="shop/home/checkout/prepare"></ion-back-button>
         </ion-buttons>
         <ion-title>{{ 'CHECKOUT_CASH.TITLE' | translate }}</ion-title>
     </ion-toolbar>
+
 </ion-header>
+
 <ion-content>
     <div class="webcont">
         <ion-card>
             <ion-card-content>
                 <ion-item >
-                    <p>{{ 'CHECKOUT_CASH.OTHERS' | translate }}</p>
+                    <img class="w20" src="assets/logos/payu.png" alt="PayU Latam" border="0" />
                 </ion-item>
                 <ion-item >
-                    <img src="http://www.payulatam.com/logos/logo.php?l=133&c=5c6e19348baf9" alt="PayU Latam" border="0" />
+                    <p>{{ 'CHECKOUT_CASH.OTHERS' | translate }}</p>
                 </ion-item>
+                
                 <ion-item class="cash-main-logos" >
-                    <img (click)="selectOption('BALOTO')" src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/sprite_source/lg/big/BALOTO.png">
-                    <img (click)="selectOption('EFECTY')" src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/sprite_source/lg/big/EFECTY.png">
+                    <img (click)="selectOption('BALOTO')" src="assets/logos/baloto.jpg">
+                    <img (click)="selectOption('EFECTY')" src="assets/logos/efecty.png">
                 </ion-item>
                 <ion-item class="cash-logos" (click)="selectOption('OTHERS_CASH')">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/paga_todo-payment.gif">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/apuestas_cucuta_75-payment.gif">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/gana-payment.gif">
+                    <img src="assets/logos/pagatodo.png">
+                    <img src="assets/logos/ac75.png">
+                    <img src="assets/logos/gana.png">
                 </ion-item>
                 <ion-item  class="cash-logos" (click)="selectOption('OTHERS_CASH')">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/gana_gana-payment.gif">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/su_chance-payment.gif">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/acertemos-payment.gif">
+                    <img src="assets/logos/ganagana.png">
+                    <img src="assets/logos/suchance.png">
+                    <img src="assets/logos/acertemos.png">
                 </ion-item>
                 <ion-item  class="cash-logos" (click)="selectOption('OTHERS_CASH')">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/la_perla-payment.gif">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/apuestas_unidas-payment.gif">
-                    <img src="https://qa-stg-s02cdn.payulatam.com/4.9.71/app/dist/images/cash_voucher/countries/co/jer-payment.gif">
+                    <img src="assets/logos/laperla.png">
+                    <img src="assets/logos/apuestas-unidas.jpg">
                 </ion-item>
-                <ion-list>
+                <ion-list class="mt15">
                     <ion-item > 
                         <ion-label>{{ 'INPUTS.MY_DATA' | translate }}</ion-label>
                         <ion-checkbox [(ngModel)]="v" (click)="useUser()"></ion-checkbox>
                     </ion-item>
                 </ion-list>   
+
+
                 <form  (submit)="payCash()" [formGroup]="payerForm" >
                     <ion-list>
                         <ion-item>
