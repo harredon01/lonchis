@@ -92,13 +92,9 @@ export class LoginPage implements OnInit {
         }
     }
     loginFacebook() {
-        if (this.userData.isDevice) {
-            this.fb.login(['public_profile', 'email'])
+        this.fb.login(['public_profile', 'email'])
                 .then((res: FacebookLoginResponse) => {console.log('Logged into Facebook!', res); this.verifyToken(res.authResponse.accessToken, "facebook", null);})
                 .catch(e => console.log('Error logging into Facebook', e));
-        } else {
-            console.log("loginFacebook");
-        }
     }
     loginApple() {
         if (this.userData.isDevice) {

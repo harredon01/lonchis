@@ -14,7 +14,7 @@
 <ion-content class="map">
     <div class="map__wrapper">
         <p>{{ 'MAP.NO_MAP_DESC' |translate }}</p>
-        <div *ngIf="this.mapData.activeType =='Address'&&loadingComplete">
+        <div *ngIf="loadingComplete">
             <p>{{ 'MAP.SHIPPING_ADDRESS_PIN' |translate }}</p>
             <div *ngIf="this.mapData.merchantId">
                 <p *ngIf="!shippingAddressInCoverage">{{'MAP.SHIPPING_ADDRESS_NOT_IN_COVERAGE'| translate }}</p>
@@ -45,18 +45,6 @@
                         <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
                     </ion-button>
                 </div>
-            </div>
-        </div>
-        <div *ngIf="this.mapData.activeType =='Location'&&loadingComplete">
-            <p>{{ 'MAP.LOCATION_PIN' |translate }}</p>
-            <div>
-
-                <ion-button class='save-address' (click)="locationConfirmed()" strong>
-                    <span color="primary">
-                        {{ 'MAP.DONE_SHIPPING' | translate }}
-                    </span>
-                    <ion-icon name="md-checkmark" showWhen="core,android,windows"></ion-icon>
-                </ion-button>
             </div>
         </div>
     </div>

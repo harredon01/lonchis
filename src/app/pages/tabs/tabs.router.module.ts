@@ -519,14 +519,14 @@ const routes: Routes = [
             },
             {
                 path: '',
-                redirectTo: '/tabs/home',
+                redirectTo: '/shop/home',
                 pathMatch: 'full'
             }
         ]
     },
     {
         path: '',
-        redirectTo: '/tabs/home',
+        redirectTo: '/shop/home',
         pathMatch: 'full'
     }
 ];

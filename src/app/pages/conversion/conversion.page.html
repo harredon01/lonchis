@@ -39,11 +39,11 @@
             </ion-select>
         </ion-item>
         <ion-item>
-            <ion-label>{{ 'CONVERSION.TOTAL' | translate }}:{{subtotal|currency}}</ion-label>
+            <ion-label>{{ 'CONVERSION.TOTAL' | translate }}</ion-label>
             <p>{{subtotal|currency}}</p>
         </ion-item>
         <ion-item>
-            <ion-label>{{ 'CONVERSION.UNIT_PRICE' | translate }}:{{unitPrice|currency}}</ion-label>
+            <ion-label>{{ 'CONVERSION.UNIT_PRICE' | translate }}</ion-label>
             <p>{{ unitPrice | currency }} </p>
         </ion-item>
         <ion-button (click)="addCartItem()" class="right m10"> {{ 'CONVERSION.PAY' | translate }} </ion-button>

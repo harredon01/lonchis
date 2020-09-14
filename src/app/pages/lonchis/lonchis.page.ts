@@ -75,6 +75,10 @@ export class LonchisPage implements OnInit {
             this.clearCart();
             // user and time are the same arguments passed in `events.publish(user, time)`
         });
+        events.subscribe('authenticated', () => {
+            this.ionViewDidEnter();
+            // user and time are the same arguments passed in `events.publish(user, time)`
+        });
         events.subscribe('home:loadDeliveries', () => {
             this.getArticles();
             if (this.userData._user) {
@@ -108,7 +112,9 @@ export class LonchisPage implements OnInit {
 
     ngOnInit() {
         console.log("ionViewDidLoad");
-
+        this.getMerchants();
+        let vm = this
+        setTimeout(function () {vm.api.dismissLoader(); }, 2000);
         if (this.userData._user) {
 
             this.alerts.countUnread().subscribe((resp: any) => {
@@ -193,13 +199,12 @@ export class LonchisPage implements OnInit {
                 this.navCtrl.navigateForward(this.drouter.pages);
             }
             this.drouter.pages = null;
-            this.events.publish("authenticated", {});
             this.getDeliveries(false);
         } 
         if (this.userData.deviceSet){
             this.getCart();
         }
-        this.getMerchants();
+        this.api.hideMenu();
         let vm = this
         setTimeout(function () {vm.api.dismissLoader(); }, 2000);
         //        console.log("dismiss");

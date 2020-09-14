@@ -170,6 +170,7 @@ export class UserService {
         seq.subscribe((res: any) => {
             let container = {"status": 401};
             this.userData.logout();
+            this.api.hideMenu();
             this.api.handleError(container);
             // If the API returned a successful response, mark the user as logged in
         }, err => {

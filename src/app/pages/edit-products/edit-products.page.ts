@@ -77,7 +77,7 @@ export class EditProductsPage implements OnInit {
             this.getItem(product);
         } else {
             this.isNew = true;
-            this.getCategories();
+            this.getCategories("");
         }
     }
 
@@ -109,10 +109,25 @@ export class EditProductsPage implements OnInit {
             this.api.handleError(err);
         });
     }
-    getCategories() {
+    async filterList(evt) {
+        const searchTerm = evt.srcElement.value;
+
+        if (!searchTerm) {
+            return;
+        }
+
+        this.getCategories(searchTerm);
+    }
+    getCategories(keyword?:any) {
         this.api.loader();
         let merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
-        this.productsServ.getProductCategories(merchant,"Product").subscribe((data: any) => {
+        let cont = null;
+        if(keyword){
+            cont = {"name":keyword,type:"App\\Models\\Product"}
+        } else {
+            cont = {type:"App\\Models\\Product"}
+        }
+        this.productsServ.getProductCategories(cont).subscribe((data: any) => {
             this.api.dismissLoader();
             console.log(JSON.stringify(data));
             this.categories = data.data;
@@ -154,6 +169,7 @@ export class EditProductsPage implements OnInit {
         this.productsServ.saveOrCreateProduct(container).subscribe((data: any) => {
             this.api.dismissLoader();
             if (data.status == "success") {
+                this.api.toast('INPUTS.SUCCESS_SAVE');
                 this.filterResults(data);
             } else {
                 this.api.toast('INPUTS.ERROR_SAVE');
@@ -237,7 +253,7 @@ export class EditProductsPage implements OnInit {
                         this.variants.splice(parseInt(item), 1);
                     }
                 }
-                if (this.variants.length == 0 ){
+                if (this.variants.length == 0) {
                     this.navCtrl.back();
                 }
                 console.log(JSON.stringify(data));
@@ -261,6 +277,7 @@ export class EditProductsPage implements OnInit {
 
             this.api.dismissLoader();
             if (data.status == "success") {
+                this.api.toast('INPUTS.SUCCESS_SAVE');
                 this.editingVariant = false;
                 let variant = data.variant;
                 let found = false;

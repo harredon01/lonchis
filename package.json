@@ -90,7 +90,9 @@
     "@types/jasmine": "~3.5.12",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^14.0.27",
+    "cordova-browser": "^6.0.0",
     "cordova-ios": "6.1.0",
+    "cordova-plugin-facebook4": "^6.4.0",
     "cordova-plugin-googlemaps": "^2.7.1",
     "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git",
     "cordova-plugin-secure-storage-echo": "^5.1.1",
@@ -141,17 +143,17 @@
       "cordova-plugin-androidx-adapter": {},
       "cordova-plugin-sign-in-with-apple": {},
       "cordova-plugin-secure-storage-echo": {},
-      "cordova-plugin-facebook4": {
-        "APP_ID": "340442469993643",
-        "APP_NAME": "Lonchis",
-        "FACEBOOK_HYBRID_APP_EVENTS": "false",
-        "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
-      },
       "cordova-plugin-googlemaps": {
         "API_KEY_FOR_ANDROID": "AIzaSyDDwPkLjnHj9rZ7M1hk9Z7HMi-ENu47sm4",
         "API_KEY_FOR_IOS": "AIzaSyBx9ykkz-m1-E-viMdFUh_Q9g0FaEP-K5I",
         "LOCATION_WHEN_IN_USE_DESCRIPTION": "This app wants to get your location while this app runs only.",
         "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
+      },
+      "cordova-plugin-facebook4": {
+        "APP_ID": "340442469993643",
+        "APP_NAME": "Lonchis",
+        "FACEBOOK_HYBRID_APP_EVENTS": "false",
+        "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
       }
     },
     "platforms": [

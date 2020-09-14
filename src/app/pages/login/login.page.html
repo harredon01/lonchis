@@ -32,15 +32,15 @@
                 <div class="login__forgot-account ion-padding">
                     <a href="javascript:;" (click)="performForgotPass()">{{ 'LOGIN.FORGOT_PASS' | translate }}</a>
                 </div>
-                <p class="login__text">Or</p>
-                <div class="login__buttons" *ngIf="true">
+                <p class="login__text">O</p>
+                <div class="login__buttons" >
                     <div class="login__third login__third--facebook" (click)="loginFacebook()">
                         <p class="btn-text"><b>Ingresa con facebook</b></p>
                     </div>
-                    <div class="login__third login__third--google" (click)="loginGoogle()">
+                    <div class="login__third login__third--google" (click)="loginGoogle()" *ngIf="true">
                         <p class="btn-text"><b>Ingresa con Google</b></p>
                     </div>
-                    <div class="login__third login__third--apple" (click)="loginApple()">
+                    <div class="login__third login__third--apple" (click)="loginApple()" *ngIf="true">
                         <p class="btn-text"><b><ion-icon slot="start" name="logo-apple"></ion-icon> Sign in with Apple</b></p>
                     </div>
                 </div>
