@@ -196,7 +196,10 @@ export class LonchisPage implements OnInit {
             this.getCountDeliveries();
             console.log("Before get count deliveries", this.drouter.pages);
             if(this.drouter.pages){
-                this.navCtrl.navigateForward(this.drouter.pages);
+                if(this.drouter.pages.length>0){
+                    this.navCtrl.navigateForward(this.drouter.pages);
+                }
+                
             }
             this.drouter.pages = null;
             this.getDeliveries(false);
