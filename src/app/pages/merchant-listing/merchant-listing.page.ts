@@ -47,25 +47,20 @@ export class MerchantListingPage implements OnInit {
         let container = this.params.getParams();
         if (container) {
             if (container.purpose) {
-                if (container.purpose=='none') {
-                    this.purpose = "";
-                } else {
-                    this.purpose = container.purpose;
-                }
-                
+                this.purpose = container.purpose;
             }
             if (container.showAddress) {
                 this.showAddress = container.showAddress;
             }
         }
         let activeView = this.router.url;
-            console.log("getActive", activeView);
-            if (activeView.includes("settings")) {
-                this.typeSearch = "own";
-                this.urlSearch = 'shop/settings/merchants/';
-            } else {
-                this.urlSearch = 'shop/home/categories/' + this.category + '/merchant/';
-            }
+        console.log("getActive", activeView);
+        if (activeView.includes("settings")) {
+            this.typeSearch = "own";
+            this.urlSearch = 'shop/settings/merchants/';
+        } else {
+            this.urlSearch = 'shop/home/categories/' + this.category + '/merchant/';
+        }
     }
     ionViewDidEnter() {
         this.api.hideMenu();
@@ -147,8 +142,8 @@ export class MerchantListingPage implements OnInit {
         }
         this.params.setParams(params);
         console.log("Entering merchant", item);
-        if(this.purpose.length > 0 ){
-             this.navCtrl.navigateForward(this.urlSearch + item.id + "/" + this.purpose);
+        if (this.purpose.length > 0) {
+            this.navCtrl.navigateForward(this.urlSearch + item.id + "/" + this.purpose);
         } else {
             this.navCtrl.navigateForward(this.urlSearch + item.id);
         }
@@ -231,7 +226,6 @@ export class MerchantListingPage implements OnInit {
             if (this.page == 1) {
                 this.merchants = [];
             }
-            data.data = this.merchantsServ.prepareObjects(data.data);
             if (data.total) {
                 this.totalResults = data.total;
             }
@@ -240,12 +234,6 @@ export class MerchantListingPage implements OnInit {
                 this.infiniteScroll.disabled = true;
             }
             for (let one in results) {
-                if (results[one].merchant_id) {
-                    results[one].id = results[one].merchant_id;
-                }
-                if (results[one].categorizable_id) {
-                    results[one].id = results[one].categorizable_id;
-                }
                 let container = new Merchant(results[one]);
                 this.merchants.push(container);
             }

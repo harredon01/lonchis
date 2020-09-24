@@ -18,30 +18,44 @@ export class Article {
     category_id: any;
     metadescription: any;
     slug: any;
+    showMore: boolean = false;
     attributes: any;
     start_date: any;
     end_date: any;
-    files: any=[];
+    files: any = [];
     constructor(fields: any) {
+        if(fields.categorizable_id){
+            fields.id = fields.categorizable_id;
+        }
         if (fields.start_date) {
             if (typeof fields.start_date === 'string' || fields.start_date instanceof String) {
-                fields.start_date = fields.start_date.replace(/-/g, '/');
-                if (fields.start_date.includes("Z")) {
-                    fields.start_date = fields.start_date.replace("T", ' ');
-                    fields.start_date = fields.start_date.split(".")[0];
-                    fields.start_date = new Date(fields.start_date);
-                    fields.start_date = new Date(fields.start_date.getTime() - fields.start_date.getTimezoneOffset() * 60000);
-                }
+                if (fields.start_date)
+                    if (fields.start_date.includes("0000")) {
+                        fields.start_date = new Date();
+                    } else {
+                        fields.start_date = fields.start_date.replace(/-/g, '/');
+                        if (fields.start_date.includes("Z")) {
+                            fields.start_date = fields.start_date.replace("T", ' ');
+                            fields.start_date = fields.start_date.split(".")[0];
+                            fields.start_date = new Date(fields.start_date);
+                            fields.start_date = new Date(fields.start_date.getTime() - fields.start_date.getTimezoneOffset() * 60000);
+                        }
+                    }
+
             }
         }
         if (fields.end_date) {
             if (typeof fields.end_date === 'string' || fields.end_date instanceof String) {
-                fields.end_date = fields.end_date.replace(/-/g, '/');
-                if (fields.end_date.includes("Z")) {
-                    fields.end_date = fields.end_date.replace("T", ' ');
-                    fields.end_date = fields.end_date.split(".")[0];
-                    fields.end_date = new Date(fields.end_date);
-                    fields.end_date = new Date(fields.end_date.getTime() - fields.end_date.getTimezoneOffset() * 60000);
+                if (fields.end_date.includes("0000")) {
+                    fields.end_date = new Date();
+                } else {
+                    fields.end_date = fields.end_date.replace(/-/g, '/');
+                    if (fields.end_date.includes("Z")) {
+                        fields.end_date = fields.end_date.replace("T", ' ');
+                        fields.end_date = fields.end_date.split(".")[0];
+                        fields.end_date = new Date(fields.end_date);
+                        fields.end_date = new Date(fields.end_date.getTime() - fields.end_date.getTimezoneOffset() * 60000);
+                    }
                 }
             }
         }
@@ -51,7 +65,7 @@ export class Article {
                 fields.attributes = JSON.parse(fields.attributes);
             }
         } else {
-            fields.attributes =[]
+            fields.attributes = []
         }
         // Quick and dirty extend/assign fields to this model
         for (const f in fields) {
