@@ -61,7 +61,7 @@ export class ProductsService {
         let seq = this.api.delete(endpoint);
         return seq;
     }
-    buildProduct(container: any, merchant: any, merchant_id: any) {
+    buildProduct(container: any, merchant: any) {
         let productInfo = new Product({});
 
         productInfo.id = container.product_id;
@@ -73,6 +73,7 @@ export class ProductsService {
         productInfo.merchant_description_more = false;
         if (merchant) {
             productInfo.merchant_name = merchant.merchant_name;
+            productInfo.merchant_id = merchant.merchant_id;
             productInfo.merchant_description = merchant.merchant_description;
             productInfo.src = merchant.merchant_icon;
 
@@ -268,13 +269,13 @@ export class ProductsService {
         variant.min_quantity = container.min_quantity;
         return variant;
     }
-    buildProductInformation(items, merchant_id: any) {
+    buildProductInformation(items) {
         let results = [];
         if (items['products_variants'].length > 0) {
             let resultsVariant = [];
             let resultsCategory = [];
             //            console.log("fhfhfhfhfhf", items['products_variants'][0]);
-            let productInfo = this.buildProduct(items['products_variants'][0], items['merchant_products'][0], merchant_id);
+            let productInfo = this.buildProduct(items['products_variants'][0], items['merchant_products'][0]);
             let activeCategory = {
                 "name": items['products_variants'][0]['category_name'],
                 "id": items['products_variants'][0]['category_id'],
@@ -304,7 +305,7 @@ export class ProductsService {
                         activeCategory.products.push(productInfo);
                     }
                     results.push(productInfo);
-                    productInfo = this.buildProduct(items['products_variants'][i], items['merchant_products'][0], merchant_id);
+                    productInfo = this.buildProduct(items['products_variants'][i], items['merchant_products'][0]);
 
                     resultsVariant = [];
                 }

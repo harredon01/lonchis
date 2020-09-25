@@ -121,7 +121,7 @@ export class CartService {
                 product_variant_id: item.variant_id,
                 quantity: item.amount,
                 item_id: item.item_id,
-                merchant_id: 1299
+                merchant_id: item.merchant_id
             };
             console.log("Add cart item", container);
             if (container.item_id) {

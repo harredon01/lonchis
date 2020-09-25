@@ -269,10 +269,10 @@ export class ProgramarPage implements OnInit {
             console.log("User: ", this.userData._user);
             if (this.userData._user) {
                 this.params.setParams({"merchant_id": 1299});
-                this.navCtrl.navigateForward('shop/home/checkout/shipping/' + 1299);
+                this.navCtrl.navigateForward('shop/home/checkout/shipping');
             } else {
                 this.params.setParams({"merchant_id": 1299});
-                this.drouter.addPages('shop/home/checkout/shipping/' + 1299);
+                this.drouter.addPages('shop/home/checkout/shipping');
                 console.log("Pushing login");
                 this.navCtrl.navigateForward('login');
             }

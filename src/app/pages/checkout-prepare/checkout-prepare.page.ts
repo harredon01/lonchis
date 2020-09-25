@@ -30,7 +30,7 @@ export class CheckoutPreparePage implements OnInit {
     shipping: any[] = [];
     selectShipping: boolean = false;
     shippingError: boolean = false;
-    expectedProviders: any = 2;
+    expectedProviders: any = 0;
     payment: Payment;
     order: any;
     coupon: any;
@@ -444,8 +444,14 @@ export class CheckoutPreparePage implements OnInit {
                 this.getCart();
             }
             if (this.shipping.length == 0) {
-                this.getPlatformShippingPrice(resp.order.id, "Rapigo");
-                this.getPlatformShippingPrice(resp.order.id, "Basilikum");
+                this.expectedProviders = 0;
+                let attributes = JSON.parse(this.orderData.currentOrder.attributes);
+                if (attributes.providers) {
+                    for (let item in attributes.providers) {
+                        this.expectedProviders++;
+                        this.getPlatformShippingPrice(resp.order.id, attributes.providers[item]);
+                    }
+                }
             } else {
                 this.shippingError = true;
             }
