@@ -19,7 +19,7 @@
 
 
 <ion-content class="product">
-    <ion-card class="product-header product-header---main"  *ngIf="categories.length > 0">
+    <ion-card class="product-header product-header---main"  *ngIf="categories.length > 0 && merchant">
         <ion-card-header class="product-header__information">
             <span>{{merchantObj.merchant_name}}</span>
         </ion-card-header>

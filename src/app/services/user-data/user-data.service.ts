@@ -109,6 +109,9 @@ export class UserDataService {
         }
 
     }
+    clearShipping() {
+        this.storage2.set('shipping','');
+    }
 
     /**
      * get username from local storage.
@@ -318,6 +321,7 @@ export class UserDataService {
             this.storage2.remove('token');
             this.storage2.set('token', "");
         }
+        this.clearShipping();
     }
 
     /**

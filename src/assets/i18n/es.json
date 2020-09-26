@@ -971,8 +971,8 @@
     "ADDRESS_FIELDS": {
         "ADDRESS": "Dirección: ",
         "ADDRESS_CONFIRM": "Si la dirección no coincide, puedes editar la info.",
-        "NOTES": "Casa, Apto, Oficina",
-        "NAME": "Nombre dirección",
+        "NOTES": "Casa, Apto, Oficina, indicaciones",
+        "NAME": "Por quien pregunta",
         "PHONE": "Teléfono",
         "POSTAL": "Cod Postal",
         "ADDRESS_ERROR": "verifica la dirección",

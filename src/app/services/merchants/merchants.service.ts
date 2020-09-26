@@ -17,30 +17,6 @@ export class MerchantsService {
         return seq;
     }
 
-    prepareObjects(objects: any) {
-        for (let item in objects) {
-            if (objects[item].object_id) {
-                objects[item].id = objects[item].object_id;
-            }
-            if (objects[item].type) {
-                //                        objects[item].avatar = 'MERCHANT_' + objects[item].type.toUpperCase();
-                //                        objects[item].avatar = ICONS[objects[item].avatar];
-                //                        objects[item].description = $translate.instant('REPORT.' + objects[item].type.toUpperCase());
-            }
-            if (objects[item].Distance) {
-                if (objects[item].Distance < 1) {
-                    let result = objects[item].Distance * 100;
-                    result = Math.round(result * 100) / 100;
-                    objects[item].Distance = result + " m.";
-                } else {
-                    let result = objects[item].Distance;
-                    result = Math.round(result * 100) / 100;
-                    objects[item].Distance = result + " km.";
-                }
-            }
-        }
-        return objects
-    }
     getMerchants(where: string) {
         let url = "/merchants";
 

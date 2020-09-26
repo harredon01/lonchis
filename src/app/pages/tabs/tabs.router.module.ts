@@ -50,7 +50,7 @@ const routes: Routes = [
                         path: 'checkout',
                         children: [
                             {
-                                path: 'shipping/:merchant_id',
+                                path: 'shipping',
                                 loadChildren: () => import('../checkout-shipping/checkout-shipping.module').then(m => m.CheckoutShippingPageModule)
                             },
                             {

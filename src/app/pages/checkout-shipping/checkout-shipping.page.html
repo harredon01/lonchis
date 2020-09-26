@@ -18,6 +18,8 @@
             </ion-card-header>
             <ion-card-content class="checkout-shipping__item checkout-shipping__info">
                 <p>{{selectedAddress.phone}}</p>
+                <p>{{selectedAddress.name}}</p>
+                <p>{{selectedAddress.notes}}</p>
                 <p>{{selectedAddress.cityName}}</p>
                 <p>{{selectedAddress.regionName}}</p>
                 <p>{{selectedAddress.countryName}}</p>
@@ -27,8 +29,7 @@
             <ion-item-sliding class="checkout-shipping__item" *ngFor="let item of currentItems">
                 <ion-item (click)="saveShipping(item)">
                     <ion-label class="ion-text-wrap">
-                        <h2>{{item.name}}</h2>
-                        <p>{{item.address}}</p>
+                        <h2>{{item.address}}</h2>
                     </ion-label>
                 </ion-item>
             </ion-item-sliding>
@@ -38,6 +39,6 @@
             'INPUTS.CREATE_ADDRESS' | translate }}</ion-button>
         <ion-button class="btn-primary" (click)="changeAddress()" *ngIf="showAddressCard">{{ 'INPUTS.CHANGE_ADDRESS' |
                 translate }}</ion-button>
-        <ion-button class="btn-secondary" (click)="prepareOrder()" *ngIf="showAddressCard"> {{ 'INPUTS.CONTINUE' | translate }}</ion-button>
+        <ion-button class="btn-secondary" (click)="submitOrder()" *ngIf="showAddressCard"> {{ 'INPUTS.CONTINUE' | translate }}</ion-button>
     </div>
 </ion-content>

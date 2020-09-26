@@ -47,6 +47,21 @@ export class OrderDataService {
             return "shop/payu/banks";
         }
     }
+    loadShipping(): Promise<any> {
+        return this.storage.get('shipping').then((value) => {
+            if (value) {
+                if (value.length > 0) {
+                    this.shippingAddress = JSON.parse(value);
+                    return this.shippingAddress;
+                }
+            }
+            return null
+        });
+    }
+    setShipping(shipping: any) {
+        this.shippingAddress = shipping;
+        this.storage.set('shipping', JSON.stringify(shipping));
+    }
     savePayer(order_id: any, user_id: any, email: any) {
 
         let query = "SELECT * FROM payers where order_id = ? and user_id = ? ";
@@ -160,7 +175,7 @@ export class OrderDataService {
         this.creditProduct = null;
         this.payment = null;
         this.payers = [];
-        this.events.publish('cart:orderFinished',{});
+        this.events.publish('cart:orderFinished', {});
     }
     clearOtherPayers(order_id: any) {
 
@@ -171,5 +186,10 @@ export class OrderDataService {
 
 
             }, (err) => console.error(err));
+    }
+    checkOrInitShipping() {
+        if (!this.shippingAddress) {
+            this.shippingAddress = new Address({});
+        }
     }
 }

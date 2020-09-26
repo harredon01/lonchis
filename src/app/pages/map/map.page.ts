@@ -331,31 +331,30 @@ export class MapPage implements OnInit {
         await addModal.present();
         const {data} = await addModal.onDidDismiss();
         if (data) {
-            let container = this.params.getParams();
-            container.mapLocation = true;
-            this.params.setParams(container);
+            this.addToParams();
             this.navCtrl.back();
             this.clearMap();
             console.log("Process complete, address created", data);
             this.mapData.address = data;
         }
     }
-    returnAddressData() {
-        console.log("returnAddressData", this.mapData.address);
-        let container = this.params.getParams();
-        container.mapLocation = true;
-        this.params.setParams(container);
-        this.navCtrl.back();
-        this.clearMap();
-        console.log("Process complete, location saved to data object");
-    }
-    locationConfirmed() {
+    addToParams() {
         let params = this.params.getParams();
         if (!params) {
             params = {};
         }
         params.mapLocation = true;
         this.params.setParams(params)
+    }
+    returnAddressData() {
+        console.log("returnAddressData", this.mapData.address);
+        this.addToParams();
+        this.navCtrl.back();
+        this.clearMap();
+        console.log("Process complete, location saved to data object");
+    }
+    locationConfirmed() {
+        this.addToParams();
         this.navCtrl.back();
         this.clearMap();
     }

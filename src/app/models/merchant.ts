@@ -26,18 +26,38 @@ export class Merchant {
     attributes: any;
     ratings: any[];
     files: any[];
-
+    Distance: any;
     constructor(fields: any) {
+        if (fields.object_id) {
+            fields.id = fields.object_id;
+        }
+        if (fields.merchant_id) {
+            fields.id = fields.merchant_id;
+        }
+        if (fields.categorizable_id) {
+            fields.id = fields.categorizable_id;
+        }
+        if (fields.Distance) {
+            if (fields.Distance < 1) {
+                let result = fields.Distance * 100;
+                result = Math.round(result * 100) / 100;
+                fields.Distance = result + " m.";
+            } else {
+                let result = fields.Distance;
+                result = Math.round(result * 100) / 100;
+                fields.Distance = result + " km.";
+            }
+        }
         // Quick and dirty extend/assign fields to this model
         for (const f in fields) {
             // @ts-ignore
             this[f] = fields[f];
         }
-        if(!this.attributes){
-            this.attributes=[];
+        if (!this.attributes) {
+            this.attributes = [];
         }
-        if(!this.availabilities){
-            this.availabilities=[];
+        if (!this.availabilities) {
+            this.availabilities = [];
         }
         if (this.availabilities.length > 0) {
             let date2 = new Date();

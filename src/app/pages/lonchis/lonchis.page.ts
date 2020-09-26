@@ -447,8 +447,11 @@ export class LonchisPage implements OnInit {
         let where = "id>1290&order_by=id,asc";
         console.log("Getting merchants");
         this.merchants.getMerchantsFromServer(where).subscribe((data: any) => {
-            data.data = this.merchants.prepareObjects(data.data);
-            this.currentItems = data.data;
+            let results = data.data;
+            for (let one in results) {
+                let container = new Merchant(results[one]);
+                this.currentItems.push(container);
+            }
         }, (err) => {
             console.log("Error getMerchantsFromServer");
         });
@@ -573,11 +576,9 @@ export class LonchisPage implements OnInit {
         if (data == "Checkout") {
             console.log("User: ", this.userData._user);
             if (this.userData._user) {
-                this.params.setParams({"merchant_id": 1299});
-                this.navCtrl.navigateForward('shop/home/checkout/shipping/' + 1299);
+                this.navCtrl.navigateForward('shop/home/checkout/shipping');
             } else {
-                this.params.setParams({"merchant_id": 1299});
-                this.drouter.addPages('shop/home/checkout/shipping/' + 1299);
+                this.drouter.addPages('shop/home/checkout/shipping');
                 console.log("Pushing login");
                 this.navCtrl.navigateForward('login');
             }

@@ -90,7 +90,7 @@ export class AddressCreatePage implements OnInit {
                 postal: postal,
                 lat: lat,
                 phone: this.userData._user.cellphone,
-                name: "",
+                name: this.userData._user.name,
                 long: long,
                 type: navParams.get('type'),
             };
