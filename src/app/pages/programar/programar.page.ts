@@ -618,50 +618,9 @@ export class ProgramarPage implements OnInit {
                 this.api.dismissLoader();
             });
         } else {
-            this.presentAlertPay();
+            this.openConversion()
         }
 
-    }
-    async presentAlertPay() {
-        const prompt = await this.alertCtrl.create({
-            header: "Bienvenido!",
-            subHeader: "Prueba tus primeros lonchis en envase desechable para ver si te gusta el concepto. Si apruebas te invitamos a que pruebes nuestros planes con envases desechables. Son mas baratos y amigables con el medio ambiente.",
-            inputs: [{
-                name: 'amount',
-                type: 'number',
-                min: 1,
-                max: 80
-            },],
-            buttons: [
-                {
-                    text: 'Cancel',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                    handler: () => {
-                        console.log('Confirm Cancel');
-                    }
-                }, {
-                    text: 'Ok',
-                    handler: (data) => {
-                        console.log('Confirm Ok');
-                        let container = {
-                            type: "delivery", params: this.saveDelivery
-                        };
-                        this.drouter.addPostPurchase(container);
-                        this.navCtrl.back();
-                        this.drouter.addPages([{
-                            type: 'addCart',
-                            amount: data.amount,
-                            merchant_id: 1299,
-                            item_id: null,
-                            product_variant_id: 220,
-                        }]);
-                        this.navCtrl.navigateForward('login');
-                    }
-                }
-            ]
-        });
-        prompt.present();
     }
 
     updateDelivery() {

@@ -79,6 +79,10 @@ export class AddressesPage implements OnInit {
             this.api.handleError(err);
         });
     }
+    closeModal(){
+        console.log("Calling dismiss");
+        this.modalCtrl.dismiss(null);
+    }
     async addBillingAddress() {
         console.log("completeAddressData", this.mapData.address);
         let container;

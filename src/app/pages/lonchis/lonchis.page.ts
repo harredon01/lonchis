@@ -28,7 +28,7 @@ export class LonchisPage implements OnInit {
 
     public itemList: any[];
     public tips: any[] = [];
-    currentItems: Merchant[];
+    currentItems: Merchant[]=[];
     totalDeliveries: any;
     notifs: any;
     loading: any;

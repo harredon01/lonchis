@@ -78,6 +78,10 @@ export class MerchantProductsPage implements OnInit {
         let paramsSent = this.params.getParams();
         let activeView = this.route.url;
         console.log("getActive", activeView);
+        let merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
+        if (merchant) {
+            this.merchant = merchant;
+        }
         if (activeView.includes("merchant")) {
             let merchant = this.activatedRoute.snapshot.paramMap.get('objectId');
             if (merchant) {
@@ -390,7 +394,7 @@ export class MerchantProductsPage implements OnInit {
         if (this.merchant) {
             container['merchant_id'] = this.merchant
         }
-        if (this.categories) {
+        if (this.category) {
             container['category_id'] = this.category
         }
         if (this.orderData.shippingAddress && !this.merchant ){

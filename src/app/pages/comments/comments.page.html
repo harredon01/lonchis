@@ -1,35 +1,40 @@
 <ion-header>
     <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button></ion-back-button>
+        </ion-buttons>
         <ion-title>{{ 'COMMENTS.TITLE' | translate }}</ion-title>
         <ion-buttons class="cart__button cart__button--right" slot="primary" *ngIf="isModal">
             <ion-button (click)="done()" strong>
-                    <ion-icon class="close-button" name="md-checkmark" showWhen="core,android,windows"></ion-icon>
+                <ion-icon class="close-button" name="md-checkmark" showWhen="core,android,windows"></ion-icon>
             </ion-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <p>{{ 'COMMENTS.DESCRIPTION' | translate }}</p>
-    <form (submit)="postComment()">
-        <ion-list>
-            <ion-item>
-                <ion-label position="floating">{{ 'COMMENTS.COMMENT' | translate }}</ion-label>
-                <ion-input type="text" [(ngModel)]="comment.comment" name="comment"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label position="fixed">{{ 'COMMENTS.RATINGS' | translate }}</ion-label>
-                <ion-select [(ngModel)]="comment.rating"  name="rating">
-                    <ion-select-option value="1">1</ion-select-option>
-                    <ion-select-option value="2">2</ion-select-option>
-                    <ion-select-option value="3">3</ion-select-option>
-                    <ion-select-option value="4">4</ion-select-option>
-                    <ion-select-option value="5">5</ion-select-option>
-                </ion-select>
-            </ion-item>
-            <ion-item>
-                <ion-button expand="full" type="submit">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
-            </ion-item>
-        </ion-list>
-    </form>
+    <div class="webcont">
+        <p>{{ 'COMMENTS.DESCRIPTION' | translate }}</p>
+        <form (submit)="postComment()">
+            <ion-list>
+                <ion-item>
+                    <ion-label position="floating">{{ 'COMMENTS.COMMENT' | translate }}</ion-label>
+                    <ion-input type="text" [(ngModel)]="comment.comment" name="comment"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label position="fixed">{{ 'COMMENTS.RATINGS' | translate }}</ion-label>
+                    <ion-select [(ngModel)]="comment.rating"  name="rating">
+                        <ion-select-option value="1">1</ion-select-option>
+                        <ion-select-option value="2">2</ion-select-option>
+                        <ion-select-option value="3">3</ion-select-option>
+                        <ion-select-option value="4">4</ion-select-option>
+                        <ion-select-option value="5">5</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-button expand="full" type="submit">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
+                </ion-item>
+            </ion-list>
+        </form>
+    </div>
 </ion-content>

@@ -130,15 +130,8 @@ export class HomePage implements OnInit {
         let query = "page=1&category_id=" + category;
         searchObj = this.merchantsServ.getMerchants(query);
         searchObj.subscribe((data: any) => {
-            data.data = this.merchantsServ.prepareObjects(data.data);
             let results = data.data;
             for (let one in results) {
-                if (results[one].merchant_id) {
-                    results[one].id = results[one].merchant_id;
-                }
-                if (results[one].categorizable_id) {
-                    results[one].id = results[one].categorizable_id;
-                }
                 let container = new Merchant(results[one]);
                 this[arrayname].push(container);
             }
@@ -318,7 +311,7 @@ export class HomePage implements OnInit {
         let container = {"includes": "categories,files", "category_id": 25};
         this.productsServ.getProductsMerchant(container).subscribe((resp) => {
             if (resp.products_total > 0) {
-                this.categoriesArr = this.productsServ.buildProductInformation(resp, 1299);
+                this.categoriesArr = this.productsServ.buildProductInformation(resp);
                 console.log("Result build product", this.categories);
                 if (this.orderData.cartData) {
                     let items = this.orderData.cartData.items;
