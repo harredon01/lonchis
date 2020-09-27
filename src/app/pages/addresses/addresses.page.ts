@@ -79,9 +79,13 @@ export class AddressesPage implements OnInit {
             this.api.handleError(err);
         });
     }
-    closeModal(){
+    closeModal(data){
+        let container = this.params.getParams();
+        delete container.select
+        this.params.setParams(container);
+    	this.isSelect = false;
         console.log("Calling dismiss");
-        this.modalCtrl.dismiss(null);
+        this.modalCtrl.dismiss(data);
     }
     async addBillingAddress() {
         console.log("completeAddressData", this.mapData.address);
@@ -159,7 +163,7 @@ export class AddressesPage implements OnInit {
      */
     async editAddress(address: Address) {
         if (this.isSelect){
-            this.modalCtrl.dismiss(address);
+            this.closeModal(address);
             return null;
         }
         if (address.type == "shipping") {

@@ -8,7 +8,7 @@
             <ion-button icon-only (click)="showPrompt()" *ngIf="!isSelect">
                 <ion-icon class="add-button" name="add"></ion-icon>
             </ion-button>
-            <ion-button icon-only (click)="closeModal()" *ngIf="isSelect">
+            <ion-button icon-only (click)="closeModal(null)" *ngIf="isSelect">
                 <ion-icon name="close-circle-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
