@@ -29,7 +29,7 @@ export class ProductsService {
     }
     getProductCategories(params: any) {
         let endpoint = '/categories';
-        let seq = this.api.get(endpoint,params);
+        let seq = this.api.get(endpoint, params);
         return seq;
     }
     saveOrCreateProduct(product: any) {
@@ -95,6 +95,7 @@ export class ProductsService {
         productInfo.item_id = null;
         productInfo.amount = container.min_quantity;
         productInfo.imgs = [];
+        productInfo.variants = [];
         return productInfo;
     }
     calculateTotals(where, array) {
@@ -160,8 +161,6 @@ export class ProductsService {
     }
     updateProductVisual(container: any, productInfo: Product) {
         if (container.is_on_sale) {
-            console.log("updateProductVisualsale", productInfo);
-            console.log("updateProductVisualsale2", container);
             productInfo.price = container.price;
             productInfo.onsale = true;
             productInfo.exprice = container.exprice;
@@ -171,7 +170,6 @@ export class ProductsService {
         }
 
         productInfo.variant_id = container.id;
-        console.log("Update Prod Vis1", container);
         if (container.attributes) {
             let attributes = container.attributes;
             if (attributes.buyers) {
@@ -269,86 +267,70 @@ export class ProductsService {
         variant.min_quantity = container.min_quantity;
         return variant;
     }
-    buildProductInformation(items) {
-        let results = [];
-        if (items['products_variants'].length > 0) {
-            let resultsVariant = [];
-            let resultsCategory = [];
-            //            console.log("fhfhfhfhfhf", items['products_variants'][0]);
-            let productInfo = this.buildProduct(items['products_variants'][0], items['merchant_products'][0]);
-            let activeCategory = {
-                "name": items['products_variants'][0]['category_name'],
-                "id": items['products_variants'][0]['category_id'],
-                "description": items['products_variants'][0]['category_description'],
-                "products": [],
-                "more": false
+    getCategory(variant, arrayCategories) {
+        for (let i in arrayCategories) {
+            if (arrayCategories[i].id == variant['category_id']) {
+                return arrayCategories[i];
             }
+        }
+        let activeCategory = {
+            "name": variant['category_name'],
+            "id": variant['category_id'],
+            "description": variant['category_description'],
+            "products": [],
+            "more": false
+        }
+        arrayCategories.push(activeCategory);
+        return activeCategory
+    }
+    getProduct(variant, arrayCategories, merchant) {
+        for (let i in arrayCategories) {
+            for (let j in arrayCategories[i].products) {
+                if (arrayCategories[i].products[j].id == variant['product_id']) {
+                    return arrayCategories[i].products[j];
+                }
+            }
+        }
+        let productInfo = this.buildProduct(variant, merchant);
+        return productInfo;
+    }
+    buildProductInformation(items) {
+        if (items['products_variants'].length > 0) {
+            let resultsCategory = [];
+            let processedVariants = [];
             for (let i = 0; i < items['products_variants'].length; i++) {
-                if (items['products_variants'][i].product_id != productInfo.id) {
-                    productInfo.variants = resultsVariant;
-                    //                    console.log("activeCategory", activeCategory);
-                    if (activeCategory.id) {
-                        if (items['products_variants'][i - 1]['category_id'] == activeCategory.id) {
-                            activeCategory.products.push(productInfo);
-                        } else {
-                            resultsCategory.push(activeCategory);
-                            activeCategory = {
-                                "name": items['products_variants'][i - 1]['category_name'],
-                                "id": items['products_variants'][i - 1]['category_id'],
-                                "description": items['products_variants'][i - 1]['category_description'],
-                                "products": [],
-                                "more": false
-                            };
-                            activeCategory.products.push(productInfo);
-                        }
-                    } else {
-                        activeCategory.products.push(productInfo);
-                    }
-                    results.push(productInfo);
-                    productInfo = this.buildProduct(items['products_variants'][i], items['merchant_products'][0]);
-
-                    resultsVariant = [];
+                if (processedVariants.includes(items['products_variants'][i].id)) {
+                    continue;
+                } else {
+                    processedVariants.push(items['products_variants'][i].id);
+                }
+                
+                let category = this.getCategory(items['products_variants'][i], resultsCategory);
+                console.log("Category found",category);
+                let product = this.getProduct(items['products_variants'][i], resultsCategory, items['merchant_products'][0]);
+                console.log("product found",product);
+                if (!this.containsObject(product, category.products)) {
+                    category.products.push(product);
                 }
                 let variant = this.createVariant(items['products_variants'][i]);
-                if (variant.price < productInfo.price) {
-                    productInfo = this.updateProductVisual(variant, productInfo);
+                if (variant.price < product.price) {
+                    product = this.updateProductVisual(variant, product);
                 }
-                if (!this.containsObject(variant, resultsVariant)) {
-                    resultsVariant.push(variant);
-                }
-                if ((i + 1) >= items['products_variants'].length) {
-                    productInfo.variants = resultsVariant;
-                    if (activeCategory.id) {
-                        if (items['products_variants'][i]['category_id'] == activeCategory.id) {
-                            activeCategory.products.push(productInfo);
-                            resultsCategory.push(activeCategory);
-                        } else {
-                            resultsCategory.push(activeCategory);
-                            activeCategory = {
-                                "name": items['products_variants'][i]['category_name'],
-                                "id": items['products_variants'][i]['category_id'],
-                                "description": items['products_variants'][i]['category_description'],
-                                "products": [],
-                                "more": false
-                            };
-                            activeCategory.products.push(productInfo);
-                            resultsCategory.push(activeCategory);
-                        }
-                    }else {
-                        activeCategory.products.push(productInfo);
-                        resultsCategory.push(activeCategory);
-                    }
-                    results.push(productInfo);
+                if (!this.containsObject(variant, product.variants)) {
+                    product.variants.push(variant);
                 }
             }
-            for (let j = 0; j < items['products_files'].length; j++) {
-                for (let i = 0; i < results.length; i++) {
-                    let imgInfo: any = {};
-                    if (items['products_files'][j].trigger_id == results[i].id) {
-                        imgInfo.file = items['products_files'][j].file;
-                        results[i].imgs.push(imgInfo);
-                        break;
+            for (let j in items['products_files']) {
+                for (let i = 0; i < resultsCategory.length; i++) {
+                    for (let k in resultsCategory[i].products) {
+                        let imgInfo: any = {};
+                        if (items['products_files'][j].trigger_id == resultsCategory[i].products[k].id) {
+                            imgInfo.file = items['products_files'][j].file;
+                            resultsCategory[i].products[k].imgs.push(imgInfo);
+                            break;
+                        }
                     }
+
                 }
             }
             console.log('resultbuildCat', resultsCategory);
