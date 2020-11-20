@@ -95,7 +95,7 @@
     "cordova-plugin-facebook4": "^6.4.0",
     "cordova-plugin-googlemaps": "^2.7.1",
     "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git",
-    "cordova-plugin-secure-storage-echo": "^5.1.1",
+    "cordova-plugin-secure-storage-echo": "^5.0.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.2",
     "karma": "^5.1.1",
@@ -142,7 +142,6 @@
       "cordova-plugin-androidx": {},
       "cordova-plugin-androidx-adapter": {},
       "cordova-plugin-sign-in-with-apple": {},
-      "cordova-plugin-secure-storage-echo": {},
       "cordova-plugin-googlemaps": {
         "API_KEY_FOR_ANDROID": "AIzaSyDDwPkLjnHj9rZ7M1hk9Z7HMi-ENu47sm4",
         "API_KEY_FOR_IOS": "AIzaSyBx9ykkz-m1-E-viMdFUh_Q9g0FaEP-K5I",
@@ -154,7 +153,8 @@
         "APP_NAME": "Lonchis",
         "FACEBOOK_HYBRID_APP_EVENTS": "false",
         "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
-      }
+      },
+      "cordova-plugin-secure-storage-echo": {}
     },
     "platforms": [
       "ios",

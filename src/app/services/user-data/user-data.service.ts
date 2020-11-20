@@ -29,7 +29,7 @@ export class UserDataService {
             this.secureStorageEcho.create('my_store_name')
                 .then((storage: SecureStorageEchoObject) => {
                     this.storage = storage;
-                    this.useSecure = true;
+                    //this.useSecure = true;
                     this.storageLoaded = true;
                     this.events.publish('storageInitialized', {});
                     console.log("Secure storage initialized");
@@ -76,8 +76,9 @@ export class UserDataService {
     setToken(token: string) {
         this._headers = this._headers.set('Authorization', 'Bearer ' + token);
         this._headers = this._headers.set('X-Auth-Token', token);
+        console.log("set token:", this.useSecure);
         if (this.useSecure) {
-            this.storage.set('token', token);
+            console.log("Set token secure result",this.storage.set('token', token));
         } else {
             this.storage2.set('token', token);
         }

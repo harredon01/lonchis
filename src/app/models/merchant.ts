@@ -119,7 +119,7 @@ export class Merchant {
                 if (container.items.length > 0) {
                     this.availabilitiesOrder.push(container);
                 }
-                date2 = new Date(date2.getTime() + 70 * 60000);
+                date2 = new Date(date2.getTime() + 10 * 60000);
                 let dayFound = false;
                 for (let item in this.availabilitiesOrder) {
                     let cont = this.availabilitiesOrder[item];
@@ -128,7 +128,19 @@ export class Merchant {
                             for (let i in cont.items) {
                                 let dayal = cont.items[i];
                                 let timeval = (date2.getMonth() + 1) + "/" + date2.getDate() + "/" + date2.getFullYear() + " " + dayal.from;
-                                let timedate = Date.parse(timeval);
+                                console.log("Time val", timeval);
+                                 let timedate = Date.parse(timeval);
+
+                                let timeval2 = (date2.getMonth() + 1) + "/" + date2.getDate() + "/" + date2.getFullYear() + " " + dayal.to;
+                                console.log("Time val", timeval);
+                                let timedate2 = Date.parse(timeval2);
+                                console.log("timedate", timedate);
+                                console.log("date2 val", date2.getTime());
+                                if (timedate < date2.getTime() && timedate2 > date2.getTime()) {
+                                    this.availabilitiesNext.push(dayal);
+                                    dayFound = true;
+                                    break;
+                                }
                                 if (timedate > date2.getTime()) {
                                     this.availabilitiesNext.push(dayal);
                                     dayFound = true;
