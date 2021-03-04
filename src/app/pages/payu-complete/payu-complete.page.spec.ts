@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PayuCompletePage } from './payu-complete.page';
 
@@ -7,7 +7,7 @@ describe('PayuCompletePage', () => {
   let component: PayuCompletePage;
   let fixture: ComponentFixture<PayuCompletePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PayuCompletePage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

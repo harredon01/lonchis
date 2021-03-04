@@ -1,28 +1,31 @@
-import {Component,OnInit} from '@angular/core';
-import { NavController, ModalController, AlertController} from '@ionic/angular';
+import {Component, OnInit} from '@angular/core';
+import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {CartService} from '../../services/cart/cart.service';
 import {Facebook} from '@ionic-native/facebook/ngx';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {ApiService} from '../../services/api/api.service';
+import {ProductsService} from '../../services/products/products.service';
 @Component({
-  selector: 'app-conversion',
-  templateUrl: './conversion.page.html',
-  styleUrls: ['./conversion.page.scss'],
+    selector: 'app-conversion',
+    templateUrl: './conversion.page.html',
+    styleUrls: ['./conversion.page.scss'],
 })
 export class ConversionPage implements OnInit {
-variant: any;
+    variant: any;
     amount: any;
     loading: any;
     options: any;
     merchant: any = 1299;
     price: any = 1299;
+    variants: any[]=[];
     subtotal: any;
     unitPrice: any;
     constructor(public navCtrl: NavController,
         public modalCtrl: ModalController,
         public alertCtrl: AlertController,
         public cart: CartService,
+        public products: ProductsService,
         public fb: Facebook,
         public api: ApiService,
         public userData: UserDataService,
@@ -37,6 +40,21 @@ variant: any;
         }
         this.selectVariant();
         console.log('ionViewDidLoad ConversionPage');
+        
+    }
+    getProduct() {
+        this.products.getProductSimple("80").subscribe((resp: any) => {
+            this.variants = this.variants.concat(resp.product.product_variants);
+            console.log("RESP",resp)
+        }, (err) => {
+
+        });
+        this.products.getProductSimple("81").subscribe((resp: any) => {
+
+            this.variants = this.variants.concat(resp.product.product_variants);
+        }, (err) => {
+
+        });
     }
     addCartItem() {
 
@@ -77,10 +95,13 @@ variant: any;
     }
     selectVariant() {
         let counter = 1;
-        this.price = 16330;
+        for(let item in this.variants){
+            if(this.variants[item].id == this.variant){
+                this.price = this.variants[item].price
+            }
+        }
         if (this.variant == 210) {
             counter = 6;
-            this.price = 15230;
         }
         this.options = [];
         for (let i = counter; i < 34; i++) {
@@ -118,7 +139,8 @@ variant: any;
         console.log("calculateTotals", this.subtotal, this.unitPrice);
     }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        this.getProduct()
+    }
 
 }
