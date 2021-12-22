@@ -17,6 +17,11 @@ export class AuthService {
         let seq = this.api.post(endpoint, formData);
         return seq;
     }
+    adminLogin(formData: any) {
+        let endpoint = '/admin/login';
+        let seq = this.api.post(endpoint, formData);
+        return seq;
+    }
     validateCodes(code: any) {
         let endpoint = '/auth/validate_codes';
         let codes = {code: code};

@@ -28,6 +28,7 @@ import {CartPageModule} from './pages/cart/cart.module'
 import {CommentsPageModule} from './pages/comments/comments.module'
 import {BookingDetailPageModule} from './pages/booking-detail/booking-detail.module'
 import {ForgotPassPageModule} from './pages/forgot-pass/forgot-pass.module'
+import {AdminLoginPageModule} from './pages/admin-login/admin-login.module'
 import {ConversionPageModule} from './pages/conversion/conversion.module'
 import {AddressCreatePageModule} from './pages/address-create/address-create.module'
 import {AddressesPageModule} from './pages/addresses/addresses.module'
@@ -57,6 +58,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         AddressesPageModule,
         ConversionPageModule,
         ForgotPassPageModule,
+        AdminLoginPageModule,
         BookingDetailPageModule,
         CommentsPageModule,
         AvailabilityCreatePageModule,

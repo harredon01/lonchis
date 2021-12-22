@@ -470,8 +470,10 @@ export class ProgramarPage implements OnInit {
                     this.hasDrink = false;
                 }
                 this.saveDelivery.type_name = this.foodTypeSelected.name
-                this.saveDelivery.starter_id = "";
-                this.saveDelivery.starter_name = "";
+                if(!this.saveDelivery.starter_id){
+                    this.saveDelivery.starter_id = "";
+                    this.saveDelivery.starter_name = "";
+                }
                 this.saveDelivery.drink_id = "";
                 this.saveDelivery.drink_name = "";
                 this.saveDelivery.main_name = "";

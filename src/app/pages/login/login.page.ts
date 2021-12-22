@@ -10,6 +10,7 @@ import {AuthService} from '../../services/auth/auth.service';
 import {ApiService} from '../../services/api/api.service';
 import {MapDataService} from '../../services/map-data/map-data.service';
 import {ParamsService} from '../../services/params/params.service';
+import {AdminLoginPage} from '../admin-login/admin-login.page';
 import {ForgotPassPage} from '../forgot-pass/forgot-pass.page';
 import {DynamicRouterService} from '../../services/dynamic-router/dynamic-router.service';
 @Component({
@@ -68,6 +69,17 @@ export class LoginPage implements OnInit {
     async performForgotPass() {
         let addModal = await this.modalCtrl.create({
             component: ForgotPassPage,
+        });
+        await addModal.present();
+        const {data} = await addModal.onDidDismiss();
+        if (data) {
+            console.log("Process complete, address created", data);
+            this.postTokenAuth(data);
+        }
+    }
+    async adminLogin() {
+        let addModal = await this.modalCtrl.create({
+            component: AdminLoginPage,
         });
         await addModal.present();
         const {data} = await addModal.onDidDismiss();

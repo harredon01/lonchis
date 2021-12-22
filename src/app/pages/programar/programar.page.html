@@ -16,15 +16,11 @@
     <div class="delivery-lunch webcont" *ngIf="!isDeposit">
         <p class="title pl15">{{ 'DELIVERY_PROGRAM.DESCRIPTION' | translate }} {{deliveryParams.delivery_text }}</p>
         <div *ngIf="!isProgrammed">
-            <ion-card *ngFor="let foodItem of listArticles" class="m0">
-                <div (click)="selectMeal(foodItem.id)" class='food-item'>
-                    <ion-card-header class="product-header-information">
-                        <span  class="delivery-lunch__name">{{foodItem.name}}</span>
-                    </ion-card-header>
+            <ion-card class="m0">
+                <div class='food-item'>
                     <ion-card-content>
-                        <p><b>{{ 'DELIVERY_PROGRAM.CHOOSE' | translate }}</b></p>
-                        <h2 class="delivery-lunch__entries" *ngIf="foodItem.attributes.entradas.length>0">{{ 'DELIVERY_PROGRAM.STARTER' | translate }}</h2>
-                        <div *ngFor="let dishItem of foodItem.attributes.entradas">
+                        <h2 class="delivery-lunch__entries" *ngIf="listArticles[0].attributes.entradas.length>0">{{ 'DELIVERY_PROGRAM.STARTER' | translate }}</h2>
+                        <div *ngFor="let dishItem of listArticles[0].attributes.entradas">
                             <img [src]="dishItem.imagen" *ngIf="dishItem.imagen.length>0"/>
                             <p><b>{{dishItem.valor}}</b></p>
                             <p>{{dishItem.descripcion}}</p>
@@ -34,8 +30,17 @@
                                 </ion-row>
                             </ion-grid>
                         </div>
-
-
+                    </ion-card-content>
+                </div>
+            </ion-card>
+            
+            <ion-card *ngFor="let foodItem of listArticles" class="m0">
+                <div (click)="selectMeal(foodItem.id)" class='food-item'>
+                    <ion-card-header class="product-header-information">
+                        <span  class="delivery-lunch__name">{{foodItem.name}}</span>
+                    </ion-card-header>
+                    <ion-card-content>
+                        <p><b>{{ 'DELIVERY_PROGRAM.CHOOSE' | translate }}</b></p>
                         <h2 class="delivery-lunch__entries">{{ 'DELIVERY_PROGRAM.MAIN' | translate }}</h2>
                         <div *ngFor="let dishItem of foodItem.attributes.plato">
                             <img [src]="dishItem.imagen" *ngIf="dishItem.imagen.length>0"/>

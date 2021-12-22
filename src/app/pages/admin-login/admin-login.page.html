@@ -1,0 +1,53 @@
+<ion-header class="section__header">
+    <ion-toolbar>
+        <ion-title>Admin Login</ion-title>
+        <ion-buttons class="my-addresses__button my-addresses__button--left" slot="secondary">
+            <ion-button (click)="cancel()">
+                <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-buttons class="my-addresses__button my-addresses__button--right" slot="primary">
+            <ion-button (click)="done()" [disabled]="!isReadyToSave" strong>
+                <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="my-addresses">
+    <div class="my-addresses__wrapper">
+        <div  class="pr15 pl15">
+            <form [formGroup]="form" (ngSubmit)="done()">
+                <ion-list>
+                    <ion-item>
+                        <p>{{ 'FORGOT_PASS.DESC' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">{{ 'USER.EMAIL' | translate }}</ion-label>
+                        <ion-input type="email" formControlName="email"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!form.controls.email.valid  && (form.controls.email.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'USER.EMAIL_ERROR' | translate }}</p>
+                    </ion-item>
+                    
+                    <ion-item>
+                        <ion-label position="floating">{{ 'USER.PASSWORD' | translate }}</ion-label>
+                        <ion-input type="password" formControlName="password"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!form.controls.password.valid  && (form.controls.password.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'USER.PASSWORD_ERROR' | translate }}</p>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label position="floating">Correo del cliente</ion-label>
+                        <ion-input type="text" formControlName="email2"></ion-input>
+                    </ion-item>
+                    <ion-item *ngIf="!form.controls.email2.valid  && (form.controls.email2.dirty || submitAttempt)">
+                        <p class="error-message">{{ 'USER.TOKEN_ERROR' | translate }}</p>
+                    </ion-item>
+                </ion-list>
+                <ion-button class="right m10" type="submit">{{ 'INPUTS.SUBMIT' | translate}}</ion-button>
+            </form>
+        </div>
+    </div>
+</ion-content>
