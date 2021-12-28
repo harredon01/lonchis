@@ -78,7 +78,7 @@
             <br/>
             <form  (submit)="updateDelivery()" [formGroup]="deliveryForm" >
                 <a href="javascript:;" *ngIf="isProgrammed" (click)="changeSelection()">{{ 'DELIVERY_PROGRAM.VIEW_MENU' | translate }}</a> 
-                <ion-list>
+                <ion-list style="padding-bottom: 40px">
                     <div>
                         <p><b>{{ 'DELIVERY_PROGRAM.LUNCH_TYPE' | translate }}</b></p>
                         <ion-radio-group (ionChange)="selectFoodType()" formControlName="lunch_type">

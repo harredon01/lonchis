@@ -97,6 +97,7 @@
     "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git",
     "cordova-plugin-idfa": "^2.0.0",
     "cordova-plugin-secure-storage-echo": "^5.1.1",
+    "cordova-support-android-plugin": "~1.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.2",
     "karma": "^5.2.3",
@@ -156,7 +157,9 @@
         "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
       },
       "cordova-plugin-secure-storage-echo": {},
-      "cordova-plugin-idfa": {}
+      "cordova-plugin-idfa": {
+        "ANDROID_PLAY_ADID_VERSION": "17.0.+"
+      }
     },
     "platforms": [
       "ios",
