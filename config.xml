@@ -104,9 +104,9 @@
         <splash height="1242" src="resources/ios/splash/Default-Landscape-2688h~iphone.png" width="2688" />
         <splash height="1792" src="resources/ios/splash/Default-1792h~iphone.png" width="828" />
         <splash height="828" src="resources/ios/splash/Default-Landscape-1792h~iphone.png" width="1792" />
-        <edit-config file="*-Info.plist" mode="merge" target="NSUserTrackingUsageDescription">
+        <config-file parent="NSUserTrackingUsageDescription" target="*-Info.plist">
             <string>Your data will be used to connect external sites to allow you to log-in and track your orders using your email.</string>
-        </edit-config>
+        </config-file>
     </platform>
     <plugin name="cordova-plugin-inappbrowser" spec="^3.2.0" />
     <plugin name="cordova-plugin-native-spinner" spec="1.1.3" />
