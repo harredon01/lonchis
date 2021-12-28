@@ -40,7 +40,6 @@
                         <span  class="delivery-lunch__name">{{foodItem.name}}</span>
                     </ion-card-header>
                     <ion-card-content>
-                        <p><b>{{ 'DELIVERY_PROGRAM.CHOOSE' | translate }}</b></p>
                         <h2 class="delivery-lunch__entries">{{ 'DELIVERY_PROGRAM.MAIN' | translate }}</h2>
                         <div *ngFor="let dishItem of foodItem.attributes.plato">
                             <img [src]="dishItem.imagen" *ngIf="dishItem.imagen.length>0"/>
@@ -135,6 +134,7 @@
                     <div class="delivery-lunch__ion-button">
                         <ion-button class="ion-button btn-primary submt" type="submit">{{ 'INPUTS.SUBMIT' | translate }}</ion-button>
                         <ion-button class="btn-secondary submt" *ngIf="isProgrammed" (click)="cancelSelection()" >{{ 'DELIVERY_PROGRAM.CANCEL' | translate }}</ion-button>
+                    <br/><br/><br/>
                     </div>
                     <div class="delivery-lunch__ion-button">
 

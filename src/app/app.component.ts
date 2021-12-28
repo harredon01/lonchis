@@ -16,6 +16,7 @@ import {UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
 import {Friend} from './models/friend';
 import {Notification} from './models/notification';
 declare var Mercadopago: any;
+declare var window: any;
 @Component({
     selector: 'app-root',
     templateUrl: 'app.component.html'
@@ -57,6 +58,39 @@ export class AppComponent {
             }
         });
     }
+    askTrackingPermission() {
+    if (this.platform.is('cordova') && this.platform.is('ios')) {
+
+      if (window.cordova) {
+        console.log('trying to request permission ');
+        window.cordova.exec(win, fail, 'idfa', "requestPermission", []);
+      }
+    }
+
+    function win(res) {
+      console.log('success ' + JSON.stringify(res));
+    }
+    function fail(res) {
+      console.log('fail ' + JSON.stringify(res));
+    }
+  }
+
+readTrackingPermission() {
+
+    if (this.platform.is('cordova') && this.platform.is('ios')) {
+
+      if (window.cordova) {
+        window.cordova.exec(win, fail, 'idfa', "getInfo", []);
+      }
+    }
+
+    function win(res) {
+      console.log('success  ' + JSON.stringify(res));
+    }
+    function fail(res) {
+      console.log('fail ' + JSON.stringify(res));
+    }
+  }
     initTranslate(lang) {
 
         // Set the default language for translation strings, and the current language.
@@ -107,6 +141,10 @@ export class AppComponent {
             this.statusBar.styleDefault();
             this.splashScreen.hide();
             this.languageService.setInitialAppLanguage();
+            if (this.platform.is('ios')) {
+                this.askTrackingPermission();
+                this.readTrackingPermission();
+            }
             
             //            this.zoomService.initialize("VNtFB87WSBW0yHl6rxHgTA", "air8HQbEbEEQZL5aZlNRwUMqPED2RH9zMx5B")
             //                .then((success: any) => console.log(success))

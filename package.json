@@ -88,13 +88,14 @@
     "@ionic/angular-toolkit": "^3.1.1",
     "@types/jasmine": "^3.10.2",
     "@types/jasminewd2": "^2.0.10",
-    "@types/node": "^14.18.1",
+    "@types/node": "^14.18.2",
     "cordova-android": "^9.1.0",
     "cordova-browser": "^6.0.0",
     "cordova-ios": "6.1.0",
     "cordova-plugin-facebook4": "^6.4.0",
     "cordova-plugin-googlemaps": "^2.7.1",
     "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git",
+    "cordova-plugin-idfa": "^2.0.0",
     "cordova-plugin-secure-storage-echo": "^5.1.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.2",
@@ -154,7 +155,8 @@
         "FACEBOOK_HYBRID_APP_EVENTS": "false",
         "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
       },
-      "cordova-plugin-secure-storage-echo": {}
+      "cordova-plugin-secure-storage-echo": {},
+      "cordova-plugin-idfa": {}
     },
     "platforms": [
       "ios",
