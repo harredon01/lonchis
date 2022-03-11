@@ -7,7 +7,7 @@ import {UserDataService} from '../../services/user-data/user-data.service';
 import {ApiService} from '../../services/api/api.service';
 import {ParamsService} from '../../services/params/params.service';
 import {Events} from '../../services/events/events.service';
-import {Facebook} from '@ionic-native/facebook/ngx';
+import {Facebook} from '@awesome-cordova-plugins/facebook/ngx';
 import {ConversionPage} from '../conversion/conversion.page';
 import {AddressesPage} from '../addresses/addresses.page';
 import {DynamicRouterService} from '../../services/dynamic-router/dynamic-router.service';
@@ -380,7 +380,9 @@ export class ProgramarPage implements OnInit {
 
         this.food.getArticlesByDateTimeRange({init: this.deliveryParams.delivery.getFullYear() + '-' + (this.deliveryParams.delivery.getMonth() + 1) + "-" + this.deliveryParams.delivery.getDate()}).subscribe((resp: any) => {
             //this.food.getArticlesByDateTimeRange({init: '2019-10-01', end: '2019-10-03'}).subscribe((resp) => {
+            console.log(this.listArticles)
             this.listArticles = resp.data;
+            console.log(this.listArticles)
             this.getIntroduction();
             for (let item in this.listArticles) {
                 this.listArticles[item].hasDrink = false;
@@ -391,6 +393,7 @@ export class ProgramarPage implements OnInit {
                     }
                 }
             }
+            console.log(this.listArticles)
             this.checkDelivery();
             this.api.dismissLoader();
         }, (err) => {

@@ -11,7 +11,7 @@ import {Contacts } from '@ionic-native/contacts/ngx';
 import {FileTransfer} from '@ionic-native/file-transfer/ngx';
 import {SecureStorageEcho} from '@ionic-native/secure-storage-echo/ngx';
 import {GooglePlus} from '@ionic-native/google-plus/ngx';
-import {Facebook} from '@ionic-native/facebook/ngx';
+import {Facebook} from '@awesome-cordova-plugins/facebook/ngx';
 import {HttpClientModule, HttpClient} from '@angular/common/http';
 import {SignInWithApple } from '@ionic-native/sign-in-with-apple/ngx';
 import { SQLite } from '@ionic-native/sqlite/ngx';

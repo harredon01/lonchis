@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
+import {Facebook, FacebookLoginResponse} from '@awesome-cordova-plugins/facebook/ngx';
 import {GooglePlus} from '@ionic-native/google-plus/ngx';
 import {SignInWithApple, AppleSignInResponse, AppleSignInErrorResponse, ASAuthorizationAppleIDRequest} from '@ionic-native/sign-in-with-apple/ngx';
 import {NavController, AlertController, ModalController} from '@ionic/angular';

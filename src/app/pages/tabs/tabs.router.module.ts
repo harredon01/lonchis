@@ -19,16 +19,16 @@ const routes: Routes = [
                         loadChildren: () => import('../lonchis/lonchis.module').then(m => m.LonchisPageModule)
                     },
                     {
+                        path: 'programar',
+                        loadChildren: () => import('../programar/programar.module').then(m => m.ProgramarPageModule)
+                    },
+                    {
                         path: 'calculadora',
                         loadChildren: () => import('../calculadora/calculadora.module').then(m => m.CalculadoraPageModule)
                     },
                     {
                         path: 'comments',
                         loadChildren: () => import('../comments/comments.module').then(m => m.CommentsPageModule)
-                    },
-                    {
-                        path: 'programar',
-                        loadChildren: () => import('../programar/programar.module').then(m => m.ProgramarPageModule)
                     },
                     {
                         path: 'programar/complete',

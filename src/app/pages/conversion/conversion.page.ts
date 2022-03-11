@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NavController, ModalController, AlertController} from '@ionic/angular';
 import {UserDataService} from '../../services/user-data/user-data.service';
 import {CartService} from '../../services/cart/cart.service';
-import {Facebook} from '@ionic-native/facebook/ngx';
+import {Facebook} from '@awesome-cordova-plugins/facebook/ngx';
 import {OrderDataService} from '../../services/order-data/order-data.service';
 import {ApiService} from '../../services/api/api.service';
 import {ProductsService} from '../../services/products/products.service';

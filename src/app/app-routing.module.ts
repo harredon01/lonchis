@@ -26,7 +26,7 @@ const routes: Routes = [
   { path: 'home/calculadora', loadChildren: () => import('./pages/calculadora/calculadora.module').then(m => m.CalculadoraPageModule) },
   { path: 'home/conversion', loadChildren: () => import('./pages/conversion/conversion.module').then(m => m.ConversionPageModule) },
   { path: 'home/tutorial', loadChildren: () => import('./pages/tutorial/tutorial.module').then(m => m.TutorialPageModule) },
-  { path: 'home/programar', loadChildren: () => import('./pages/programar/programar.module').then(m => m.ProgramarPageModule) },
+  //{ path: 'home/programar', loadChildren: () => import('./pages/programar/programar.module').then(m => m.ProgramarPageModule) },
   { path: 'home/products/:objectId', loadChildren: () => import('./pages/merchant-products/merchant-products.module').then(m => m.MerchantProductsPageModule) },
   { path: 'home/:categoryId', loadChildren: () => import('./pages/merchant-listing/merchant-listing.module').then(m => m.MerchantListingPageModule) },
   { path: 'home/:categoryId/merchant/:objectId', loadChildren: () => import('./pages/merchant-detail/merchant-detail.module').then(m => m.MerchantDetailPageModule) },
@@ -56,7 +56,8 @@ const routes: Routes = [
   { path: 'images', loadChildren: () => import('./pages/images/images.module').then(m => m.ImagesPageModule) },
   { path: 'availability-create', loadChildren: () => import('./pages/availability-create/availability-create.module').then(m => m.AvailabilityCreatePageModule) },
   { path: 'mercado-pago-options', loadChildren: () => import('./pages/mercado-pago-options/mercado-pago-options.module').then(m => m.MercadoPagoOptionsPageModule) },*/
-  { path: 'forgot-pass', loadChildren: () => import('./pages/forgot-pass/forgot-pass.module').then(m => m.ForgotPassPageModule) },  {
+  { path: 'forgot-pass', loadChildren: () => import('./pages/forgot-pass/forgot-pass.module').then(m => m.ForgotPassPageModule) },
+  {
     path: 'admin-login',
     loadChildren: () => import('./pages/admin-login/admin-login.module').then( m => m.AdminLoginPageModule)
   },

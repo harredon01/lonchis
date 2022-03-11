@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "^11.2.14",
     "@angular/router": "^11.2.14",
     "@angular/service-worker": "^11.2.14",
+    "@awesome-cordova-plugins/facebook": "^5.40.0",
     "@ionic-native/camera": "^5.36.0",
     "@ionic-native/contacts": "^5.36.0",
     "@ionic-native/core": "^5.36.0",
@@ -92,7 +93,7 @@
     "cordova-android": "^9.1.0",
     "cordova-browser": "^6.0.0",
     "cordova-ios": "6.1.0",
-    "cordova-plugin-facebook4": "^6.4.0",
+    "cordova-plugin-facebook-connect": "^3.2.0",
     "cordova-plugin-googlemaps": "^2.7.1",
     "cordova-plugin-googlemaps-sdk": "git+https://github.com/mapsplugin/cordova-plugin-googlemaps-sdk.git",
     "cordova-plugin-idfa": "^2.0.0",
@@ -150,15 +151,21 @@
         "LOCATION_WHEN_IN_USE_DESCRIPTION": "This app wants to get your location while this app runs only.",
         "LOCATION_ALWAYS_USAGE_DESCRIPTION": "This app wants to get your location always, even this app runs in background."
       },
-      "cordova-plugin-facebook4": {
-        "APP_ID": "340442469993643",
-        "APP_NAME": "Lonchis",
-        "FACEBOOK_HYBRID_APP_EVENTS": "false",
-        "FACEBOOK_ANDROID_SDK_VERSION": "5.13.0"
-      },
       "cordova-plugin-secure-storage-echo": {},
       "cordova-plugin-idfa": {
         "ANDROID_PLAY_ADID_VERSION": "17.0.+"
+      },
+      "cordova-plugin-facebook-connect": {
+        "APP_ID": "340442469993643",
+        "APP_NAME": "Lonchis",
+        "FACEBOOK_URL_SCHEME_SUFFIX": " ",
+        "OTHER_APP_SCHEMES": " ",
+        "FACEBOOK_AUTO_LOG_APP_EVENTS": "true",
+        "FACEBOOK_HYBRID_APP_EVENTS": "false",
+        "FACEBOOK_ADVERTISER_ID_COLLECTION": "true",
+        "FACEBOOK_ANDROID_SDK_VERSION": "11.3.0",
+        "FACEBOOK_IOS_SDK_VERSION": "11.1.0",
+        "FACEBOOK_BROWSER_SDK_VERSION": "v11.0"
       }
     },
     "platforms": [

@@ -405,6 +405,7 @@ export class LonchisPage implements OnInit {
                     this.showPromptDeposit(delivery);
                 }
             } else {
+                console.log("getPendingArticle")
                 this.params.setParams({
                     item: item
                 });
@@ -484,7 +485,8 @@ export class LonchisPage implements OnInit {
             this.params.setParams({
                 item: item
             });
-            this.navCtrl.navigateForward('home/programar');
+            console.log("openMenuOption")
+            this.navCtrl.navigateForward('shop/home/programar');
         }
     }
 
@@ -647,6 +649,7 @@ export class LonchisPage implements OnInit {
                 }
             };
             this.params.setParams({item: container});
+            console.log("selectDelivery2")
             this.navCtrl.navigateForward("shop/home/programar");
         }
     }

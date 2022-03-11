@@ -17,10 +17,36 @@
         <p class="title pl15">{{ 'DELIVERY_PROGRAM.DESCRIPTION' | translate }} {{deliveryParams.delivery_text }}</p>
         <div *ngIf="!isProgrammed">
             <ion-card class="m0">
-                <div class='food-item'>
-                    <ion-card-content>
+                <div class='food-item' *ngIf="listArticles.length > 0 ">
+                    <ion-card-content *ngIf="listArticles[0].attributes.entradas">
                         <h2 class="delivery-lunch__entries" *ngIf="listArticles[0].attributes.entradas.length>0">{{ 'DELIVERY_PROGRAM.STARTER' | translate }}</h2>
                         <div *ngFor="let dishItem of listArticles[0].attributes.entradas">
+                            <img [src]="dishItem.imagen" *ngIf="dishItem.imagen.length>0"/>
+                            <p><b>{{dishItem.valor}}</b></p>
+                            <p>{{dishItem.descripcion}}</p>
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col *ngFor="let peso of dishItem.pesos" class="nutri">{{peso.name}} {{peso.value}}<span *ngIf="peso.name!='Cal.'">g.</span></ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </div>
+                    </ion-card-content>
+                    <ion-card-content *ngIf="listArticles[0].attributes.entradas.length == 0 && listArticles[1].attributes.entradas.length>0">
+                        <h2 class="delivery-lunch__entries" *ngIf="listArticles[1].attributes.entradas.length>0">{{ 'DELIVERY_PROGRAM.STARTER' | translate }}</h2>
+                        <div *ngFor="let dishItem of listArticles[1].attributes.entradas">
+                            <img [src]="dishItem.imagen" *ngIf="dishItem.imagen.length>0"/>
+                            <p><b>{{dishItem.valor}}</b></p>
+                            <p>{{dishItem.descripcion}}</p>
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col *ngFor="let peso of dishItem.pesos" class="nutri">{{peso.name}} {{peso.value}}<span *ngIf="peso.name!='Cal.'">g.</span></ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </div>
+                    </ion-card-content>
+                    <ion-card-content *ngIf="listArticles[0].attributes.entradas.length==0 && listArticles[1].attributes.entradas.length==0 && listArticles[2].attributes.entradas.length>0">
+                        <h2 class="delivery-lunch__entries" *ngIf="listArticles[2].attributes.entradas.length>0">{{ 'DELIVERY_PROGRAM.STARTER' | translate }}</h2>
+                        <div *ngFor="let dishItem of listArticles[2].attributes.entradas">
                             <img [src]="dishItem.imagen" *ngIf="dishItem.imagen.length>0"/>
                             <p><b>{{dishItem.valor}}</b></p>
                             <p>{{dishItem.descripcion}}</p>
